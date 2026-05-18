@@ -10,14 +10,23 @@ import {
     chengPassword
 } from "../controllers/user.controllers.js"
 
+import {
+     signupAuth, 
+     loginAuth, 
+     otpAuth ,
+     passwordOTPAuth,
+     newPasswordAuth,
+     chengPasswordAuth,
+    } from "../middleware/user.middleware.js";
+
 const router = express.Router()
 
-router.post("/signupGetOTP", signupGetOTP)
-router.post("/signupVerifyOTP", signVerifyOTP)
-router.post("/loginGetOTP", loginGetOTP)
-router.post("/loginVerifyOTP", loginVerifyOTP) 
-router.post("/forgotPasswordGetOTP", forgotPasswordGetOTP)
-router.post("/forgotPasswordVerifyOTP", forgotPasswordVerifyOTP) 
-router.post("/forgotPassword", forgotPassword) 
-router.post("/chengPassword", chengPassword) 
+router.post("/signupGetOTP",signupAuth, signupGetOTP)
+router.post("/signupVerifyOTP",otpAuth, signVerifyOTP)
+router.post("/loginGetOTP", loginAuth,loginGetOTP)
+router.post("/loginVerifyOTP",otpAuth, loginVerifyOTP) 
+router.post("/forgotPasswordGetOTP",passwordOTPAuth, forgotPasswordGetOTP)
+router.post("/forgotPasswordVerifyOTP",otpAuth, forgotPasswordVerifyOTP) 
+router.post("/forgotPassword",newPasswordAuth, forgotPassword) 
+router.post("/chengPassword", chengPasswordAuth,chengPassword) 
 export default router
