@@ -1,9 +1,13 @@
 import React from "react";
 import "../style/page/sigup.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { handleError, handleSuccess, handlePromise } from "../utils/Toast";
+import axios from "axios";
 
 function Signup() {
+  const nevigete = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [checkConPassword, setcheckConPassword] = useState(false);
@@ -17,6 +21,9 @@ function Signup() {
   const [checkPassword, setCheckPassword] = useState({
     confomPassword: "",
   });
+  const sendEmail = {
+    email: userData.email,
+  };
 
   const handlerInput = (e) => {
     const { name, value } = e.target;
@@ -39,10 +46,53 @@ function Signup() {
     }
   }, [userData.password, checkPassword.confomPassword]);
 
-  useEffect(() => {
-    console.log(userData);
-    console.log(checkPassword);
-  }, [userData, checkPassword]);
+  const validations = {
+    length: userData.password.length >= 8,
+    uppercase: /[A-Z]/.test(userData.password),
+    lowercase: /[a-z]/.test(userData.password),
+    number: /[0-9]/.test(userData.password),
+    special: /[!@#$%^&*(),.?":{}|<>]/.test(userData.password),
+  };
+  const isStrongPassword =
+    validations.length &&
+    validations.uppercase &&
+    validations.lowercase &&
+    validations.number &&
+    validations.special;
+
+  const handlerSubmit = async (e) => {
+    e.preventDefault();
+    const { name, email, gender, password } = userData;
+    if (!name || !email || !password || !gender) {
+      return handleError("All fields required");
+    }
+    try {
+      const promise = axios.post(
+        "http://localhost:4040/user/signupGetOTP",
+        userData,
+      );
+      handlePromise(promise);
+
+      const res = await promise;
+      handleSuccess(res.data.message);
+
+      setTimeout(() => {
+        nevigete("/verify-signup-OTP", {
+          state: sendEmail,
+        });
+      }, 2000);
+    } catch (e) {
+      const err =
+        e.response?.data?.message || e.message || "Something went wrong";
+      // console.log(err);
+      handleError(err);
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log(userData);
+  //   console.log(checkPassword);
+  // }, [userData, checkPassword]);
 
   return (
     <div className="container">
@@ -120,12 +170,18 @@ function Signup() {
             </div>
 
             <div className="password-validation">
-              <p>⚪ Weak / Strong password</p>
-              <p>⚪ Minimum 8 characters</p>
-              <p>⚪ Uppercase (A-Z)</p>
-              <p>⚪ Lowercase (a-z)</p>
-              <p>⚪ Numbers (0-9)</p>
-              <p>⚪ Special symbols</p>
+              <p>
+                {isStrongPassword ? "🟢 Strong Password" : "⚪ Weak Password"}
+              </p>
+              <p>{validations.length ? "🟢" : "⚪"} Minimum 8 characters</p>
+
+              <p>{validations.uppercase ? "🟢" : "⚪"} Uppercase (A-Z)</p>
+
+              <p>{validations.lowercase ? "🟢" : "⚪"} Lowercase (a-z)</p>
+
+              <p>{validations.number ? "🟢" : "⚪"} Numbers (0-9)</p>
+
+              <p>{validations.special ? "🟢" : "⚪"} Special symbols</p>
             </div>
           </div>
 
@@ -163,7 +219,7 @@ function Signup() {
           </div>
 
           {/* Button */}
-          <button type="submit" className="submit-btn">
+          <button type="submit" onClick={handlerSubmit} className="submit-btn">
             Submit
           </button>
           <p className="login-text">

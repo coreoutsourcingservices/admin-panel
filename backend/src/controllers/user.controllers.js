@@ -50,7 +50,7 @@ export const signupGetOTP = async (req, res) => {
             gender,
 
         });
-        console.log(dataSave)
+       
 
         
         const existingOTP = await sendEmailOTP(email, otp);

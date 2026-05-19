@@ -217,3 +217,13 @@ select{
     
     color: #f87171;
 }
+.input-field option{
+        background: #1e293b;
+
+    color: white;
+
+    font-size: 14px;
+
+
+   
+}

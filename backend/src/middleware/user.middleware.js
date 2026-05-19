@@ -39,14 +39,9 @@ export const signupAuth = (req, res, next) => {
                 "string.email": "Invalid email"
             }),
 
-        DOB: joi.date()
-            .required()
-            .messages({
-                "any.required": "DOB is required"
-            }),
-
+       
         gender: joi.string()
-            .valid("male", "female", "other")
+            .valid("Male", "Female", "other")
             .required()
             .messages({
                 "any.required": "Gender is required"
