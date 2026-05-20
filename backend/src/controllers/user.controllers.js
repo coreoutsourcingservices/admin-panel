@@ -203,7 +203,7 @@ export const loginGetOTP = async (req, res) => {
 
         });
 
-        const existingOTP = await sendEmailOTP(email, otp);
+        // const existingOTP = await sendEmailOTP(email, otp);
         // const existingOTP = await sendEmail(email, otp);
         if (existingOTP && existingOTP.expires > Date.now()) {
             return res.json({ message: "OTP already sent. Please wait." });
