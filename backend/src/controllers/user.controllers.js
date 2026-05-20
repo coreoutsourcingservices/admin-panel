@@ -56,9 +56,10 @@ export const signupGetOTP = async (req, res) => {
 
         
         const existingOTP = await sendEmailOTP(email, otp);
-        if (existingOTP && existingOTP.expires > Date.now()) {
-            return res.json({ message: "OTP already sent. Please wait." });
-        }
+
+        // if (existingOTP && existingOTP.expires > Date.now()) {
+        //     return res.json({ message: "OTP already sent. Please wait." });
+        // }
         
         return res.status(200).json({
             message: "OTP generated successfully",
