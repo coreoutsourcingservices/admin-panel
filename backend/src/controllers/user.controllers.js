@@ -78,6 +78,7 @@ export const signupGetOTP = async (req, res) => {
 
 export const signVerifyOTP = async (req, res) => {
     try {
+
         let { email, otp } = req.body
         email = email.trim().toLowerCase();
         const data = getOTPData(email)
@@ -157,6 +158,7 @@ export const signVerifyOTP = async (req, res) => {
 
 export const loginGetOTP = async (req, res) => {
     try {
+         console.log("API HIT");
         let { email, password, } = req.body;
         email = email.trim().toLowerCase();
         if (!email || !password) {
