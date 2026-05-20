@@ -32,7 +32,7 @@ function Login() {
     }
     try {
       const prome = axios.post(
-        "https://admin-panel-backend-ojv0.onrender.com/user/loginGetOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/loginGetOTP",
         userData,
       );
       handlePromise(prome);

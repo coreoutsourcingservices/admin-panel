@@ -68,7 +68,7 @@ function Signup() {
     }
     try {
       const promise = axios.post(
-        "https://admin-panel-backend-ojv0.onrender.com/user/signupGetOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/signupGetOTP",
         userData,
       );
       handlePromise(promise);

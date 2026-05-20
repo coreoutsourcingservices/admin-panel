@@ -32,7 +32,7 @@ function OTPsigupPage() {
     }
     try {
       const promise = axios.post(
-        "https://admin-panel-backend-ojv0.onrender.com/user/signupVerifyOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/signupVerifyOTP",
         userData,
       );
       handlePromise(promise);

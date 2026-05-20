@@ -32,7 +32,7 @@ function LongPageOTP() {
     }
     try {
       const promise = axios.post(
-        "https://admin-panel-backend-ojv0.onrender.com/user/loginVerifyOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/loginVerifyOTP",
         userData,
       );
       handlePromise(promise);
