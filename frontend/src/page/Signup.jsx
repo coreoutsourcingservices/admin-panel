@@ -72,12 +72,13 @@ function Signup() {
         userData,
       );
       handlePromise(promise);
+      
 
       const res = await promise;
        if (res.data.success) {
         handleSuccess(res.data.message);
 
-        
+
       setTimeout(() => {
         nevigete("/verify-signup-OTP", {
           state: sendEmail,
