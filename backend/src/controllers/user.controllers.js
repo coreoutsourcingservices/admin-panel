@@ -4,6 +4,8 @@ import { sendEmailOTP  } from "../utils/getOTPbyEmail.js";
 import { saveOTP, getOTPData, deleteOTP, increaseAttempt} from "../utils/otpStore.js";
 import bodyParser from "body-parser";
 import jwt from "jsonwebtoken"
+import {sendEmail} from "../utils/resend.js"
+
 
 
 
@@ -202,6 +204,7 @@ export const loginGetOTP = async (req, res) => {
         });
 
         const existingOTP = await sendEmailOTP(email, otp);
+        // const existingOTP = await sendEmail(email, otp);
         if (existingOTP && existingOTP.expires > Date.now()) {
             return res.json({ message: "OTP already sent. Please wait." });
         }

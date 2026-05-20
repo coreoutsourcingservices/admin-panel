@@ -1,23 +1,14 @@
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { Resend } from "resend";
 
 
-
-export const sendEmailOTP = async (to, otp) => {
-    const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.APP_PASSWORD
-  }
-});
- await transporter.sendMail({
-    from: `"HivraSoft" <${process.env.EMAIL}>`,
-    to,
-    subject: "Your OTP Verification Code",
-    html: `
+export const sendEmail = async (email, otp) => {
+    const resend = new Resend(process.env.RESEND_KEY);
+  try {
+    const data = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+       subject: "Your OTP Verification Code",
+      html: `
         <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 30px;">
             
             <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
@@ -88,5 +79,13 @@ export const sendEmailOTP = async (to, otp) => {
 
         </div>
     `
-});
+    });
+
+    console.log(data);
+
+  } catch (error) {
+    console.log(error);
+  }
 };
+
+export default sendEmail;

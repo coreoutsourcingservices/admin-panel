@@ -84,12 +84,12 @@ export const loginAuth = (req, res, next) => {
                 "string.email": "Invalid email"
             }),
 
-        // password: joi.string()
-        //     .min(8)
-        //     .max(20)
-        //     .pattern(passwordPattern)
-        //     .required()
-        //     .messages(passwordMessages)
+        password: joi.string()
+            .min(8)
+            .max(20)
+            .pattern(passwordPattern)
+            .required()
+            .messages(passwordMessages)
 
     });
 
