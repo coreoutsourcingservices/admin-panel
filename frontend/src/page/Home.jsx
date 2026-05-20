@@ -35,7 +35,7 @@ if (h < 12) {
         </div>
       </div>
       <div className="main-btm">
-        <button onClick={()=>navigate("/coreoutsourcingservices.in")}>
+        <button onClick={()=>navigate("/coreoutsourcingservices")}>
           <p>coreoutsourcingservices.in</p>
         </button>
         <button>

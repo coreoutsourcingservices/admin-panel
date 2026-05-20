@@ -1,0 +1,36 @@
+.header-container{
+    width: auto;
+   
+    background-color: rgba(50, 96, 98, 0.752);
+    display: flex;
+    justify-content: space-between;
+    border-bottom:1px solid black ;
+
+}
+.header-profile{
+    width: 40px;
+    height: 40px;
+    background-color: aqua;
+    border-radius: 30px;
+    margin-top:2px;
+    margin-bottom:2px;
+    margin-right: 10px;
+    border: 1px solid rgba(36, 35, 35, 0.842);
+}
+.header-sub-container{
+    /* border: 1px solid black; */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.header-heading{
+    display: flex;
+    gap: 20px;
+}
+.header-heading h3{
+    font-size: 10px;
+    font-weight: 100;
+    margin-top: 3px;
+}

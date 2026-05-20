@@ -8,7 +8,7 @@ import "./App.css";
 import PrivateRoute from "./routers/PrivateRoute";
 import OTPprotected from "./routers/OTPprotected";
 import AuthRedirect from "./routers/AuthRedirect";
-import HomeCote from "./page/coreoutsourcingservices.in.jsx/homeCore";
+import HomeCore from "./page/coreoutsourcingservices.in/HomeCore";
 
 function App() {
   return (
@@ -59,10 +59,10 @@ function App() {
           }
         />
         <Route
-          path="/coreoutsourcingservices.in"
+          path="/coreoutsourcingservices"
           element={
             <PrivateRoute>
-              <HomeCote />
+              <HomeCore />
             </PrivateRoute>
           }
         />

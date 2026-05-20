@@ -32,7 +32,7 @@ function OTPsigupPage() {
     }
     try {
       const promise = axios.post(
-        "http://localhost:4040/user/signupVerifyOTP",
+        "https://admin-panel-backend-ojv0.onrender.com/user/signupVerifyOTP",
         userData,
       );
       handlePromise(promise);

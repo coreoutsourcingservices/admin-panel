@@ -32,7 +32,7 @@ function LongPageOTP() {
     }
     try {
       const promise = axios.post(
-        "http://localhost:4040/user/loginVerifyOTP",
+        "https://admin-panel-backend-ojv0.onrender.com/user/loginVerifyOTP",
         userData,
       );
       handlePromise(promise);

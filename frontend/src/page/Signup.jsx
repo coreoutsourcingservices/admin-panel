@@ -68,19 +68,23 @@ function Signup() {
     }
     try {
       const promise = axios.post(
-        "http://localhost:4040/user/signupGetOTP",
+        "https://admin-panel-backend-ojv0.onrender.com/user/signupGetOTP",
         userData,
       );
       handlePromise(promise);
 
       const res = await promise;
-      handleSuccess(res.data.message);
+       if (res.data.success) {
+        handleSuccess(res.data.message);
 
       setTimeout(() => {
         nevigete("/verify-signup-OTP", {
           state: sendEmail,
         });
       }, 2000);
+             
+            }
+      
     } catch (e) {
       const err =
         e.response?.data?.message || e.message || "Something went wrong";
