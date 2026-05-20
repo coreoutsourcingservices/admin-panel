@@ -77,6 +77,7 @@ function Signup() {
        if (res.data.success) {
         handleSuccess(res.data.message);
 
+        
       setTimeout(() => {
         nevigete("/verify-signup-OTP", {
           state: sendEmail,
