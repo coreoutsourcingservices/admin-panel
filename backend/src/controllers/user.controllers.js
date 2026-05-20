@@ -158,7 +158,7 @@ export const signVerifyOTP = async (req, res) => {
 
 export const loginGetOTP = async (req, res) => {
     try {
-         console.log("API HIT");
+         
         let { email, password, } = req.body;
         email = email.trim().toLowerCase();
         if (!email || !password) {
