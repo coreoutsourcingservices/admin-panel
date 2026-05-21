@@ -156,6 +156,7 @@ export const signVerifyOTP = async (req, res) => {
             })
     }
 }
+/*
 
 export const loginGetOTP = async (req, res) => {
     try {
@@ -302,6 +303,91 @@ export const loginVerifyOTP = async (req, res) => {
 
     } catch (errer) {
         res.status(500)
+            .json({
+                message: `signup errer ${errer}`,
+                success: false
+            })
+    }
+}
+
+
+
+*/
+
+
+export const loginGetOTP = async (req, res) => {
+    try {
+         
+        let { email, password, } = req.body;
+        email = email.trim().toLowerCase();
+        if (!email || !password) {
+            res.status(400)
+                .json({
+                    message: "all fild requed ",
+                    success: false
+                })
+        }
+        const check_user = await User.findOne({ email })
+
+        if (!check_user) {
+            return res.status(400)
+                .json({
+                    message: "email is  not  exist,pleass you can signup",
+                    success: false
+                })
+        }
+        const checkPassword = await bcrypt.compare(password, check_user.password);
+        if (!checkPassword) {
+            return res.status(400).json({ message: "invalid password" });
+        }
+
+        
+        
+
+        
+        // const existingOTP = await sendEmail(email, otp);
+        // if (existingOTP && existingOTP.expires > Date.now()) {
+        //     return res.json({ message: "OTP already sent. Please wait." });
+        // }
+
+         const jwtTokem = jwt.sign(
+            {
+                email: check_user.email
+            },
+            process.env.JWT_KEY,
+            { expiresIn: '12h' }
+        )
+        res.cookie("token", jwtTokem, {
+            httpOnly: true,
+            secure: false, // production me true
+            maxAge: 12 * 60 * 60 * 1000
+        })
+
+
+
+
+        
+
+        res.json({
+            success: true,
+            message: "Signup successfully",
+            jwtTokem,
+            name: check_user.name,
+            email: check_user.email,
+
+            DOB: check_user.DOB,
+            gender: check_user.gender
+        });
+
+
+
+      
+
+
+
+    }
+    catch (errer) {
+        res.status(201)
             .json({
                 message: `signup errer ${errer}`,
                 success: false
