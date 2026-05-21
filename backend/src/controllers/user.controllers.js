@@ -174,7 +174,7 @@ export const loginGetOTP = async (req, res) => {
         if (!check_user) {
             return res.status(400)
                 .json({
-                    message: "email is already not  exist,pleass you can signup",
+                    message: "email is  not  exist,pleass you can signup",
                     success: false
                 })
         }
