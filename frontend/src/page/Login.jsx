@@ -40,7 +40,7 @@ function Login() {
       if (res.data.success) {
         handleSuccess(res.data.message);
         setTimeout(() => {
-          nevigete("/verify-login-OTP", {
+          nevigete("/home", {
             state: sendEmail,
           });
         }, 2000);
