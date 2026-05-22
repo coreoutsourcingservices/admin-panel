@@ -27,9 +27,9 @@ function App() {
         <Route
           path="/login"
           element={
-            <AuthRedirect>
+             <OTPprotected>
               <Login />
-            </AuthRedirect>
+           </OTPprotected>
           }
         />
 
@@ -58,15 +58,15 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* <Route
+        <Route
           path="/coreoutsourcingservices"
           element={
             <PrivateRoute>
               <HomeCore />
             </PrivateRoute>
           }
-        /> */}
-        <Route  path="/coreoutsourcingservices" element={<HomeCore />}/>
+        />
+        {/* <Route  path="/coreoutsourcingservices" element={<HomeCore />}/> */}
       </Routes>
     </>
   );

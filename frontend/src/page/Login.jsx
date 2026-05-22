@@ -38,11 +38,16 @@ function Login() {
       handlePromise(prome);
       const res = await prome;
       if (res.data.success) {
-        localStorage.setItem("token", res.data.token);
+        // token save
+        localStorage.setItem("token", res.data.jwtTokem);
+
+        // name save
+        localStorage.setItem("loggedInName", res.data.name);
+
         handleSuccess(res.data.message);
-       setTimeout(() => {
-        nevigete("/home");
-      }, 2000);
+        setTimeout(() => {
+          nevigete("/home");
+        }, 2000);
       }
     } catch (e) {
       const err =
