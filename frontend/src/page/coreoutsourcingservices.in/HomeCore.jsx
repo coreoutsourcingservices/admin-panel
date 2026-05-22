@@ -105,7 +105,7 @@ function HomeCore() {
 
   const getMessages = async () => {
     try {
-      const response = await axios.get("http://localhost:4040/contact/form");
+      const response = await axios.get("https://admin-panel-fawn-iota.vercel.app/contact/form");
 
       setMessages(response.data.data);
     } catch (error) {
@@ -116,7 +116,7 @@ function HomeCore() {
   const getCareers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4040/careers/fromdata",
+        "https://admin-panel-fawn-iota.vercel.app/careers/fromdata",
       );
 
       // console.log(response.data);
@@ -130,7 +130,7 @@ function HomeCore() {
   const deleteMessage = async (id) => {
     try {
       const response = await axios.delete(
-        `http://localhost:4040/contact/form/${id}`,
+        `https://admin-panel-fawn-iota.vercel.app/contact/form/${id}`,
       );
 
       // console.log(response.data);
@@ -149,7 +149,7 @@ function HomeCore() {
   const deleteCareer = async (id) => {
     try {
       const response = await axios.delete(
-        `http://localhost:4040/careers/fromdata/${id}`,
+        `https://admin-panel-fawn-iota.vercel.app/careers/fromdata/${id}`,
       );
 
       // console.log(response.data);
@@ -178,7 +178,7 @@ function HomeCore() {
       formData.append("image", partnerImage);
 
       const promise = axios.post(
-        "http://localhost:4040/partners/create-partner",
+        "https://admin-panel-fawn-iota.vercel.app/partners/create-partner",
         formData,
         {
           headers: {
@@ -227,7 +227,7 @@ function HomeCore() {
       formData.append("descr", teamDescr);
 
       const promise = axios.post(
-        "http://localhost:4040/ourteam/create-team",
+        "https://admin-panel-fawn-iota.vercel.app/ourteam/create-team",
         formData,
         {
           headers: {
@@ -260,7 +260,7 @@ function HomeCore() {
   const getTeamData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4040/ourteam/get-team",
+        "https://admin-panel-fawn-iota.vercel.app/ourteam/get-team",
       );
 
       // console.log(response.data);
@@ -273,7 +273,7 @@ function HomeCore() {
   const getPartners = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4040/partners/get-partners",
+        "https://admin-panel-fawn-iota.vercel.app/partners/get-partners",
       );
 
       // console.log(response.data);

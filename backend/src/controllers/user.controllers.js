@@ -370,7 +370,7 @@ export const loginGetOTP = async (req, res) => {
 
         res.json({
             success: true,
-            message: "Signup successfully",
+            message: "Login successfully",
             jwtTokem,
             name: check_user.name,
             email: check_user.email,
@@ -389,7 +389,7 @@ export const loginGetOTP = async (req, res) => {
     catch (errer) {
         res.status(201)
             .json({
-                message: `signup errer ${errer}`,
+                message: `Login errer ${errer}`,
                 success: false
             })
     }
