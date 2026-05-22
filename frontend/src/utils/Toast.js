@@ -9,6 +9,7 @@ const toastConfig = {
     color: "#fff",
     padding: "12px 16px",
     borderRadius: "10px",
+      zIndex: 999999999999,
   },
 };
 

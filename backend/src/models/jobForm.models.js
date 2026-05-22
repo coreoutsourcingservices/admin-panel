@@ -1,4 +1,4 @@
-import { number, required } from "joi";
+
 import mongoose from "mongoose";
 
 const jobSchema=mongoose.Schema({
@@ -6,11 +6,12 @@ const jobSchema=mongoose.Schema({
         type:String,
         required:true
     },
-   number: {
+   
+    email:{
         type:String,
         required:true
     },
-    email:{
+    number:{
         type:String,
         required:true
     },

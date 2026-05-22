@@ -1,7 +1,7 @@
-import { number, required } from "joi";
+
 import mongoose  from "mongoose";
 
-const contactSchema=mongoose.Schema({
+const contactSchema =mongoose.Schema({
     name:{
         type:String,
         required:true
@@ -41,4 +41,4 @@ const contactSchema=mongoose.Schema({
 
 },{timestamps:true})
 
-export const Contect =mongoose.model("Contect",contectSchema)
+export const Contact =mongoose.model("Contect",contactSchema )

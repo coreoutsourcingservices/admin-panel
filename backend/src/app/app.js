@@ -1,6 +1,10 @@
 import express from "express"
 import cors from "cors"
 import  userRouter  from "../routes/user.routes.js"
+import jobFormRouter from "../routes/jobFrom.router.js"
+import contactRouter from "../routes/contect.routes.js"
+import partnersRouter from "../routes/partener.js"
+import ourteamRouter from "../routes/ourTeamfirst.js"
 
 export const app = express()
 app.use(cors());
@@ -9,5 +13,10 @@ app.use(express.json());
 app.get("/",(req,res)=>{
     res.send("server runing...")
 })
+
+app.use("/careers",jobFormRouter)
 app.use("/user",userRouter)
+app.use("/contact",contactRouter)
+app.use("/partners",partnersRouter)
+app.use("/ourteam",ourteamRouter)
 
