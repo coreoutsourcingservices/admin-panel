@@ -286,10 +286,13 @@ function HomeCore() {
 
   useEffect(() => {
     getMessages();
-    getTeamData();
-    getPartners();
+   
     getCareers();
   }, []);
+  useEffect(()=>{
+ getTeamData();
+    getPartners();
+  },[partnerPopup,AddOurTeamPopup,])
 
   let name = "Coreoutsourcingservices.in";
   return (
@@ -681,7 +684,7 @@ function HomeCore() {
                       Show Partner
                     </button>
 
-                    <button onClick={() => setAddOurTeamPopup(true)}>
+                    <button onClick={() => setOurImagePop(true)}>
                       Add Our Team
                     </button>
 
