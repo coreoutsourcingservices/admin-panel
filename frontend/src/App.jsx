@@ -58,14 +58,15 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/coreoutsourcingservices"
           element={
             <PrivateRoute>
               <HomeCore />
             </PrivateRoute>
           }
-        />
+        /> */}
+        <Route  path="/coreoutsourcingservices" element={<HomeCore />}/>
       </Routes>
     </>
   );

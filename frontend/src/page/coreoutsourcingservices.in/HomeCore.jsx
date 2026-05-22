@@ -109,7 +109,8 @@ function HomeCore() {
 
       setMessages(response.data.data);
     } catch (error) {
-      handleError(error);
+      console.log(error)
+      // handleError(error);
     }
   };
   // get api data
@@ -123,7 +124,8 @@ function HomeCore() {
 
       setCareers(response.data.data);
     } catch (error) {
-      handleError(error);
+      // handleError(error);
+      console.log(error)
     }
   };
 
@@ -263,11 +265,11 @@ function HomeCore() {
         "https://admin-panel-fawn-iota.vercel.app/ourteam/get-team",
       );
 
-      // console.log(response.data);
-
+      
       setTeamData(response.data.data.team);
     } catch (error) {
-      handleError(error);
+     console.log(error);
+      // handleError(error);
     }
   };
   const getPartners = async () => {
@@ -280,7 +282,8 @@ function HomeCore() {
 
       setPartnerData(response.data.data.partners);
     } catch (error) {
-      handleError(error);
+      console.log(error);
+      // handleError(error);
     }
   };
 
