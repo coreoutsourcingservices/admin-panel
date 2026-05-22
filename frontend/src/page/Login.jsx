@@ -38,12 +38,11 @@ function Login() {
       handlePromise(prome);
       const res = await prome;
       if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
         handleSuccess(res.data.message);
-        setTimeout(() => {
-          nevigete("/home", {
-            state: sendEmail,
-          });
-        }, 2000);
+       setTimeout(() => {
+        nevigete("/home");
+      }, 2000);
       }
     } catch (e) {
       const err =
