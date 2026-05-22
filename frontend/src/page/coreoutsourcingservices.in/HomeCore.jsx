@@ -687,7 +687,7 @@ function HomeCore() {
                       Show Partner
                     </button>
 
-                    <button onClick={() => setOurImagePop(true)}>
+                    <button onClick={() => setAddOurTeamPopup(true)}>
                       Add Our Team
                     </button>
 
