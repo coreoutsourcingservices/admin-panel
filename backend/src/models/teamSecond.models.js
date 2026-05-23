@@ -1,32 +1,31 @@
 import mongoose from "mongoose";
 
-const partnersSchema = new mongoose.Schema(
+const teamSecondSchema = new mongoose.Schema(
   {
-    partners: [
+    data: [
       {
         name: {
           type: String,
           required: true,
+         
         },
 
         image: {
           type: String,
           required: true,
         },
-        property: {
-          type: String,
-          enum: ["home", "about_us"],
-          default: "about_us",
 
+        status: {
+          type: String,
+          required: true,
+          
         },
-      }
-       
+      },
     ],
   },
   {
     timestamps: true,
   }
 );
-
-export const Partners = mongoose.model("Partners", partnersSchema);
-
+ 
+export const TeamSecond = mongoose.model("TeamSecond", teamSecondSchema);

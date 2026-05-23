@@ -14,7 +14,9 @@ function HomeCore() {
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [careers, setCareers] = useState([]);
+  const [teamProperty, setTeamProperty] = useState("about_us");
   const [teamData, setTeamData] = useState([]);
+  const [partnerProperty, setPartnerProperty] = useState("about_us");
   const [teamDescr, setTeamDescr] = useState("");
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [partnerData, setPartnerData] = useState([]);
@@ -23,6 +25,12 @@ function HomeCore() {
   const [partnerImage, setPartnerImage] = useState(null);
   const [ourImagePop, setOurImagePop] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [teamSecondName, setTeamSecondName] = useState("");
+  const [teamSecondStatus, setTeamSecondStatus] = useState("");
+  const [teamSecondImage, setTeamSecondImage] = useState(null);
+
+  const [teamSecondPopup, setTeamSecondPopup] = useState(false);
+  const [teamSecondData, setTeamSecondData] = useState([]);
 
   // top state
   const [homePopup, setHomePopup] = useState(false);
@@ -105,11 +113,13 @@ function HomeCore() {
 
   const getMessages = async () => {
     try {
-      const response = await axios.get("https://admin-panel-fawn-iota.vercel.app/contact/form");
+      const response = await axios.get(
+        "https://admin-panel-fawn-iota.vercel.app/contact/form",
+      );
 
       setMessages(response.data.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       // handleError(error);
     }
   };
@@ -125,7 +135,7 @@ function HomeCore() {
       setCareers(response.data.data);
     } catch (error) {
       // handleError(error);
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -177,7 +187,10 @@ function HomeCore() {
       const formData = new FormData();
 
       formData.append("name", partnerName);
+
       formData.append("image", partnerImage);
+
+      formData.append("property", partnerProperty);
 
       const promise = axios.post(
         "https://admin-panel-fawn-iota.vercel.app/partners/create-partner",
@@ -197,13 +210,14 @@ function HomeCore() {
 
       const response = await promise;
 
-      // console.log(response.data);
+      console.log(response);
 
       handleSuccess("Partner Saved");
 
       // reset
       setPartnerName("");
       setPartnerImage(null);
+      setPartnerProperty("about_us");
 
       setpartnerPopup(false);
     } catch (error) {
@@ -217,7 +231,7 @@ function HomeCore() {
 
   const handleOurTeamSubmit = async () => {
     try {
-     if (!teamName || !teamStatus || !teamDescr || !teamImage){
+      if (!teamName || !teamStatus || !teamDescr || !teamImage ) {
         return handleError("All fields are required");
       }
 
@@ -227,6 +241,8 @@ function HomeCore() {
       formData.append("status", teamStatus);
       formData.append("image", teamImage);
       formData.append("descr", teamDescr);
+      formData.append("property", teamProperty);
+      
 
       const promise = axios.post(
         "https://admin-panel-fawn-iota.vercel.app/ourteam/create-team",
@@ -250,6 +266,7 @@ function HomeCore() {
       setTeamName("");
       setTeamStatus("");
       setTeamImage(null);
+      setTeamProperty("about_us");
 
       setAddOurTeamPopup(false);
     } catch (error) {
@@ -265,10 +282,9 @@ function HomeCore() {
         "https://admin-panel-fawn-iota.vercel.app/ourteam/get-team",
       );
 
-      
       setTeamData(response.data.data.team);
     } catch (error) {
-     console.log(error);
+      console.log(error);
       // handleError(error);
     }
   };
@@ -287,15 +303,82 @@ function HomeCore() {
     }
   };
 
+  const handleTeamSecondSubmit = async () => {
+    try {
+      if (!teamSecondName || !teamSecondStatus || !teamSecondImage) {
+        return handleError("All fields are required");
+      }
+
+      setLoading(true);
+
+      const formData = new FormData();
+
+      formData.append("name", teamSecondName);
+      formData.append("status", teamSecondStatus);
+      formData.append("image", teamSecondImage);
+
+      const promise = axios.post(
+        "https://admin-panel-fawn-iota.vercel.app/teamsecond/create-team-second",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      handlePromise(promise, {
+        loading: "Uploading Employee...",
+        success: "Employee Added Successfully 😎",
+        error: "Failed To Add Employee 💀",
+      });
+
+      const response = await promise;
+
+      handleSuccess(response.data.message);
+
+      // reset
+      setTeamSecondName("");
+      setTeamSecondStatus("");
+      setTeamSecondImage(null);
+
+      setAddOurTeamPopup(false);
+    } catch (error) {
+      console.log(error);
+
+      handleError(error?.response?.data?.message || "Server Error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTeamSecondData = async () => {
+    try {
+      const response = await axios.get(
+        "https://admin-panel-fawn-iota.vercel.app/teamsecond/get-team-second",
+      );
+
+      setTeamSecondData(response.data.data);
+    } catch (error) {
+      console.log(error);
+
+      handleError("Failed To Fetch Team Data");
+    }
+  };
+
+  useEffect(() => {
+    getTeamSecondData();
+  }, [teamSecondPopup]);
+
   useEffect(() => {
     getMessages();
-   
+
     getCareers();
   }, []);
-  useEffect(()=>{
- getTeamData();
+  useEffect(() => {
+    getTeamData();
     getPartners();
-  },[partnerPopup,AddOurTeamPopup,])
+  }, [partnerPopup, AddOurTeamPopup]);
 
   let name = "Coreoutsourcingservices.in";
   return (
@@ -354,61 +437,14 @@ function HomeCore() {
                       Add Our Team
                     </button>
 
-                    <button>Show Our Team</button>
+                    <button onClick={() => setTeamSecondPopup(true)}>
+                      Show Our Team
+                    </button>
                   </div>
 
                   {/* right content */}
                   <div className="popup-content">
-                    {partnerPopup && (
-                      <div className="inner-popup-overlay">
-                        <div className="inner-popup">
-                          <h2>Add Partner</h2>
-
-                          {/* image */}
-                          <div className="input-group">
-                            <label>Upload Partner Image</label>
-
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) =>
-                                setPartnerImage(e.target.files[0])
-                              }
-                            />
-                          </div>
-
-                          {/* name */}
-                          <div className="input-group">
-                            <label>Partner Name</label>
-
-                            <input
-                              type="text"
-                              placeholder="Enter partner name"
-                              value={partnerName}
-                              onChange={(e) => setPartnerName(e.target.value)}
-                            />
-                          </div>
-
-                          {/* buttons */}
-                          <div className="popup-btn-group">
-                            <button
-                              className="cancel-btn"
-                              onClick={() => setpartnerPopup(false)}
-                            >
-                              Cancel
-                            </button>
-
-                            <button
-                              className="save-btn"
-                              onClick={handlePartnerSubmit}
-                              disabled={loading}
-                            >
-                              {loading ? "Saving..." : "Save"}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    {/* hhhhhhhhhhhhhhhhhhhhhhhh */}
                     {AddOurTeamPopup && (
                       <div className="inner-popup-overlay">
                         <div className="inner-popup">
@@ -418,7 +454,13 @@ function HomeCore() {
                           <div className="input-group">
                             <label>Upload Employe Image</label>
 
-                            <input type="file" accept="image/*" />
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) =>
+                                setTeamSecondImage(e.target.files[0])
+                              }
+                            />
                           </div>
 
                           {/* name */}
@@ -427,7 +469,11 @@ function HomeCore() {
 
                             <input
                               type="text"
-                              placeholder="Enter partner name"
+                              placeholder="Enter Employe name"
+                              value={teamSecondName}
+                              onChange={(e) =>
+                                setTeamSecondName(e.target.value)
+                              }
                             />
                           </div>
                           <div className="input-group">
@@ -435,7 +481,11 @@ function HomeCore() {
 
                             <input
                               type="text"
-                              placeholder="Enter partner name"
+                              placeholder="Enter Employe status"
+                              value={teamSecondStatus}
+                              onChange={(e) =>
+                                setTeamSecondStatus(e.target.value)
+                              }
                             />
                           </div>
 
@@ -450,22 +500,121 @@ function HomeCore() {
 
                             <button
                               className="save-btn"
-                              onClick={() => setAddOurTeamPopup(false)}
+                              onClick={handleTeamSecondSubmit}
+                              disabled={loading}
                             >
-                              Save
+                              {loading ? "Saving..." : "Save"}
                             </button>
                           </div>
                         </div>
                       </div>
                     )}
 
-                    <div className="popup-card">
-                      <h2>100 Partner photo</h2>
-                    </div>
+                    {teamSecondPopup && (
+                      <div
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100vh",
+                          background: "rgba(0,0,0,0.5)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          zIndex: 9999,
+                        }}
+                      >
+                        {/* MAIN BOX */}
+                        <div
+                          style={{
+                            width: "80%",
+                            height: "80vh",
+                            background: "#fff",
+                            borderRadius: "20px",
+                            padding: "20px",
+                            position: "relative",
+                            overflowY: "auto",
+                          }}
+                        >
+                          {/* CLOSE BUTTON */}
+                          <button
+                            onClick={() => setTeamSecondPopup(false)}
+                            style={{
+                              position: "absolute",
+                              top: "15px",
+                              right: "15px",
+                              background: "red",
+                              color: "#fff",
+                              border: "none",
+                              padding: "10px 18px",
+                              borderRadius: "10px",
+                              cursor: "pointer",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            Close
+                          </button>
 
-                    <div className="popup-card">
-                      <h2>100 Our Team photo </h2>
-                    </div>
+                          {/* GRID */}
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns:
+                                "repeat(auto-fit,minmax(220px,1fr))",
+                              gap: "20px",
+                              marginTop: "60px",
+                            }}
+                          >
+                            {teamSecondData.map((item) => (
+                              <div
+                                key={item._id}
+                                style={{
+                                  background: "#f5f5f5",
+                                  borderRadius: "15px",
+                                  overflow: "hidden",
+                                  padding: "15px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {/* IMAGE */}
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  style={{
+                                    width: "100%",
+                                    height: "250px",
+                                    objectFit: "cover",
+                                    borderRadius: "12px",
+                                  }}
+                                />
+
+                                {/* NAME */}
+                                <h2
+                                  style={{
+                                    marginTop: "15px",
+                                    fontSize: "22px",
+                                  }}
+                                >
+                                  {item.name}
+                                </h2>
+
+                                {/* STATUS */}
+                                <p
+                                  style={{
+                                    marginTop: "8px",
+                                    color: "gray",
+                                    fontSize: "16px",
+                                  }}
+                                >
+                                  {item.status}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -663,6 +812,69 @@ function HomeCore() {
                 </div>
               </div>
             )}
+            {partnerPopup && (
+              <div className="inner-popup-overlay">
+                <div className="inner-popup">
+                  <h2>Add Partner</h2>
+
+                  <div className="input-group">
+                    <label>Upload Partner Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setPartnerImage(e.target.files[0])}
+                    />
+                  </div>
+
+                  <div className="input-group">
+                    <label>Partner Name</label>
+                    <input
+                      type="text"
+                      placeholder="Enter partner name"
+                      value={partnerName}
+                      onChange={(e) => setPartnerName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="input-group">
+                    <label>Property</label>
+
+                    <select
+                      value={partnerProperty}
+                      onChange={(e) => setPartnerProperty(e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: "14px",
+                        borderRadius: "10px",
+                        border: "1px solid #ccc",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <option value="home">Home</option>
+
+                      <option value="about_us">About Us</option>
+                    </select>
+                  </div>
+
+                  <div className="popup-btn-group">
+                    <button
+                      className="cancel-btn"
+                      onClick={() => setpartnerPopup(false)}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      className="save-btn"
+                      onClick={handlePartnerSubmit}
+                      disabled={loading}
+                    >
+                      {loading ? "Saving..." : "Save"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {homePopup && (
               <div className="home-popup-overlay">
@@ -726,6 +938,28 @@ function HomeCore() {
                               value={partnerName}
                               onChange={(e) => setPartnerName(e.target.value)}
                             />
+                          </div>
+                          {/* property dropdown */}
+                          <div className="input-group">
+                            <label>Property</label>
+
+                            <select
+                              value={partnerProperty}
+                              onChange={(e) =>
+                                setPartnerProperty(e.target.value)
+                              }
+                              style={{
+                                width: "100%",
+                                padding: "14px",
+                                borderRadius: "10px",
+                                border: "1px solid #ccc",
+                                marginTop: "10px",
+                              }}
+                            >
+                              <option value="home">Home</option>
+
+                              <option value="about_us">About Us</option>
+                            </select>
                           </div>
 
                           {/* buttons */}
@@ -798,6 +1032,24 @@ function HomeCore() {
                               onChange={(e) => setTeamDescr(e.target.value)}
                             />
                           </div>
+                          <div className="input-group">
+                            <label>Select Page</label>
+
+                            <select
+                              value={teamProperty}
+                              onChange={(e) => setTeamProperty(e.target.value)}
+                              style={{
+                                width: "100%",
+                                padding: "14px",
+                                borderRadius: "10px",
+                                border: "1px solid #ccc",
+                                marginTop: "10px",
+                              }}
+                            >
+                              <option value="home">Home</option>
+                              <option value="about_us">About Us</option>
+                            </select>
+                          </div>
 
                           {/* buttons */}
                           <div className="popup-btn-group">
@@ -819,14 +1071,6 @@ function HomeCore() {
                         </div>
                       </div>
                     )}
-
-                    {/* <div className="popup-card">
-                      <h2>100 Partner photo</h2>
-                    </div>
-
-                    <div className="popup-card">
-                      <h2>100 Our Team photo </h2>
-                    </div> */}
                   </div>
                 </div>
               </div>

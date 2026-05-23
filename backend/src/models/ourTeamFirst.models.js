@@ -20,15 +20,21 @@ const ourTeamSchema = new mongoose.Schema(
                     type: String,
                     required: true,
                 },
-                descr:{
-                     type: String,
+                property: {
+                    type: String,
+                    enum: ["home", "about_us"],
+                    default: "about_us",
+
+                },
+                descr: {
+                    type: String,
                     default: "",
                 },
-                 
-               
-            
+
+
+
             },
-           
+
         ],
     },
     {

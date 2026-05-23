@@ -27,9 +27,9 @@ function App() {
         <Route
           path="/login"
           element={
-             <OTPprotected>
+            <AuthRedirect>
               <Login />
-           </OTPprotected>
+            </AuthRedirect>
           }
         />
 

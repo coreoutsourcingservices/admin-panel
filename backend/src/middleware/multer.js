@@ -73,3 +73,27 @@ const storageOurTeamImage = new CloudinaryStorage({
 export const uploadOurTeam = multer({
   storage: storageOurTeamImage,
 });
+
+
+const storageteamSecondImage = new CloudinaryStorage({
+  cloudinary,
+
+  params: async (req, file) => {
+    const username = req.body.name || "team";
+
+    const imageName = username
+      .replace(/\s+/g, "_")
+      .toLowerCase();
+
+    return {
+      folder: "our_team",
+      resource_type: "image",
+      allowed_formats: ["jpg", "jpeg", "png"],
+      public_id: imageName,
+    };
+  },
+});
+
+export const uploadTeamSecond = multer({
+  storage: storageteamSecondImage,
+});
