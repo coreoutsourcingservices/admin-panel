@@ -318,7 +318,7 @@ function HomeCore() {
       formData.append("image", teamSecondImage);
 
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/teamsecond/create-team-second",
+        "http://localhost:4040/teamsecond/create-team-second",
         formData,
         {
           headers: {
