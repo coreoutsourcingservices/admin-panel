@@ -9,6 +9,7 @@ import { TeamSecond } from "../models/teamSecond.models.js";
 
 export const createTeamSecond = async (req, res) => {
   try {
+    const teamData = await TeamSecond.findOne({}).lean();
     const { name, status } = req.body;
 
     const image = req.file?.path;
