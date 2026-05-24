@@ -78,14 +78,14 @@
 }
 
 /* Add Page Button */
-.list-of-page button:last-child{
+/* .list-of-page button:last-child{
     background: #0f172a;
     color: white;
 }
 
 .list-of-page button:last-child:hover{
     background: #020617;
-}
+} */
 
 /* Main Content */
 .core-main{

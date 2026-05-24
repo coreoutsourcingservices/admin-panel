@@ -396,7 +396,8 @@ function HomeCore() {
             {/* <button>Contacts</button>  */}
             <button>Gallery</button>
             <button>Careers</button>
-            <button>Add header or page</button>
+
+            
           </div>
         </div>
 
