@@ -9,7 +9,19 @@ import teamSecondRouter from "../routes/teamSecond.js"
 import galleryRouter from "../routes/gallary.routes.js"
 
 export const app = express()
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+
+  "https://admin-panel-core.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+
+    credentials: true,
+  })
+);
 
 app.use(express.urlencoded({
   limit: "500mb",
