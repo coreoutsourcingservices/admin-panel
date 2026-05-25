@@ -97,3 +97,39 @@ const storageteamSecondImage = new CloudinaryStorage({
 export const uploadTeamSecond = multer({
   storage: storageteamSecondImage,
 });
+
+
+// Cloudinary Storage
+const storageGallery =
+  new CloudinaryStorage({
+    cloudinary,
+
+    params: async (req, file) => {
+      const isVideo =
+        file.mimetype.startsWith(
+          "video"
+        );
+
+      return {
+        folder: "gallery_media",
+
+        resource_type: isVideo
+          ? "video"
+          : "image",
+
+        allowed_formats: isVideo
+          ? ["mp4", "mov", "avi"]
+          : [
+              "jpg",
+              "jpeg",
+              "png",
+              "webp",
+            ],
+      };
+    },
+  });
+
+// Multer Upload
+export const uploadGallery = multer({
+  storage: storageGallery,
+});
