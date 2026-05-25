@@ -12,19 +12,11 @@ export const app = express()
 
 
 app.use(
-  cors({
-    origin: [
-      "https://admin-panel-core.vercel.app",
-
-      "http://localhost:5173",
-    ],
-
-    credentials: true,
-  })
+  cors()
 );
 
 app.use(express.urlencoded({
-  limit: "500mb",
+  limit: "200mb",
   extended: true
 }));
 
