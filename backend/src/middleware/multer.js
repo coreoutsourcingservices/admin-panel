@@ -106,7 +106,7 @@ const storageGallery =
 
     params: async (req, file) => {
       const isVideo =
-        file.mimetype.startsWith(
+        file?.mimetype?.startsWith(
           "video"
         );
 
@@ -118,7 +118,13 @@ const storageGallery =
           : "image",
 
         allowed_formats: isVideo
-          ? ["mp4", "mov", "avi"]
+          ? [
+              "mp4",
+              "mov",
+              "avi",
+              "webm",
+              "mkv",
+            ]
           : [
               "jpg",
               "jpeg",
