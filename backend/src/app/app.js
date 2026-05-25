@@ -9,15 +9,12 @@ import teamSecondRouter from "../routes/teamSecond.js"
 import galleryRouter from "../routes/gallary.routes.js"
 
 export const app = express()
-const allowedOrigins = [
-  "http://localhost:5173",
 
-  "https://admin-panel-core.vercel.app",
-];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+     origin:
+      "https://admin-panel-core.vercel.app" ||   "http://localhost:5173",
 
     credentials: true,
   })
