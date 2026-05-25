@@ -13,8 +13,11 @@ export const app = express()
 
 app.use(
   cors({
-     origin:
-      "https://admin-panel-core.vercel.app" ||   "http://localhost:5173",
+    origin: [
+      "https://admin-panel-core.vercel.app",
+
+      "http://localhost:5173",
+    ],
 
     credentials: true,
   })
