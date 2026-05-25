@@ -458,3 +458,739 @@
 
     cursor: pointer;
 }
+
+/* =========================================
+POPUP OVERLAY
+========================================= */
+
+.inner-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.7);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+
+  padding: 20px;
+}
+
+/* =========================================
+POPUP BOX
+========================================= */
+
+.inner-popup {
+  width: 100%;
+  max-width: 750px;
+
+  max-height: 100%;
+
+  background: #fff;
+
+  border-radius: 20px;
+
+  padding: 10px;
+
+  overflow-y: auto;
+
+  position: relative;
+}
+
+/* Scroll */
+
+ .inner-popup::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* .inner-popup::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 20px;
+}  */
+
+/* =========================================
+TITLE
+========================================= */
+
+.inner-popup h2 {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 25px;
+  color: #111;
+}
+
+/* =========================================
+INPUT GROUP
+========================================= */
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.input-group label {
+  display: block;
+
+  margin-bottom: 1px;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  color: #222;
+}
+
+/* =========================================
+INPUTS
+========================================= */
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+
+  padding: 10px;
+
+  border: 1px solid #d5d5d5;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  font-size: 15px;
+
+  transition: 0.3s;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  border-color: #111;
+}
+
+.input-group textarea {
+  resize: none;
+
+  min-height: 100px;
+}
+
+/* =========================================
+DRAG DROP
+========================================= */
+
+.drag-drop-box {
+  border: 2px dashed #aaa;
+
+  border-radius: 16px;
+
+  padding: 45px 20px;
+
+  background: #fafafa;
+
+  text-align: center;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.drag-drop-box:hover {
+  background: #f1f1f1;
+
+  border-color: #111;
+}
+
+.drag-drop-box p {
+  font-size: 16px;
+
+  color: #444;
+
+  font-weight: 500;
+}
+
+.upload-limit {
+  display: block;
+
+  margin-top: 10px;
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+/* =========================================
+PREVIEW GRID
+========================================= */
+
+.gallery-preview-grid {
+  width: 100%;
+
+
+  display: grid;
+
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(180px, 1fr)
+  );
+
+  gap: 18px;
+
+  margin-top: 25px;
+
+  max-height: 450px;
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+
+  padding: 10px;
+}
+.gallery-preview-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.gallery-preview-grid::-webkit-scrollbar-thumb {
+  background: #bbb;
+
+  border-radius: 20px;
+}
+/* =========================================
+BUTTONS
+========================================= */
+
+.cancel-btn,
+.save-btn {
+  border: none;
+
+  padding: 13px 24px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  transition: 0.3s;
+}
+
+.cancel-btn {
+  background: #e5e5e5;
+
+  color: #222;
+}
+
+.cancel-btn:hover {
+  background: #d6d6d6;
+}
+
+.save-btn {
+  background: #111;
+
+  color: white;
+}
+
+.save-btn:hover {
+  background: #000;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+.preview-card {
+  position: relative;
+
+  width: 100%;
+
+  background: #f5f5f5;
+
+  border-radius: 16px;
+
+  padding: 10px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  min-height: 260px;
+
+  overflow: visible;
+}
+
+/* IMAGE */
+
+.preview-card img,
+.preview-card video {
+  width: 100%;
+
+  height: 180px;
+
+  object-fit: cover;
+
+  border-radius: 12px;
+
+  display: block;
+}
+
+/* FILE NAME */
+
+.file-name {
+  width: 100%;
+
+  margin-top: 10px;
+
+  font-size: 13px;
+
+  text-align: center;
+
+  color: #222;
+
+  word-break: break-word;
+
+  line-height: 18px;
+}
+
+/* REMOVE BUTTON */
+
+.remove-file-btn {
+  position: absolute;
+
+  top: -8px;
+
+  right: -8px;
+
+  width: 30px;
+
+  height: 30px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: red;
+
+  color: white;
+
+  font-size: 15px;
+
+  cursor: pointer;
+
+  z-index: 999;
+}
+
+
+/* =========================================
+MAIN POPUP
+========================================= */
+
+.gallery-main-popup {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.8);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 999999;
+}
+
+/* =========================================
+INNER POPUP
+========================================= */
+
+.gallery-main-popup-inner,
+.gallery-single-popup-inner {
+  width: 80%;
+
+  height: 80vh;
+
+  background: white;
+
+  border-radius: 20px;
+
+  padding: 25px;
+
+  overflow-y: auto;
+
+  position: relative;
+}
+
+/* =========================================
+TITLE
+========================================= */
+
+.gallery-main-popup-inner h2,
+.gallery-single-popup-inner h2 {
+  text-align: center;
+
+  margin-bottom: 25px;
+
+  font-size: 30px;
+}
+
+/* =========================================
+CLOSE BTN
+========================================= */
+
+.gallery-close-btn {
+  position: absolute;
+
+  top: 20px;
+
+  right: 20px;
+
+  width: 40px;
+
+  height: 40px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: red;
+
+  color: white;
+
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+/* =========================================
+CARD WRAPPER
+========================================= */
+
+.gallery-card-wrapper {
+  display: grid;
+
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(250px, 1fr)
+  );
+
+  gap: 20px;
+}
+
+/* =========================================
+CARD
+========================================= */
+
+.gallery-card {
+  background: #f5f5f5;
+
+  border-radius: 15px;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.gallery-card:hover {
+  transform: translateY(-5px);
+}
+
+/* IMAGE */
+
+.gallery-card img,
+.gallery-card video {
+  width: 100%;
+
+  height: 220px;
+
+  object-fit: cover;
+}
+
+/* INFO */
+
+.gallery-card-info {
+  padding: 15px;
+}
+
+.gallery-card-info h3 {
+  font-size: 20px;
+
+  margin-bottom: 10px;
+}
+
+.gallery-card-info p {
+  margin-bottom: 5px;
+
+  color: #555;
+}
+
+/* =========================================
+SINGLE GRID
+========================================= */
+
+.single-gallery-grid {
+  display: grid;
+
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  );
+
+  gap: 20px;
+}
+
+/* CARD */
+
+.single-gallery-card {
+  background: #f5f5f5;
+
+  border-radius: 15px;
+
+  overflow: hidden;
+}
+
+/* IMAGE */
+
+.single-gallery-card img,
+.single-gallery-card video {
+  width: 100%;
+
+  height: 300px;
+
+  object-fit: cover;
+}
+/* =========================================
+WRAPPER
+========================================= */
+
+.gallery-stats-wrapper {
+  width: 100%;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 30px;
+
+  flex-wrap: wrap;
+
+  padding: 40px;
+
+  background: #f5f5f5;
+}
+
+/* =========================================
+CARD
+========================================= */
+
+.gallery-stats-card {
+  width: 200px;
+
+  height: 180px;
+
+  background: white;
+
+  border-radius: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  transition: 0.3s;
+}
+
+.gallery-stats-card:hover {
+  transform: translateY(-8px);
+}
+
+/* NUMBER */
+
+.gallery-stats-card h2 {
+  font-size: 55px;
+
+  color: #111;
+
+  margin-bottom: 15px;
+}
+
+/* TEXT */
+
+.gallery-stats-card p {
+  font-size: 20px;
+
+  font-weight: 600;
+
+  color: #666;
+}
+
+
+/* =========================================
+POPUP
+========================================= */
+
+.all-photo-popup {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100vh;
+
+  background: rgba(0, 0, 0, 0.8);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index:399;
+}
+
+/* =========================================
+INNER
+========================================= */
+
+.all-photo-popup-inner {
+  width: 90%;
+
+  height: 90vh;
+
+  background: white;
+
+  border-radius: 20px;
+
+  padding: 25px;
+
+  overflow-y: auto;
+
+  position: relative;
+}
+
+/* =========================================
+TITLE
+========================================= */
+
+.all-photo-popup-inner h2 {
+  text-align: center;
+
+  margin-bottom: 25px;
+
+  font-size: 35px;
+}
+
+/* =========================================
+CLOSE BTN
+========================================= */
+
+.close-photo-popup-btn {
+  position: absolute;
+
+  top: 20px;
+
+  right: 20px;
+
+  width: 40px;
+
+  height: 40px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: red;
+
+  color: white;
+
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+/* =========================================
+GRID
+========================================= */
+
+.all-photo-grid {
+  display: grid;
+
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(280px, 1fr)
+  );
+
+  gap: 20px;
+}
+
+/* =========================================
+CARD
+========================================= */
+
+.all-photo-card {
+  width: 100%;
+
+  height: 280px;
+
+  overflow: hidden;
+
+  border-radius: 18px;
+
+  background: #f5f5f5;
+}
+
+/* IMAGE */
+
+.all-photo-card img {
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+
+  transition: 0.3s;
+}
+
+.all-photo-card img:hover {
+  transform: scale(1.05);
+}
+
+
+button:disabled {
+  opacity: 0.3;
+
+  cursor: not-allowed;
+}
+button:disabled:hover{
+    background-color:rgba(255, 255, 255, 0.354);
+     opacity: 0.3;
+     color: rgba(0, 0, 0, 0.413);
+
+  cursor: not-allowed;
+}

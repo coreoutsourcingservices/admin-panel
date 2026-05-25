@@ -1,7 +1,8 @@
 import React from "react";
 import Header from "../../componente/Header";
 import "../../style/page/core-web-page/coreHome.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { Download } from "lucide-react";
 
@@ -12,6 +13,7 @@ import { handleError, handleSuccess, handlePromise } from "../../utils/Toast";
 
 function HomeCore() {
   const [messages, setMessages] = useState([]);
+  const [galleryData, setGalleryData] = useState({});
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [careers, setCareers] = useState([]);
   const [teamProperty, setTeamProperty] = useState("about_us");
@@ -32,14 +34,31 @@ function HomeCore() {
   const [teamSecondPopup, setTeamSecondPopup] = useState(false);
   const [teamSecondData, setTeamSecondData] = useState([]);
 
+  const [galleryName, setGalleryName] = useState("");
+  const [galleryDescription, setGalleryDescription] = useState("");
+  const [galleryFiles, setGalleryFiles] = useState([]);
+  const [addGalleryPopup, setAddGalleryPopup] = useState(false);
+  const [showPhotoPopup, setShowPhotoPopup] = useState(false);
+
+  const [allGalleryPhotos, setAllGalleryPhotos] = useState([]);
+
   // top state
   const [homePopup, setHomePopup] = useState(false);
+  const [galleryPopup, setGalleryPopup] = useState(false);
   const [partnerPopup, setpartnerPopup] = useState(false);
   const [AddOurTeamPopup, setAddOurTeamPopup] = useState(false);
   const [aboutMePopup, setAboutMePopup] = useState(false);
   const [teamName, setTeamName] = useState("");
   const [teamStatus, setTeamStatus] = useState("");
   const [teamImage, setTeamImage] = useState(null);
+
+  const [showAllGalleryPopup, setShowAllGalleryPopup] = useState(false);
+
+  const [singleGalleryPopup, setSingleGalleryPopup] = useState(false);
+
+  const [allGalleryData, setAllGalleryData] = useState([]);
+
+  const [selectedGallery, setSelectedGallery] = useState(null);
 
   const date = new Date();
 
@@ -231,7 +250,7 @@ function HomeCore() {
 
   const handleOurTeamSubmit = async () => {
     try {
-      if (!teamName || !teamStatus || !teamDescr || !teamImage ) {
+      if (!teamName || !teamStatus || !teamDescr || !teamImage) {
         return handleError("All fields are required");
       }
 
@@ -242,7 +261,6 @@ function HomeCore() {
       formData.append("image", teamImage);
       formData.append("descr", teamDescr);
       formData.append("property", teamProperty);
-      
 
       const promise = axios.post(
         "https://admin-panel-fawn-iota.vercel.app/ourteam/create-team",
@@ -366,12 +384,107 @@ function HomeCore() {
     }
   };
 
+  // gallary data
+  const onDropGallery = useCallback((acceptedFiles) => {
+    setGalleryFiles((prev) => [...prev, ...acceptedFiles]);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      "image/*": [],
+      "video/*": [],
+    },
+
+    multiple: true,
+
+    maxFiles: 50,
+
+    onDrop: onDropGallery,
+  });
+
+  const handleGallerySubmit = async () => {
+    try {
+      if (!galleryName || galleryFiles.length === 0) {
+        return handleError("All fields are required");
+      }
+
+      setLoading(true);
+
+      // SINGLE FORMDATA
+      const formData = new FormData();
+
+      // multiple files
+      galleryFiles.forEach((file) => {
+        formData.append("media", file);
+      });
+
+      // text data
+      formData.append("galleryName", galleryName);
+
+      formData.append("description", galleryDescription);
+
+      // api
+      const response = await axios.post(
+        "https://admin-panel-fawn-iota.vercel.app/gallery/add-gallery",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+     
+
+      handleSuccess("Gallery Uploaded 😎");
+
+      // reset
+      setGalleryName("");
+      setGalleryDescription("");
+      setGalleryFiles([]);
+
+      setAddGalleryPopup(false);
+    } catch (error) {
+      console.log(error);
+
+      handleError(error?.response?.data?.message || "Upload Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =========================================
+  // GET ALL GALLERY
+  // =========================================
+
+  const getAllGallery = async () => {
+    try {
+      const response = await axios.get(
+        "https://admin-panel-fawn-iota.vercel.app/gallery/get-gallery",
+      );
+
+      // console.log(response.data);
+
+      setAllGalleryData(response.data.data);
+      setGalleryData(response.data);
+
+ 
+
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {}, [galleryPopup]);
+
   useEffect(() => {
     getTeamSecondData();
   }, [teamSecondPopup]);
 
   useEffect(() => {
     getMessages();
+    getAllGallery();
 
     getCareers();
   }, []);
@@ -392,12 +505,11 @@ function HomeCore() {
             <button onClick={() => setHomePopup(true)}>Home</button>
             {/* <button>Services</button> */}
             <button onClick={() => setAboutMePopup(true)}>About Us</button>
-            <button>Blogs</button>
+            <button disabled>Blogs</button>
             {/* <button>Contacts</button>  */}
-            <button>Gallery</button>
-            <button>Careers</button>
+            <button onClick={() => setGalleryPopup(true)}>Gallery</button>
 
-            
+            <button disabled>Careers</button>
           </div>
         </div>
 
@@ -901,11 +1013,11 @@ function HomeCore() {
                     </button>
 
                     <button onClick={() => setAddOurTeamPopup(true)}>
-                      Add Our Team
+                      Add Our Team Manager
                     </button>
 
                     <button onClick={() => setOurImagePop(true)}>
-                      Show Our Team
+                      Show Our Team Manager
                     </button>
                   </div>
 
@@ -1160,6 +1272,256 @@ function HomeCore() {
                     <strong>Date:</strong>{" "}
                     {new Date(selectedMessage.createdAt).toLocaleString()}
                   </p>
+                </div>
+              </div>
+            )}
+
+            {galleryPopup && (
+              <div className="home-popup-overlay">
+                <div className="home-popup">
+                  {/* close */}
+                  <button
+                    className="popup-close-btn"
+                    onClick={() => setGalleryPopup(false)}
+                  >
+                    X
+                  </button>
+
+                  {/* left menu */}
+                  <div className="popup-sidebar">
+                    <h3>Manage Gallery</h3>
+
+                    <button onClick={() => setAddGalleryPopup(true)}>
+                      Add Gallary
+                    </button>
+
+                    <button onClick={() => setShowAllGalleryPopup(true)}>
+                      Show All Gallary collection
+                    </button>
+
+                
+                  </div>
+
+                  {/* right content */}
+
+                  <div className="popup-content">
+                    {addGalleryPopup && (
+                      <div className="inner-popup-overlay">
+                        <div className="inner-popup">
+                          <h2>Add Gallery</h2>
+
+                          {/* Gallery Name */}
+                          <div className="input-group">
+                            <label>Gallery Name</label>
+
+                            <input
+                              type="text"
+                              placeholder="Enter Gallery Name"
+                              value={galleryName}
+                              onChange={(e) => setGalleryName(e.target.value)}
+                            />
+                          </div>
+
+                          {/* Description */}
+                          <div className="input-group">
+                            <label>Description</label>
+
+                            <textarea
+                              placeholder="Enter Description"
+                              value={galleryDescription}
+                              onChange={(e) =>
+                                setGalleryDescription(e.target.value)
+                              }
+                            />
+                          </div>
+
+                          {/* Drag Drop */}
+                          <div className="input-group">
+                            <label>Upload Images/Videos</label>
+
+                            <div {...getRootProps()} className="drag-drop-box">
+                              <input {...getInputProps()} />
+
+                              <p>
+                                {isDragActive
+                                  ? "Drop Files Here 😎"
+                                  : "Drag & Drop Images/Videos Here"}
+                              </p>
+
+                              <span className="upload-limit">
+                                Max Upload 50 Files
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Preview */}
+                          {/* Preview */}
+                          <div style={{ width: "100%", height: "500px" }}>
+                            <div className="gallery-preview-grid">
+                              {galleryFiles?.map((file, index) => {
+                                const previewUrl = URL.createObjectURL(file);
+
+                                return (
+                                  <div className="preview-card" key={index}>
+                                    {/* REMOVE */}
+                                    <button
+                                      type="button"
+                                      className="remove-file-btn"
+                                      onClick={() => {
+                                        setGalleryFiles((prev) =>
+                                          prev.filter((_, i) => i !== index),
+                                        );
+                                      }}
+                                    >
+                                      ✕
+                                    </button>
+
+                                    {/* IMAGE */}
+                                    {file.type?.startsWith("image") ? (
+                                      <img src={previewUrl} alt="preview" />
+                                    ) : (
+                                      <video src={previewUrl} controls />
+                                    )}
+
+                                    {/* FILE NAME */}
+                                    <p className="file-name">{file.name}</p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Buttons */}
+                          <div className="popup-btn-group">
+                            <button
+                              className="cancel-btn"
+                              onClick={() => setAddGalleryPopup(false)}
+                            >
+                              Cancel
+                            </button>
+
+                            <button
+                              className="save-btn"
+                              onClick={handleGallerySubmit}
+                              disabled={loading}
+                            >
+                              {loading ? "Uploading..." : "Save"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {showAllGalleryPopup && (
+                      <div className="gallery-main-popup">
+                        <div className="gallery-main-popup-inner">
+                          {/* CLOSE */}
+                          <button
+                            className="gallery-close-btn"
+                            onClick={() => setShowAllGalleryPopup(false)}
+                          >
+                            ✕
+                          </button>
+
+                          <h2>Show All Collection</h2>
+
+                          {/* CARD WRAPPER */}
+                          <div className="gallery-card-wrapper">
+                            {allGalleryData?.map((item, index) => {
+                              // first media
+                              const firstMedia = item.gallery?.[0];
+
+                              return (
+                                <div
+                                  key={index}
+                                  className="gallery-card"
+                                  onClick={() => {
+                                    setSelectedGallery(item);
+
+                                    setSingleGalleryPopup(true);
+                                  }}
+                                >
+                                  {/* IMAGE */}
+                                  {firstMedia?.image ? (
+                                    <img src={firstMedia.image} />
+                                  ) : (
+                                    <video src={firstMedia?.video} />
+                                  )}
+
+                                  {/* INFO */}
+                                  <div className="gallery-card-info">
+                                    <h3>{item.galleryName}</h3>
+
+                                    <p>
+                                      Photos:
+                                      {item.totalPhotos}
+                                    </p>
+
+                                    <p>
+                                      Videos:
+                                      {item.totalVideos}
+                                    </p>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {singleGalleryPopup && (
+                      <div className="gallery-main-popup">
+                        <div className="gallery-single-popup-inner">
+                          {/* CLOSE */}
+                          <button
+                            className="gallery-close-btn"
+                            onClick={() => setSingleGalleryPopup(false)}
+                          >
+                            ✕
+                          </button>
+
+                          <h2>{selectedGallery?.galleryName}</h2>
+
+                          {/* MEDIA */}
+                          <div className="single-gallery-grid">
+                            {selectedGallery?.gallery?.map((item, index) => (
+                              <div key={index} className="single-gallery-card">
+                                {item.image ? (
+                                  <img src={item.image} alt="" />
+                                ) : (
+                                  <video src={item.video} controls />
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {/* =========================================
+ALL PHOTO POPUP
+========================================= */}
+
+                   
+
+                    <div className="gallery-stats-card">
+                      <h2>{galleryData?.totalGallery}</h2>
+
+                      <p>Total Gallery</p>
+                    </div>
+
+                    <div className="gallery-stats-card">
+                      <h2>{galleryData?.totalPhotos}</h2>
+
+                      <p>Total Photos</p>
+                    </div>
+
+                    <div className="gallery-stats-card">
+                      <h2>{galleryData?.totalVideos}</h2>
+
+                      <p>Total Videos</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
