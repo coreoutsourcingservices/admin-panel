@@ -1194,3 +1194,185 @@ button:disabled:hover{
 
   cursor: not-allowed;
 }
+
+
+/* ------------------------------------------------------------------------------ */
+.blog-details-overlay {
+  position: fixed;
+  inset: 0;
+  background: #f8fafc;
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+.blog-details-popup {
+  width: 100%;
+  min-height: 100vh;
+  background: white;
+}
+
+.blog-close-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 55px;
+  height: 55px;
+  border: none;
+  border-radius: 50%;
+  background: #111827;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.blog-body {
+  width: 100%;
+}
+
+.blog-image-grid {
+  display: block;
+  margin-bottom: 50px;
+}
+
+.blog-image-grid img:first-child {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  display: block;
+}
+
+.blog-image-grid img:not(:first-child) {
+  display: none;
+}
+
+.blog-main-heading {
+  max-width: 1100px;
+  margin: 50px auto 20px;
+  padding: 0 20px;
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.blog-writer {
+  max-width: 1100px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+  font-size: 17px;
+  color: #64748b;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 20px;
+}
+
+.blog-intro {
+  max-width: 1100px;
+  margin: 0 auto 50px;
+  padding: 0 20px;
+  font-size: 22px;
+  line-height: 1.9;
+  color: #374151;
+  font-weight: 500;
+}
+
+.blog-section {
+  max-width: 1100px;
+  margin: 0 auto 60px;
+  padding: 0 20px;
+}
+
+.blog-section h2 {
+  font-size: 38px;
+  color: #111827;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.blog-content-text {
+  white-space: pre-wrap;
+  font-size: 19px;
+  line-height: 2;
+  color: #4b5563;
+}
+
+.blog-faq-title {
+  max-width: 1100px;
+  margin: 80px auto 30px;
+  padding: 0 20px;
+  font-size: 42px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.blog-faq-card {
+  max-width: 1100px;
+  margin: 0 auto 15px;
+  padding: 25px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.blog-faq-card h4 {
+  font-size: 22px;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+.blog-faq-card p {
+  font-size: 17px;
+  line-height: 1.9;
+  color: #64748b;
+}
+
+@media (max-width: 768px) {
+  .blog-image-grid img:first-child {
+    height: 250px;
+  }
+
+  .blog-main-heading {
+    font-size: 32px;
+  }
+
+  .blog-intro {
+    font-size: 18px;
+  }
+
+  .blog-section h2 {
+    font-size: 26px;
+  }
+
+  .blog-content-text {
+    font-size: 16px;
+  }
+
+  .blog-faq-title {
+    font-size: 28px;
+  }
+}
+/* ---------------------------------------------------- */
+.blog-date {
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 15px;
+  margin-bottom: 35px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

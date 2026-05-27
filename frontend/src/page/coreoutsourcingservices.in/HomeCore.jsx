@@ -30,20 +30,43 @@ function HomeCore() {
   const [teamSecondName, setTeamSecondName] = useState("");
   const [teamSecondStatus, setTeamSecondStatus] = useState("");
   const [teamSecondImage, setTeamSecondImage] = useState(null);
+  const [showBlogPopup, setShowBlogPopup] = useState(false);
+  const [savingBlge, setSavingBloge] = useState(false);
+  const [blogData, setBlogData] = useState([]);
+
+  const [selectedBlog, setSelectedBlog] = useState(null);
 
   const [teamSecondPopup, setTeamSecondPopup] = useState(false);
   const [teamSecondData, setTeamSecondData] = useState([]);
+  const [blogHeading, setBlogHeading] = useState("");
+  const [writerName, setWriterName] = useState("");
+  const [blogImages, setBlogImages] = useState([]);
 
+  const [descriptionImage, setDescriptionImage] = useState("");
+  const [descriptions, setDescriptions] = useState([
+    {
+      description_heading: "",
+      description_text: "",
+    },
+  ]);
+
+  const [faqs, setFaqs] = useState([
+    {
+      Question: "",
+      answering: "",
+    },
+  ]);
   const [galleryName, setGalleryName] = useState("");
   const [galleryDescription, setGalleryDescription] = useState("");
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [addGalleryPopup, setAddGalleryPopup] = useState(false);
-  const [showPhotoPopup, setShowPhotoPopup] = useState(false);
+  const [addBlogPopup, setAddBlogPopup] = useState(false);
 
   const [allGalleryPhotos, setAllGalleryPhotos] = useState([]);
 
   // top state
   const [homePopup, setHomePopup] = useState(false);
+  const [blogPopup, setBlgePopup] = useState(false);
   const [galleryPopup, setGalleryPopup] = useState(false);
   const [partnerPopup, setpartnerPopup] = useState(false);
   const [AddOurTeamPopup, setAddOurTeamPopup] = useState(false);
@@ -434,8 +457,6 @@ function HomeCore() {
         },
       );
 
-     
-
       handleSuccess("Gallery Uploaded 😎");
 
       // reset
@@ -467,14 +488,132 @@ function HomeCore() {
 
       setAllGalleryData(response.data.data);
       setGalleryData(response.data);
-
- 
-
-      
     } catch (error) {
       console.log(error);
     }
   };
+
+  const addDescription = () => {
+    setDescriptions([
+      ...descriptions,
+      {
+        description_heading: "",
+        description_text: "",
+      },
+    ]);
+  };
+  const addFaq = () => {
+    setFaqs([
+      ...faqs,
+      {
+        Question: "",
+        answering: "",
+      },
+    ]);
+  };
+
+  const handleBlogSubmit = async () => {
+    try {
+      setSavingBloge(true);
+      const formData = new FormData();
+
+      formData.append("heading", blogHeading);
+
+      formData.append(
+        "blag",
+        JSON.stringify({
+          writer_name: writerName,
+
+          description_imga: descriptionImage,
+
+          description: descriptions,
+
+          FAQ: faqs,
+        }),
+      );
+
+      blogImages.forEach((img) => {
+        formData.append("image", img);
+      });
+
+      const response = await axios.post(
+        "https://admin-panel-fawn-iota.vercel.app/bloge/add-blog",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      handleSuccess("Blog Added Successfully 😎");
+
+      console.log(response.data);
+
+      setBlgePopup(false);
+
+      setBlogHeading("");
+      setWriterName("");
+      setBlogImages([]);
+      setDescriptionImage("");
+    } catch (error) {
+      console.log(error);
+
+      handleError(error?.response?.data?.message || "Blog Upload Failed");
+    }
+    finally {
+    setSavingBloge(false);
+  }
+  };
+
+  const renderContent = (text) => {
+    if (!text) return null;
+
+    const lines = text.split("\n");
+
+    const bulletLines = lines.filter(
+      (line) => line.trim().startsWith("•") || line.trim().startsWith("-"),
+    );
+
+    if (bulletLines.length > 0) {
+      return (
+        <>
+          {lines
+            .filter(
+              (line) =>
+                !line.trim().startsWith("•") && !line.trim().startsWith("-"),
+            )
+            .map((line, index) =>
+              line.trim() ? <p key={index}>{line}</p> : null,
+            )}
+
+          <ul className="blog-list">
+            {bulletLines.map((item, index) => (
+              <li key={index}>{item.replace(/^[-•]\s*/, "")}</li>
+            ))}
+          </ul>
+        </>
+      );
+    }
+
+    return <p>{text}</p>;
+  };
+
+  const getBlogs = async () => {
+    try {
+      const response = await axios.get(
+        "https://admin-panel-fawn-iota.vercel.app/bloge/get-blogs",
+      );
+
+      setBlogData(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getBlogs();
+  }, [showBlogPopup]);
 
   useEffect(() => {}, [galleryPopup]);
 
@@ -505,7 +644,7 @@ function HomeCore() {
             <button onClick={() => setHomePopup(true)}>Home</button>
             {/* <button>Services</button> */}
             <button onClick={() => setAboutMePopup(true)}>About Us</button>
-            <button disabled>Blogs</button>
+            <button onClick={() => setBlgePopup(true)}>Blogs</button>
             {/* <button>Contacts</button>  */}
             <button onClick={() => setGalleryPopup(true)}>Gallery</button>
 
@@ -1298,8 +1437,6 @@ function HomeCore() {
                     <button onClick={() => setShowAllGalleryPopup(true)}>
                       Show All Gallary collection
                     </button>
-
-                
                   </div>
 
                   {/* right content */}
@@ -1502,8 +1639,6 @@ function HomeCore() {
 ALL PHOTO POPUP
 ========================================= */}
 
-                   
-
                     <div className="gallery-stats-card">
                       <h2>{galleryData?.totalGallery}</h2>
 
@@ -1521,6 +1656,370 @@ ALL PHOTO POPUP
 
                       <p>Total Videos</p>
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {blogPopup && (
+              <div className="home-popup-overlay">
+                <div className="home-popup">
+                  {/* close */}
+                  <button
+                    className="popup-close-btn"
+                    onClick={() => setBlgePopup(false)}
+                  >
+                    X
+                  </button>
+
+                  {/* left menu */}
+                  <div className="popup-sidebar">
+                    <h3>Manage Bloge</h3>
+
+                    <button onClick={() => setAddBlogPopup(true)}>
+                      Add Blog
+                    </button>
+
+                    <button onClick={() => setShowBlogPopup(true)}>
+                      Show Blogs
+                    </button>
+                  </div>
+
+                  {/* right content */}
+                  <div className="popup-content">
+                    {addBlogPopup && (
+                      <div className="inner-popup-overlay">
+                        <div className="inner-popup">
+                          <h2>Add Blog</h2>
+
+                          <div className="input-group">
+                            <label>Blog Heading</label>
+
+                            <input
+                              type="text"
+                              value={blogHeading}
+                              onChange={(e) => setBlogHeading(e.target.value)}
+                              placeholder="Enter Blog Heading"
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Writer Name</label>
+
+                            <input
+                              type="text"
+                              value={writerName}
+                              onChange={(e) => setWriterName(e.target.value)}
+                              placeholder="Enter Writer Name"
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Blog Images</label>
+
+                            <input
+                              type="file"
+                              multiple
+                              accept="image/*"
+                              onChange={(e) =>
+                                setBlogImages([...e.target.files])
+                              }
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Description Image Text</label>
+
+                            <input
+                              type="text"
+                              value={descriptionImage}
+                              onChange={(e) =>
+                                setDescriptionImage(e.target.value)
+                              }
+                            />
+                          </div>
+
+                          {descriptions.map((item, index) => (
+                            <div key={index}>
+                              <div className="input-group">
+                                <label>Description Heading {index + 1}</label>
+
+                                <input
+                                  type="text"
+                                  value={item.description_heading}
+                                  onChange={(e) => {
+                                    const updated = [...descriptions];
+
+                                    updated[index].description_heading =
+                                      e.target.value;
+
+                                    setDescriptions(updated);
+                                  }}
+                                />
+                              </div>
+
+                              <div className="input-group">
+                                <label>Description Text {index + 1}</label>
+
+                                <textarea
+                                  rows="5"
+                                  value={item.description_text}
+                                  onChange={(e) => {
+                                    const updated = [...descriptions];
+
+                                    updated[index].description_text =
+                                      e.target.value;
+
+                                    setDescriptions(updated);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+
+                          <button
+                            type="button"
+                            className="save-btn"
+                            onClick={addDescription}
+                            style={{ marginBottom: "20px" }}
+                          >
+                            + Add Description
+                          </button>
+
+                          {faqs.map((item, index) => (
+                            <div key={index}>
+                              <div className="input-group">
+                                <label>FAQ Question {index + 1}</label>
+
+                                <input
+                                  type="text"
+                                  value={item.Question}
+                                  onChange={(e) => {
+                                    const updated = [...faqs];
+
+                                    updated[index].Question = e.target.value;
+
+                                    setFaqs(updated);
+                                  }}
+                                />
+                              </div>
+
+                              <div className="input-group">
+                                <label>FAQ Answer {index + 1}</label>
+
+                                <textarea
+                                  rows="4"
+                                  value={item.answering}
+                                  onChange={(e) => {
+                                    const updated = [...faqs];
+
+                                    updated[index].answering = e.target.value;
+
+                                    setFaqs(updated);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+
+                          <button
+                            type="button"
+                            className="save-btn"
+                            onClick={addFaq}
+                            style={{ marginBottom: "20px" }}
+                          >
+                            + Add FAQ
+                          </button>
+
+                          <div className="popup-btn-group">
+                            <button
+                              className="cancel-btn"
+                              onClick={() => setAddBlogPopup(false)}
+                            >
+                              Cancel
+                            </button>
+
+                            <button
+                              className="save-btn"
+                              onClick={handleBlogSubmit}
+                            >
+                              {savingBlge ? (
+                                <>
+                                  <span className="spinner"></span>
+                                  Saving...
+                                </>
+                              ) : (
+                                "Save Blog"
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {showBlogPopup && (
+                      <div
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100vh",
+                          background: "rgba(0,0,0,0.7)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          zIndex: 9999,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "80%",
+                            height: "80vh",
+                            background: "#fff",
+                            borderRadius: "20px",
+                            padding: "20px",
+                            position: "relative",
+                            overflowY: "auto",
+                          }}
+                        >
+                          <button
+                            onClick={() => setShowBlogPopup(false)}
+                            style={{
+                              position: "absolute",
+                              top: "15px",
+                              right: "15px",
+                              background: "red",
+                              color: "#fff",
+                              border: "none",
+                              width: "40px",
+                              height: "40px",
+                              borderRadius: "50%",
+                              cursor: "pointer",
+                            }}
+                          >
+                            X
+                          </button>
+
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns:
+                                "repeat(auto-fit,minmax(250px,1fr))",
+                              gap: "20px",
+                              marginTop: "50px",
+                            }}
+                          >
+                            {blogData.map((item) => (
+                              <div
+                                key={item._id}
+                                onClick={() => {
+                                  setSelectedBlog(item);
+                                }}
+                                style={{
+                                  background: "#f5f5f5",
+                                  borderRadius: "15px",
+                                  padding: "15px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <img
+                                  src={item?.blag?.[0]?.image?.[0]?.photo}
+                                  alt=""
+                                  style={{
+                                    width: "100%",
+                                    height: "250px",
+                                    objectFit: "cover",
+                                    borderRadius: "12px",
+                                  }}
+                                />
+
+                                <h3
+                                  style={{
+                                    marginTop: "10px",
+                                  }}
+                                >
+                                  {item.heading}
+                                </h3>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedBlog && (
+                      <div className="blog-details-overlay">
+                        <div className="blog-body">
+                          <div className="blog-details-popup">
+                            <button
+                              className="blog-close-btn"
+                              onClick={() => setSelectedBlog(null)}
+                            >
+                              ✕
+                            </button>
+
+                            <h1 className="blog-main-heading">
+                              {selectedBlog.heading}
+                            </h1>
+
+                            <h3 className="blog-writer">
+                              Written By :{" "}
+                              {selectedBlog?.blag?.[0]?.writer_name}
+                              <p className="blog-date">
+                                Published On :{" "}
+                                {new Date(
+                                  selectedBlog.createdAt,
+                                ).toLocaleDateString("en-GB", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                })}
+                              </p>
+                            </h3>
+
+                            <div className="blog-image-grid">
+                              {selectedBlog?.blag?.[0]?.image?.length > 0 && (
+                                <img
+                                  src={
+                                    selectedBlog?.blag?.[0]?.image?.[0]?.photo
+                                  }
+                                  alt={selectedBlog.heading}
+                                />
+                              )}
+                            </div>
+
+                            <p className="blog-intro">
+                              {selectedBlog?.blag?.[0]?.description_imga}
+                            </p>
+
+                            {selectedBlog?.blag?.[0]?.description?.map(
+                              (item) => (
+                                <div key={item._id} className="blog-section">
+                                  <h2>{item.description_heading}</h2>
+
+                                  <div className="blog-content-text">
+                                    {item.description_text}
+                                  </div>
+                                </div>
+                              ),
+                            )}
+
+                            <h2 className="blog-faq-title">
+                              Frequently Asked Questions
+                            </h2>
+
+                            {selectedBlog?.blag?.[0]?.FAQ?.map((faq) => (
+                              <div key={faq._id} className="blog-faq-card">
+                                <h4>{faq.Question}</h4>
+
+                                <p>{faq.answering}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -9,12 +9,14 @@ import PrivateRoute from "./routers/PrivateRoute";
 import OTPprotected from "./routers/OTPprotected";
 import AuthRedirect from "./routers/AuthRedirect";
 import HomeCore from "./page/coreoutsourcingservices.in/HomeCore";
+import HomeWishlan from "./page/coreoutsourcingservices.in/HomeWishlan";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login/>} />
+        <Route path="/" element={<Login/>}/>
+        <Route path="/prahlad" element={<HomeWishlan/>}/>
         <Route
           path="/signup"
           element={
