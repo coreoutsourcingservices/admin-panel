@@ -7,6 +7,7 @@ import partnersRouter from "../routes/partener.js"
 import ourteamRouter from "../routes/ourTeamfirst.js"
 import teamSecondRouter from "../routes/teamSecond.js"
 import galleryRouter from "../routes/gallary.routes.js"
+import blogRouter from "../routes/blog.routers.js"
 
 export const app = express()
 
@@ -14,6 +15,8 @@ export const app = express()
 app.use(
   cors()
 );
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.urlencoded({
   limit: "200mb",
@@ -31,4 +34,5 @@ app.use("/partners",partnersRouter)
 app.use("/ourteam",ourteamRouter)
 app.use("/teamsecond",teamSecondRouter)
 app.use("/gallery",galleryRouter)
+app.use("/bloge",blogRouter)
 

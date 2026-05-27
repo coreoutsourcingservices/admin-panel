@@ -139,3 +139,18 @@ const storageGallery =
 export const uploadGallery = multer({
   storage: storageGallery,
 });
+
+
+const storageBlogPhoto = new CloudinaryStorage({
+  cloudinary,
+
+  params: {
+    folder: "resume_images",
+    resource_type: "image",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
+});
+
+export const uploadBlogPhoto = multer({
+  storage: storageBlogPhoto,
+});
