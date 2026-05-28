@@ -8,6 +8,7 @@ import ourteamRouter from "../routes/ourTeamfirst.js"
 import teamSecondRouter from "../routes/teamSecond.js"
 import galleryRouter from "../routes/gallary.routes.js"
 import blogRouter from "../routes/blog.routers.js"
+import jobRouter from "../routes/job.routes.js"
 
 export const app = express()
 
@@ -35,4 +36,5 @@ app.use("/ourteam",ourteamRouter)
 app.use("/teamsecond",teamSecondRouter)
 app.use("/gallery",galleryRouter)
 app.use("/bloge",blogRouter)
+app.use("/job",jobRouter)
 
