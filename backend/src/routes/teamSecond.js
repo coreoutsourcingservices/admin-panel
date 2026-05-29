@@ -3,6 +3,7 @@ import express from "express";
 import {
   createTeamSecond,
   getAllTeamSecond,
+  deleteTeamSecond,
 } from "../controllers/teamSecond.controllers.js";
 
 import { uploadTeamSecond } from "../middleware/multer.js";
@@ -20,4 +21,8 @@ router.get(
   getAllTeamSecond
 );
 
+router.delete(
+  "/delete-team-second/:id",
+  deleteTeamSecond
+);
 export default router;

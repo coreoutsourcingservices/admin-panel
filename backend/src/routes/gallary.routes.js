@@ -4,6 +4,8 @@ import {
   addGallery,
   getGallery,
   getSingleGallery,
+  deleteGalleryMedia,
+  deleteGallery,
 } from "../controllers/gallery.controllers.js";
 
 import { uploadGallery } from "../middleware/multer.js";
@@ -31,6 +33,17 @@ router.get(
   "/get-gallery/:galleryName",
 
   getSingleGallery
+);
+
+
+router.delete(
+  "/delete-gallery/:id",
+  deleteGallery
+);
+
+router.delete(
+  "/delete-gallery-media/:galleryId/:mediaId",
+  deleteGalleryMedia
 );
 
 export default router;

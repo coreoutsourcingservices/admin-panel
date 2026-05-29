@@ -3,6 +3,7 @@ import express from "express";
 import {
   createPartner,
   getPartners,
+  deletePartner,
 } from "../controllers/partenr.controllers.js";
 
 import { uploadPartner } from "../middleware/multer.js";
@@ -16,5 +17,9 @@ router.post(
 );
 
 router.get("/get-partners", getPartners);
+router.delete(
+  "/delete-partner/:id",
+  deletePartner
+);
 
 export default router;

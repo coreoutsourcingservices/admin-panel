@@ -1,10 +1,10 @@
 import { User } from "../models/user.models.js";
 import bcrypt from "bcrypt"
-import { sendEmailOTP  } from "../utils/getOTPbyEmail.js";
-import { saveOTP, getOTPData, deleteOTP, increaseAttempt} from "../utils/otpStore.js";
+import { sendEmailOTP } from "../utils/getOTPbyEmail.js";
+import { saveOTP, getOTPData, deleteOTP, increaseAttempt } from "../utils/otpStore.js";
 import bodyParser from "body-parser";
 import jwt from "jsonwebtoken"
-import {sendEmail} from "../utils/resend.js"
+import { sendEmail } from "../utils/resend.js"
 
 
 
@@ -52,15 +52,15 @@ export const signupGetOTP = async (req, res) => {
             gender,
 
         });
-       
 
-        
+
+
         const existingOTP = await sendEmailOTP(email, otp);
 
         // if (existingOTP && existingOTP.expires > Date.now()) {
         //     return res.json({ message: "OTP already sent. Please wait." });
         // }
-        
+
         return res.status(200).json({
             message: "OTP generated successfully",
             success: true,
@@ -75,7 +75,7 @@ export const signupGetOTP = async (req, res) => {
         })
     }
 
-} 
+}
 
 export const signVerifyOTP = async (req, res) => {
     try {
@@ -132,7 +132,7 @@ export const signVerifyOTP = async (req, res) => {
             name: data.name,
             email: data.email,
             password: data.password,
-          
+
             gender: data.gender
         });
         const userResponse = user.toObject();
@@ -317,7 +317,7 @@ export const loginVerifyOTP = async (req, res) => {
 
 export const loginGetOTP = async (req, res) => {
     try {
-         
+
         let { email, password, } = req.body;
         email = email.trim().toLowerCase();
         if (!email || !password) {
@@ -341,16 +341,16 @@ export const loginGetOTP = async (req, res) => {
             return res.status(400).json({ message: "invalid password" });
         }
 
-        
-        
 
-        
+
+
+
         // const existingOTP = await sendEmail(email, otp);
         // if (existingOTP && existingOTP.expires > Date.now()) {
         //     return res.json({ message: "OTP already sent. Please wait." });
         // }
 
-         const jwtTokem = jwt.sign(
+        const jwtTokem = jwt.sign(
             {
                 email: check_user.email
             },
@@ -366,7 +366,7 @@ export const loginGetOTP = async (req, res) => {
 
 
 
-        
+
 
         res.json({
             success: true,
@@ -381,7 +381,7 @@ export const loginGetOTP = async (req, res) => {
 
 
 
-      
+
 
 
 
@@ -402,22 +402,19 @@ export const forgotPasswordGetOTP = async (req, res) => {
         let { email } = req.body
         email = email.trim().toLowerCase();
         if (!email) {
-            res.status(500)
-                .json({
-                    message: "email requed",
-                    success: false
-                })
+            return res.status(400).json({
+                message: "Email required",
+                success: false
+            });
         }
 
         const user_check = await User.findOne({ email })
 
         if (!user_check) {
-            res.status(201)
-                .json({
-                    message: "user not found ",
-                    success: false
-
-                })
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
         }
 
         const generateOTP = (length = 6) => {
@@ -435,6 +432,7 @@ export const forgotPasswordGetOTP = async (req, res) => {
             email,
 
         });
+                const existingOTP = await sendEmailOTP(email, otp);
 
 
         res.json({
@@ -456,7 +454,7 @@ export const forgotPasswordGetOTP = async (req, res) => {
 
 }
 
-export const forgotPasswordVerifyOTP  = async (req, res) => {
+export const forgotPasswordVerifyOTP = async (req, res) => {
     try {
         let { email, otp } = req.body
         email = email.trim().toLowerCase();
@@ -535,8 +533,8 @@ export const forgotPasswordVerifyOTP  = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
     try {
-        let  { email, newPassword } = req.body;
-            email=email.trim().toLowerCase();
+        let { email, newPassword } = req.body;
+        email = email.trim().toLowerCase();
         if (!newPassword) {
             return res.status(400).json({
                 message: "New password required",
@@ -545,7 +543,7 @@ export const forgotPassword = async (req, res) => {
         }
 
         const newP = await User.findOne({ email });
-     
+
 
         if (!newP) {
             return res.status(404).json({
@@ -567,7 +565,7 @@ export const forgotPassword = async (req, res) => {
             message: "Password updated successfully",
             success: true,
             email: newP.email,
-           
+
         });
 
     } catch (error) {
@@ -578,10 +576,10 @@ export const forgotPassword = async (req, res) => {
     }
 };
 
-export const chengPassword=  async (req,res)=>{
-    try{
-        let  { email, newPassword , oldPassword } = req.body;
-            email=email.trim().toLowerCase();
+export const chengPassword = async (req, res) => {
+    try {
+        let { email, newPassword, oldPassword } = req.body;
+        email = email.trim().toLowerCase();
         if (!oldPassword || !newPassword) {
             return res.status(400).json({
                 message: "All fild required",
@@ -602,7 +600,7 @@ export const chengPassword=  async (req,res)=>{
         }
 
         const newP = await User.findOne({ email });
-       
+
 
         if (!newP) {
             return res.status(404).json({
@@ -612,10 +610,10 @@ export const chengPassword=  async (req,res)=>{
         }
 
         const checkPassword = await bcrypt.compare(oldPassword, newP.password);
-         if (!checkPassword) {
+        if (!checkPassword) {
             return res.status(400).json({ message: "invalid password" });
         }
-        
+
 
         // hash password
         const newPassHash = await bcrypt.hash(newPassword, 10);
@@ -630,11 +628,11 @@ export const chengPassword=  async (req,res)=>{
             message: "Password updated successfully",
             success: true,
             email: newP.email,
-           
+
         });
 
 
-    }catch (error) {
+    } catch (error) {
         res.status(500).json({
             message: `Password cheng error ${error}`,
             success: false

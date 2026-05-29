@@ -1,4 +1,5 @@
 import { Gallery } from "../models/gallery.models.js";
+import { v2 as cloudinary } from "cloudinary";
 
 // =====================================
 // POST GALLERY
@@ -232,3 +233,145 @@ export const getSingleGallery =
       });
     }
   };
+
+
+
+
+
+export const deleteGallery = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const gallery = await Gallery.findById(id);
+
+    if (!gallery) {
+      return res.status(404).json({
+        success: false,
+        message: "Gallery not found",
+      });
+    }
+
+    // Cloudinary delete
+    for (const media of gallery.gallery) {
+
+      const mediaUrl =
+        media.image || media.video;
+
+      if (!mediaUrl) continue;
+
+      const publicId = mediaUrl
+        .split("/upload/")[1]
+        .replace(/^v\d+\//, "")
+        .replace(/\.[^/.]+$/, "");
+
+      await cloudinary.uploader.destroy(
+        publicId,
+        {
+          resource_type: media.video
+            ? "video"
+            : "image",
+        }
+      );
+    }
+
+    await Gallery.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Gallery deleted successfully",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+
+
+
+
+
+export const deleteGalleryMedia = async (
+  req,
+  res
+) => {
+  try {
+
+    const { galleryId, mediaId } =
+      req.params;
+
+    const gallery =
+      await Gallery.findById(galleryId);
+
+    if (!gallery) {
+      return res.status(404).json({
+        success: false,
+        message: "Gallery not found",
+      });
+    }
+
+    const media =
+      gallery.gallery.find(
+        (item) =>
+          item._id.toString() ===
+          mediaId
+      );
+
+    if (!media) {
+      return res.status(404).json({
+        success: false,
+        message: "Media not found",
+      });
+    }
+
+    const mediaUrl =
+      media.image || media.video;
+
+    const publicId = mediaUrl
+      .split("/upload/")[1]
+      .replace(/^v\d+\//, "")
+      .replace(/\.[^/.]+$/, "");
+
+    await cloudinary.uploader.destroy(
+      publicId,
+      {
+        resource_type: media.video
+          ? "video"
+          : "image",
+      }
+    );
+
+    gallery.gallery =
+      gallery.gallery.filter(
+        (item) =>
+          item._id.toString() !==
+          mediaId
+      );
+
+    await gallery.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Media deleted successfully",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};

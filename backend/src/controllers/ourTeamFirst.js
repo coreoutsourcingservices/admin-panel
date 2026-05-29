@@ -1,4 +1,5 @@
 import { OurTeam } from "../models/ourTeamFirst.models.js";
+import { v2 as cloudinary } from "cloudinary";
 
 
 // =========================
@@ -98,5 +99,68 @@ export const getOurTeam = async (req, res) => {
       success: false,
       message: "Server Error",
     });
+  }
+};
+
+
+
+export const deleteOurTeam = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const teamData = await OurTeam.findOne();
+
+    if (!teamData) {
+      return res.status(404).json({
+        success: false,
+        message: "Team data not found",
+      });
+    }
+
+    const member = teamData.team.find(
+      (item) => item._id.toString() === id
+    );
+
+    if (!member) {
+      return res.status(404).json({
+        success: false,
+        message: "Team member not found",
+      });
+    }
+
+    // Image URL
+    const imageUrl = member.image;
+
+    // Cloudinary public_id nikalo
+    const publicId = imageUrl
+      .split("/upload/")[1]
+      .replace(/^v\d+\//, "")
+      .replace(/\.[^/.]+$/, "");
+
+    // Cloudinary se image delete
+    await cloudinary.uploader.destroy(publicId);
+
+    // MongoDB se member delete
+    teamData.team = teamData.team.filter(
+      (item) => item._id.toString() !== id
+    );
+
+    await teamData.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Team member deleted successfully",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
   }
 };

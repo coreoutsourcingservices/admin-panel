@@ -3,6 +3,7 @@ import {
   addBlog,
   getBlogs,
   getSingleBlog,
+  deleteBlog,
 } from "../controllers/blog.controllers.js";
 
 import { uploadBlogPhoto } from "../middleware/multer.js";
@@ -21,5 +22,10 @@ router.get("/get-blogs", getBlogs);
 
 // Get Single Blog
 router.get("/get-blog/:id", getSingleBlog);
+
+router.delete(
+  "/delete-blog/:id",
+  deleteBlog
+);
 
 export default router;

@@ -1,4 +1,5 @@
 import { Partners } from "../models/partners.models.js";
+import { v2 as cloudinary } from "cloudinary";
 
 
 // =========================
@@ -103,6 +104,71 @@ export const getPartners = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server Error",
+    });
+
+  }
+};
+
+
+
+
+export const deletePartner = async (req, res) => {
+  try {
+
+    const { id } = req.params;
+
+    const partnerData = await Partners.findOne();
+
+    if (!partnerData) {
+      return res.status(404).json({
+        success: false,
+        message: "Partner data not found",
+      });
+    }
+
+    const partner = partnerData.partners.find(
+      (item) => item._id.toString() === id
+    );
+
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: "Partner not found",
+      });
+    }
+
+    // URL se public_id nikalo
+    const imageUrl = partner.image;
+
+    const publicId = imageUrl
+      .split("/upload/")[1]
+      .replace(/^v\d+\//, "")
+      .replace(/\.[^/.]+$/, "");
+
+    // console.log("Public ID:", publicId);
+
+    // Cloudinary se delete
+    await cloudinary.uploader.destroy(publicId);
+
+    // MongoDB se delete
+    partnerData.partners = partnerData.partners.filter(
+      (item) => item._id.toString() !== id
+    );
+
+    await partnerData.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Partner deleted successfully",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
 
   }
