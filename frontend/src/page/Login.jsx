@@ -31,12 +31,14 @@ function Login() {
       return handleError("All fields required");
     }
     try {
+     
       const prome = axios.post(
         "https://admin-panel-fawn-iota.vercel.app/user/loginGetOTP",
         userData,
       );
       handlePromise(prome);
       const res = await prome;
+      
       if (res.data.success) {
         // token save
         localStorage.setItem("token", res.data.jwtTokem);
@@ -72,7 +74,7 @@ function Login() {
         className="signup-card"
         style={{
           height: "400px",
-          "margin-top": "50px",
+          "marginTop": "50px",
           padding: "20px",
         }}
       >
@@ -108,7 +110,7 @@ function Login() {
                 name="password"
                 value={userData.password}
                 style={{
-                  "margin-bottom": "10px",
+                  "marginBottom": "10px",
                 }}
               />
               <button

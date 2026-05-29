@@ -512,7 +512,7 @@ export const forgotPasswordVerifyOTP = async (req, res) => {
 
         res.json({
             success: true,
-            message: "OTP Varify successfully. you can login",
+            message: "OTP Varify successfully",
             // jwtTokem,
             // name: data.name,
             // email: data.email,
