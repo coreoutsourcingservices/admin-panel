@@ -43,6 +43,7 @@ function OTPsigupPage() {
         localStorage.setItem("token", jwtTokem);
        
         localStorage.setItem("loggedInName", user.name);
+        localStorage.setItem("loggedInEmail", res.data.email);
         handleSuccess(res.data.message);
 
         setTimeout(() => {

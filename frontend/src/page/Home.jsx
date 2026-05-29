@@ -30,8 +30,35 @@ if (h < 12) {
     <div className="container1">
       <div className="home-sub-container">
         <div className="main-container-home">
-          <h2>{message}</h2>
-          <h2>{name}</h2>
+           <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+         
+            fontWeight: "600",
+          }}
+        >
+          <h3
+            style={{
+              margin: 0,
+              fontSize: "24px",
+            }}
+          >
+            {message},
+          </h3>
+
+          <h3
+            style={{
+              marginBottom: "-5px",
+              fontSize: "24px",
+              color: "#2563eb",
+              textTransform: "capitalize",
+            }}
+          >
+            {name}
+          </h3>
+        </div>
         </div>
       </div>
       <div className="main-btm">

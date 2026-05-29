@@ -10,18 +10,24 @@ import OTPprotected from "./routers/OTPprotected";
 import AuthRedirect from "./routers/AuthRedirect";
 import HomeCore from "./page/coreoutsourcingservices.in/HomeCore";
 import HomeWishlan from "./page/coreoutsourcingservices.in/HomeWishlan";
+import ForgotGetOTP from "./page/ForgotGetOTP";
+import ForgotVerifyOTP from "./page/ForgotVerifyOTP";
+import FrogetPassword from "./page/FrogetPassword";
+import ChangPassword from "./page/ChangPassword";
+import ForgotOTPProtected from "./routers/ForgotOTPProtected";
+
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login/>}/>
-        <Route path="/prahlad" element={<HomeWishlan/>}/>
+
+        {/* Login */}
         <Route
-          path="/signup"
+          path="/"
           element={
             <AuthRedirect>
-              <Signup />
+              <Login />
             </AuthRedirect>
           }
         />
@@ -35,6 +41,17 @@ function App() {
           }
         />
 
+        {/* Signup */}
+        <Route
+          path="/signup"
+          element={
+            <AuthRedirect>
+              <Signup />
+            </AuthRedirect>
+          }
+        />
+
+        {/* Signup OTP */}
         <Route
           path="/verify-signup-OTP"
           element={
@@ -43,15 +60,23 @@ function App() {
             </OTPprotected>
           }
         />
+
+        {/* Forgot Password Flow */}
+        <Route path="/forgot-get-otp" element={<ForgotGetOTP />} />
+
         <Route
-          path="/verify-login-OTP"
+          path="/forget-varify-otp"
           element={
-            <OTPprotected>
-              <LongPageOTP />
-            </OTPprotected>
+            <ForgotOTPProtected>
+              <ForgotVerifyOTP />
+            </ForgotOTPProtected>
           }
         />
 
+        <Route path="/forget-password" element={<FrogetPassword />} />
+        {/* <Route path="/change-password" element={<ChangPassword />} /> */}
+
+        {/* Protected */}
         <Route
           path="/home"
           element={
@@ -61,6 +86,15 @@ function App() {
           }
         />
         <Route
+          path="/change-password"
+          element={
+            <PrivateRoute>
+              <ChangPassword />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/coreoutsourcingservices"
           element={
             <PrivateRoute>
@@ -68,7 +102,10 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* <Route  path="/coreoutsourcingservices" element={<HomeCore />}/> */}
+
+        {/* Unknown Route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+
       </Routes>
     </>
   );

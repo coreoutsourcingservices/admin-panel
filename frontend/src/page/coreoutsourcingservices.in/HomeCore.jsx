@@ -33,15 +33,13 @@ function HomeCore() {
   const [showBlogPopup, setShowBlogPopup] = useState(false);
   const [savingBlge, setSavingBloge] = useState(false);
   const [blogData, setBlogData] = useState([]);
-
+  const [jobPop, setJobPop] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
-
   const [teamSecondPopup, setTeamSecondPopup] = useState(false);
   const [teamSecondData, setTeamSecondData] = useState([]);
   const [blogHeading, setBlogHeading] = useState("");
   const [writerName, setWriterName] = useState("");
   const [blogImages, setBlogImages] = useState([]);
-
   const [descriptionImage, setDescriptionImage] = useState("");
   const [descriptions, setDescriptions] = useState([
     {
@@ -61,11 +59,11 @@ function HomeCore() {
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [addGalleryPopup, setAddGalleryPopup] = useState(false);
   const [addBlogPopup, setAddBlogPopup] = useState(false);
-
   const [allGalleryPhotos, setAllGalleryPhotos] = useState([]);
-
-  // top state
   const [homePopup, setHomePopup] = useState(false);
+  const [showJobsPopup, setShowJobsPopup] = useState(false);
+  const [jobsData, setJobsData] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
   const [blogPopup, setBlgePopup] = useState(false);
   const [galleryPopup, setGalleryPopup] = useState(false);
   const [partnerPopup, setpartnerPopup] = useState(false);
@@ -74,15 +72,23 @@ function HomeCore() {
   const [teamName, setTeamName] = useState("");
   const [teamStatus, setTeamStatus] = useState("");
   const [teamImage, setTeamImage] = useState(null);
-
   const [showAllGalleryPopup, setShowAllGalleryPopup] = useState(false);
-
   const [singleGalleryPopup, setSingleGalleryPopup] = useState(false);
-
   const [allGalleryData, setAllGalleryData] = useState([]);
-
   const [selectedGallery, setSelectedGallery] = useState(null);
 
+  const [loading1, setLoading1] = useState(false);
+  const [jobPopup, setJobPopup] = useState(false);
+
+  const [jobName, setJobName] = useState("");
+  const [jobSummary, setJobSummary] = useState("");
+  const [salary, setSalary] = useState("");
+  const [jobTime, setJobTime] = useState("Full Time");
+  const [experience, setExperience] = useState("");
+  const [location, setLocation] = useState("E2 Sector 63, Noida, 201301");
+  const [qualification, setQualification] = useState("");
+  const [skills, setSkills] = useState("");
+  const [keyResponsibilities, setKeyResponsibilities] = useState("");
   const date = new Date();
 
   const downloadMessagesExcel = () => {
@@ -329,6 +335,22 @@ function HomeCore() {
       // handleError(error);
     }
   };
+
+  const deleteTeamMember = async (id) => {
+    try {
+      const response = await axios.delete(
+        `https://admin-panel-fawn-iota.vercel.app/our-team/delete-our-team/${id}`,
+      );
+
+      handleSuccess(
+        response.data.message || "Team Member Deleted Successfully",
+      );
+
+      setTeamData((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      handleError(error.response?.data?.message || "Delete Failed");
+    }
+  };
   const getPartners = async () => {
     try {
       const response = await axios.get(
@@ -341,6 +363,20 @@ function HomeCore() {
     } catch (error) {
       console.log(error);
       // handleError(error);
+    }
+  };
+
+  const deletePartner = async (id) => {
+    try {
+      const response = await axios.delete(
+        `https://admin-panel-fawn-iota.vercel.app/partners/delete-partner/${id}`,
+      );
+
+      handleSuccess(response.data.message || "Partner Deleted Successfully");
+
+      getPartners(); // ya jo function data reload karta hai
+    } catch (error) {
+      handleError(error.response?.data?.message || "Delete Failed");
     }
   };
 
@@ -404,6 +440,22 @@ function HomeCore() {
       console.log(error);
 
       handleError("Failed To Fetch Team Data");
+    }
+  };
+
+  const deleteTeamSecondMember = async (id) => {
+    try {
+      const response = await axios.delete(
+        `https://admin-panel-fawn-iota.vercel.app/team-second/delete-team-second/${id}`,
+      );
+
+      handleSuccess(
+        response.data.message || "Team Member Deleted Successfully",
+      );
+
+      setTeamSecondData((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      handleError(error.response?.data?.message || "Delete Failed");
     }
   };
 
@@ -493,6 +545,39 @@ function HomeCore() {
     }
   };
 
+  const deleteGallery = async (galleryId) => {
+    try {
+      const response = await axios.delete(
+        `https://admin-panel-fawn-iota.vercel.app/gallery/delete-gallery/${galleryId}`,
+      );
+
+      handleSuccess(response.data.message || "Gallery Deleted Successfully");
+
+      setAllGalleryData((prev) =>
+        prev.filter((item) => item._id !== galleryId),
+      );
+    } catch (error) {
+      handleError(error.response?.data?.message || "Delete Failed");
+    }
+  };
+
+  const deleteGalleryMedia = async (galleryId, mediaId) => {
+    try {
+      const response = await axios.delete(
+        `https://admin-panel-fawn-iota.vercel.app/gallery/delete-gallery-media/${galleryId}/${mediaId}`,
+      );
+
+      handleSuccess(response.data.message || "Media Deleted Successfully");
+
+      setSelectedGallery((prev) => ({
+        ...prev,
+        gallery: prev.gallery.filter((item) => item._id !== mediaId),
+      }));
+    } catch (error) {
+      handleError(error.response?.data?.message || "Delete Failed");
+    }
+  };
+
   const addDescription = () => {
     setDescriptions([
       ...descriptions,
@@ -556,14 +641,14 @@ function HomeCore() {
       setWriterName("");
       setBlogImages([]);
       setDescriptionImage("");
+      setSavingBloge(false);
     } catch (error) {
       console.log(error);
 
       handleError(error?.response?.data?.message || "Blog Upload Failed");
+    } finally {
+      setSavingBloge(false);
     }
-    finally {
-    setSavingBloge(false);
-  }
   };
 
   const renderContent = (text) => {
@@ -611,11 +696,95 @@ function HomeCore() {
     }
   };
 
+  const deleteBlog = async (id) => {
+    try {
+      const response = await axios.delete(
+        `https://admin-panel-fawn-iota.vercel.app/blog/delete-blog/${id}`,
+      );
+
+      handleSuccess(response.data.message || "Blog Deleted Successfully");
+
+      setBlogData((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      handleError(error.response?.data?.message || "Delete Failed");
+    }
+  };
+
+  const handleJobSubmit = async () => {
+    try {
+      setLoading1(true);
+
+      const { data } = await axios.post("https://admin-panel-fawn-iota.vercel.app/job/add-job", {
+        jobName,
+        jobSummary,
+        salary,
+        jobTime,
+        experience,
+        location,
+        qualification,
+        skills: skills.split(",").map((item) => item.trim()),
+        keyResponsibilities: keyResponsibilities
+          .split(",")
+          .map((item) => item.trim()),
+      });
+
+      if (data.success) {
+        alert("Job Added Successfully");
+
+        setJobName("");
+        setJobSummary("");
+        setSalary("");
+        setJobTime("Full Time");
+        setExperience("");
+        setLocation("E2 Sector 63, Noida, 201301");
+        setQualification("");
+        setSkills("");
+        setKeyResponsibilities("");
+
+        setJobPopup(false);
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading1(false);
+    }
+  };
+
+  const getJobs = async () => {
+    try {
+      const response = await axios.get("https://admin-panel-fawn-iota.vercel.app/job/get-jobs");
+
+      setJobsData(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const deleteJob = async (id) => {
+    try {
+      const response = await axios.delete(
+        `https://admin-panel-fawn-iota.vercel.app/job/delete-job/${id}`,
+      );
+
+      setJobsData((prev) => prev.filter((item) => item._id !== id));
+
+      handleSuccess(response.data.message || "Job Deleted Successfully");
+    } catch (error) {
+      handleError(error.response?.data?.message || "Delete Failed");
+    }
+  };
+
+  useEffect(() => {
+    if (showJobsPopup) {
+      getJobs();
+    }
+  }, [showJobsPopup]);
+
   useEffect(() => {
     getBlogs();
   }, [showBlogPopup]);
 
-  useEffect(() => {}, [galleryPopup]);
+  useEffect(() => { }, [galleryPopup]);
 
   useEffect(() => {
     getTeamSecondData();
@@ -648,7 +817,7 @@ function HomeCore() {
             {/* <button>Contacts</button>  */}
             <button onClick={() => setGalleryPopup(true)}>Gallery</button>
 
-            <button disabled>Careers</button>
+            <button onClick={() => setJobPop(true)}>Careers</button>
           </div>
         </div>
 
@@ -827,8 +996,36 @@ function HomeCore() {
                                   overflow: "hidden",
                                   padding: "15px",
                                   textAlign: "center",
+                                  position: "relative",
                                 }}
                               >
+                                <button
+                                  onClick={() => {
+                                    if (
+                                      window.confirm(`Delete ${item.name}?`)
+                                    ) {
+                                      deleteTeamSecondMember(item._id);
+                                    }
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "10px",
+                                    width: "40px",
+                                    height: "40px",
+                                    borderRadius: "50%",
+                                    border: "none",
+                                    background: "#ef4444",
+                                    color: "#fff",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    zIndex: 10,
+                                  }}
+                                >
+                                  <Trash2 size={18} />
+                                </button>
                                 {/* IMAGE */}
                                 <img
                                   src={item.image}
@@ -936,8 +1133,34 @@ function HomeCore() {
                           borderRadius: "15px",
                           padding: "15px",
                           textAlign: "center",
+                          position: "relative",
                         }}
                       >
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Delete ${item.name} ?`)) {
+                              deleteTeamMember(item._id);
+                            }
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                            border: "none",
+                            background: "#ef4444",
+                            color: "#fff",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+
                         <img
                           src={item.image}
                           alt={item.name}
@@ -984,7 +1207,7 @@ function HomeCore() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  zIndex: 9999,
+                  zIndex: 499,
                 }}
               >
                 {/* main popup */}
@@ -1033,12 +1256,34 @@ function HomeCore() {
                       <div
                         key={item._id}
                         style={{
+                          position: "relative",
                           background: "#f5f5f5",
                           borderRadius: "15px",
                           padding: "15px",
                           textAlign: "center",
                         }}
                       >
+                        <button
+                          onClick={() => deletePartner(item._id)}
+                          style={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                            background: "red",
+                            border: "none",
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            color: "#fff",
+                          }}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+
                         <img
                           src={item.image}
                           alt={item.name}
@@ -1572,12 +1817,46 @@ function HomeCore() {
                                 <div
                                   key={index}
                                   className="gallery-card"
+                                  style={{
+                                    position: "relative",
+                                  }}
                                   onClick={() => {
                                     setSelectedGallery(item);
 
                                     setSingleGalleryPopup(true);
                                   }}
                                 >
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+
+                                      if (
+                                        window.confirm(
+                                          `Delete ${item.galleryName}?`,
+                                        )
+                                      ) {
+                                        deleteGallery(item._id);
+                                      }
+                                    }}
+                                    style={{
+                                      position: "absolute",
+                                      top: "10px",
+                                      right: "10px",
+                                      width: "40px",
+                                      height: "40px",
+                                      borderRadius: "50%",
+                                      border: "none",
+                                      background: "#ef4444",
+                                      color: "#fff",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      zIndex: 10,
+                                    }}
+                                  >
+                                    <Trash2 size={18} />
+                                  </button>
                                   {/* IMAGE */}
                                   {firstMedia?.image ? (
                                     <img src={firstMedia.image} />
@@ -1622,8 +1901,42 @@ function HomeCore() {
 
                           {/* MEDIA */}
                           <div className="single-gallery-grid">
-                            {selectedGallery?.gallery?.map((item, index) => (
-                              <div key={index} className="single-gallery-card">
+                            {selectedGallery?.gallery?.map((item) => (
+                              <div
+                                key={item._id}
+                                className="single-gallery-card"
+                                style={{
+                                  position: "relative",
+                                }}
+                              >
+                                <button
+                                  onClick={() => {
+                                    if (window.confirm("Delete this media?")) {
+                                      deleteGalleryMedia(
+                                        selectedGallery._id,
+                                        item._id,
+                                      );
+                                    }
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "10px",
+                                    width: "40px",
+                                    height: "40px",
+                                    borderRadius: "50%",
+                                    border: "none",
+                                    background: "#ef4444",
+                                    color: "#fff",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    zIndex: 10,
+                                  }}
+                                >
+                                  <Trash2 size={18} />
+                                </button>
                                 {item.image ? (
                                   <img src={item.image} alt="" />
                                 ) : (
@@ -1635,9 +1948,6 @@ function HomeCore() {
                         </div>
                       </div>
                     )}
-                    {/* =========================================
-ALL PHOTO POPUP
-========================================= */}
 
                     <div className="gallery-stats-card">
                       <h2>{galleryData?.totalGallery}</h2>
@@ -1921,8 +2231,41 @@ ALL PHOTO POPUP
                                   borderRadius: "15px",
                                   padding: "15px",
                                   cursor: "pointer",
+                                  position: "relative",
                                 }}
                               >
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    if (
+                                      window.confirm(
+                                        `Delete "${item.heading}" ?`,
+                                      )
+                                    ) {
+                                      deleteBlog(item._id);
+                                    }
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "10px",
+                                    width: "40px",
+                                    height: "40px",
+                                    borderRadius: "50%",
+                                    border: "none",
+                                    background: "#ef4444",
+                                    color: "#fff",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    zIndex: 10,
+                                  }}
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+
                                 <img
                                   src={item?.blag?.[0]?.image?.[0]?.photo}
                                   alt=""
@@ -2017,6 +2360,360 @@ ALL PHOTO POPUP
                               </div>
                             ))}
                           </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {jobPop && (
+              <div className="home-popup-overlay">
+                <div className="home-popup">
+                  {/* close */}
+                  <button
+                    className="popup-close-btn"
+                    onClick={() => setJobPop(false)}
+                  >
+                    X
+                  </button>
+
+                  {/* left menu */}
+                  <div className="popup-sidebar">
+                    <h3>Manage job</h3>
+
+                    <button onClick={() => setJobPopup(true)}>Add job</button>
+
+                    <button onClick={() => setShowJobsPopup(true)}>
+                      Show Jobs
+                    </button>
+                  </div>
+
+                  {/* right content */}
+                  <div className="popup-content">
+                    {jobPopup && (
+                      <div className="inner-popup-overlay">
+                        <div className="inner-popup">
+                          <h2>Add Job</h2>
+
+                          <div className="input-group">
+                            <label>Job Name</label>
+                            <input
+                              type="text"
+                              placeholder="Enter Job Name"
+                              value={jobName}
+                              onChange={(e) => setJobName(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Job Summary</label>
+                            <textarea
+                              rows="4"
+                              placeholder="Enter Job Summary"
+                              value={jobSummary}
+                              onChange={(e) => setJobSummary(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Salary</label>
+                            <input
+                              type="text"
+                              placeholder="Enter Salary"
+                              value={salary}
+                              onChange={(e) => setSalary(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Job Type</label>
+                            <select
+                              value={jobTime}
+                              onChange={(e) => setJobTime(e.target.value)}
+                            >
+                              <option value="Full Time">Full Time</option>
+                              <option value="Part Time">Part Time</option>
+                              <option value="Remote">Remote</option>
+                              <option value="Internship">Internship</option>
+                            </select>
+                          </div>
+
+                          <div className="input-group">
+                            <label>Experience</label>
+                            <input
+                              type="text"
+                              placeholder="1-2 Years"
+                              value={experience}
+                              onChange={(e) => setExperience(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Location</label>
+                            <input
+                              type="text"
+                              placeholder="Enter Location"
+                              value={location}
+                              onChange={(e) => setLocation(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Qualification</label>
+                            <input
+                              type="text"
+                              placeholder="B.Tech / MCA / BCA"
+                              value={qualification}
+                              onChange={(e) => setQualification(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>Skills (Comma Separated)</label>
+                            <textarea
+                              rows="3"
+                              placeholder="React, Node.js, Express, MongoDB"
+                              value={skills}
+                              onChange={(e) => setSkills(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>
+                              Key Responsibilities (Comma Separated)
+                            </label>
+                            <textarea
+                              rows="4"
+                              placeholder="Build APIs, Create UI, Database Management"
+                              value={keyResponsibilities}
+                              onChange={(e) =>
+                                setKeyResponsibilities(e.target.value)
+                              }
+                            />
+                          </div>
+
+                          <div className="popup-btn-group">
+                            <button
+                              className="cancel-btn"
+                              onClick={() => setJobPopup(false)}
+                            >
+                              Cancel
+                            </button>
+
+                            <button
+                              className="save-btn"
+                              onClick={handleJobSubmit}
+                              disabled={loading}
+                            >
+                              {loading ? "Saving..." : "Save Job"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {showJobsPopup && (
+                      <div
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100vh",
+                          background: "rgba(0,0,0,0.7)",
+                          zIndex: 9999,
+                          overflowY: "auto",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "90%",
+                            height: "90vh",
+                            background: "#fff",
+                            margin: "50px auto",
+                            borderRadius: "20px",
+                            padding: "20px",
+                            position: "relative",
+                            overflowY: "auto",
+                          }}
+                        >
+                          <button
+                            onClick={() => setShowJobsPopup(false)}
+                            style={{
+                              position: "absolute",
+                              top: "15px",
+                              right: "15px",
+                              background: "red",
+                              color: "#fff",
+                              border: "none",
+                              padding: "10px 15px",
+                              borderRadius: "10px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            X
+                          </button>
+
+                          <h2>All Jobs</h2>
+
+                          <div
+                            style={{
+                              display: "grid",
+
+                              gap: "20px",
+                              marginTop: "30px",
+                            }}
+                          >
+                            {jobsData.map((item) => (
+                              <div
+                                key={item._id}
+                                onClick={() => setSelectedJob(item)}
+                                style={{
+                                  background: "#f5f5f5",
+                                  padding: "20px",
+                                  borderRadius: "15px",
+                                  cursor: "pointer",
+                                  position: "relative",
+                                }}
+                              >
+                                <button
+                                  onClick={() => {
+                                    deleteJob(item._id);
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "10px",
+                                    width: "40px",
+                                    height: "40px",
+                                    borderRadius: "50%",
+                                    border: "none",
+                                    background: "#ef4444",
+                                    color: "#fff",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    zIndex: 10,
+                                  }}
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                                <h3>{item.jobName}</h3>
+
+                                <p>
+                                  <strong>Salary:</strong> ₹{item.salary}
+                                </p>
+
+                                <p>
+                                  <strong>Date:</strong>{" "}
+                                  {new Date(
+                                    item.createdAt,
+                                  ).toLocaleDateString()}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedJob && (
+                      <div
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100vh",
+                          background: "rgba(0,0,0,0.7)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          zIndex: 10000,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "70%",
+                            maxHeight: "85vh",
+                            overflowY: "auto",
+                            background: "#fff",
+                            padding: "30px",
+                            borderRadius: "20px",
+                            position: "relative",
+                          }}
+                        >
+                          <button
+                            onClick={() => setSelectedJob(null)}
+                            style={{
+                              position: "absolute",
+                              right: "20px",
+                              top: "20px",
+                              background: "red",
+                              color: "#fff",
+                              border: "none",
+                              padding: "10px",
+                              borderRadius: "8px",
+                            }}
+                          >
+                            X
+                          </button>
+
+                          <h1>{selectedJob.jobName}</h1>
+
+                          <hr />
+
+                          <p>
+                            <strong>Summary:</strong> {selectedJob.jobSummary}
+                          </p>
+
+                          <p>
+                            <strong>Salary:</strong> ₹{selectedJob.salary}
+                          </p>
+
+                          <p>
+                            <strong>Job Type:</strong> {selectedJob.jobTime}
+                          </p>
+
+                          <p>
+                            <strong>Experience:</strong>{" "}
+                            {selectedJob.experience} Years
+                          </p>
+
+                          <p>
+                            <strong>Location:</strong> {selectedJob.location}
+                          </p>
+
+                          <p>
+                            <strong>Qualification:</strong>{" "}
+                            {selectedJob.qualification}
+                          </p>
+
+                          <p>
+                            <strong>Posted On:</strong>{" "}
+                            {new Date(selectedJob.createdAt).toLocaleString()}
+                          </p>
+
+                          <h3>Skills</h3>
+
+                          <ul>
+                            {selectedJob.skills?.map((skill, index) => (
+                              <li key={index}>{skill}</li>
+                            ))}
+                          </ul>
+
+                          <h3>Key Responsibilities</h3>
+
+                          <ul>
+                            {selectedJob.keyResponsibilities?.map(
+                              (item, index) => (
+                                <li key={index}>{item}</li>
+                              ),
+                            )}
+                          </ul>
                         </div>
                       </div>
                     )}

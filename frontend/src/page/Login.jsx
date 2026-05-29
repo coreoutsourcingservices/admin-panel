@@ -43,6 +43,7 @@ function Login() {
 
         // name save
         localStorage.setItem("loggedInName", res.data.name);
+        localStorage.setItem("loggedInEmail", res.data.email);
 
         handleSuccess(res.data.message);
         setTimeout(() => {
@@ -131,6 +132,12 @@ function Login() {
               Create account?
               <Link to={"/signup"} className="login-link">
                 sigup
+              </Link>
+            </p>
+            <p className="login-text">
+              Forgot your password?
+              <Link to="/forgot-get-otp" className="login-link">
+                Reset Password
               </Link>
             </p>
           </div>
