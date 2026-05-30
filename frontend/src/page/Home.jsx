@@ -65,7 +65,7 @@ if (h < 12) {
         <button onClick={()=>navigate("/coreoutsourcingservices")}>
           <p>coreoutsourcingservices.in</p>
         </button>
-        <button>
+        <button onClick={()=>navigate("/wishlan")}>
           <p>wishlan.com</p>
         </button>
       </div>

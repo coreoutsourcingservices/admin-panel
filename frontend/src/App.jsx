@@ -15,6 +15,7 @@ import ForgotVerifyOTP from "./page/ForgotVerifyOTP";
 import FrogetPassword from "./page/FrogetPassword";
 import ChangPassword from "./page/ChangPassword";
 import ForgotOTPProtected from "./routers/ForgotOTPProtected";
+// import HomeWishlan from "./page/coreoutsourcingservices.in/HomeWishlan";
 
 
 function App() {
@@ -99,6 +100,14 @@ function App() {
           element={
             <PrivateRoute>
               <HomeCore />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/wishlan"
+          element={
+            <PrivateRoute>
+              <HomeWishlan />
             </PrivateRoute>
           }
         />
