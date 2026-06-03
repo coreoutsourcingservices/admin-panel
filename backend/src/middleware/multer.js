@@ -154,3 +154,33 @@ const storageBlogPhoto = new CloudinaryStorage({
 export const uploadBlogPhoto = multer({
   storage: storageBlogPhoto,
 });
+
+
+const storageResumeWishlanPhoto = new CloudinaryStorage({
+  cloudinary,
+
+  params: {
+    folder: "resume_images",
+    resource_type: "image",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
+});
+
+export const uploadResumWishlanPhoto = multer({
+  storage: storageResumeWishlanPhoto,
+});
+
+
+const storageBlogWishlanPhoto = new CloudinaryStorage({
+  cloudinary,
+
+  params: {
+    folder: "wishlenBlgeImages",
+    resource_type: "image",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
+});
+
+export const uploadBlogeWishlanPhoto = multer({
+  storage: storageBlogWishlanPhoto,
+});
