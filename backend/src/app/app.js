@@ -11,7 +11,13 @@ import blogRouter from "../routes/blog.routers.js"
 import jobRouter from "../routes/job.routes.js"
 import wishlanRouter from "../routes/wishlen.routes.js"
 
+import path from "path";
+import { fileURLToPath } from "url";
+
 export const app = express()
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 app.use(
@@ -39,4 +45,17 @@ app.use("/gallery",galleryRouter)
 app.use("/bloge",blogRouter)
 app.use("/job",jobRouter)
 app.use("/wishlan",wishlanRouter)
+
+app.use(
+  express.static(
+    path.join(
+      __dirname,
+      "../../public"
+    )
+  )
+);
+
+
+
+
 

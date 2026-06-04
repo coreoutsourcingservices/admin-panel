@@ -6,12 +6,14 @@ export const createBlog = async (req, res) => {
       BlogHeading,
       BlogWriter,
       BlogContent,
+      BlogHeadingURL,
     } = req.body;
 
     if (
       !BlogHeading ||
       !BlogWriter ||
-      !BlogContent
+      !BlogContent ||
+      !BlogHeadingURL
     ) {
       return res.status(400).json({
         success: false,
@@ -27,6 +29,7 @@ export const createBlog = async (req, res) => {
       BlogHeading,
       BlogWriter,
       BlogContent,
+      BlogHeadingURL,
       BlogImage: imagePath,
     });
 
@@ -65,9 +68,11 @@ export const getBlogs = async (req, res) => {
 
 export const getSingleBlog = async (req, res) => {
   try {
-    const blog = await WishlanBlog.findById(
-      req.params.id
-    );
+    const { BlogHeadingURL } = req.params;
+
+    const blog = await WishlanBlog.findOne({
+      BlogHeadingURL,
+    });
 
     if (!blog) {
       return res.status(404).json({

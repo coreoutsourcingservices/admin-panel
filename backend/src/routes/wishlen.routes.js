@@ -25,6 +25,15 @@ router.post("/content", createContact);
 router.get("/content", getAllContacts);
 router.delete("/content/:id", deleteContact);
 
+router.get("/blog/:slug", (req, res) => {
+  res.sendFile(
+    path.join(
+      __dirname,
+      "../../public/blog/bloge_detail.html"
+    )
+  );
+});
+
 
 
 router.post("/career-form", uploadResumWishlanPhoto.single("rusume"),createCareerForm)
@@ -36,7 +45,7 @@ router.post("/create-blog", uploadBlogeWishlanPhoto.single("BlogImage"),createBl
 
 router.get("/get-blogs", getBlogs);
 
-router.get("/get-blogs/:id", getSingleBlog);
+router.get("/get-blogs/:BlogHeadingURL", getSingleBlog);
 
 router.delete("/delete-blog/:id", deleteBlog);
 

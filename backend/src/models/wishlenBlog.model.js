@@ -6,6 +6,11 @@ const wishlanBlogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    BlogHeadingURL: {
+      type: String,
+      required: true,
+      unique: true
+    },
 
     BlogWriter: {
       type: String,
