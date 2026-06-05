@@ -446,7 +446,7 @@ function HomeCore() {
   const deleteTeamSecondMember = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/team-second/delete-team-second/${id}`,
+        `https://admin-panel-fawn-iota.vercel.app/teamsecond/delete-team-second/${id}`,
       );
 
       handleSuccess(
