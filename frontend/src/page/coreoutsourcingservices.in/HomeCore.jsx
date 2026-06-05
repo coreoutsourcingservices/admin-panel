@@ -339,7 +339,7 @@ function HomeCore() {
   const deleteTeamMember = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/our-team/delete-our-team/${id}`,
+        `https://admin-panel-fawn-iota.vercel.app/ourteam/delete-our-team/${id}`,
       );
 
       handleSuccess(
@@ -1138,7 +1138,7 @@ function HomeCore() {
                       >
                         <button
                           onClick={() => { deleteTeamMember(item._id);
-                            
+
                           }}
                           style={{
                             position: "absolute",
