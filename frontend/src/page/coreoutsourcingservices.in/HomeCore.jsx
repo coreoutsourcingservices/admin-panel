@@ -1137,10 +1137,8 @@ function HomeCore() {
                         }}
                       >
                         <button
-                          onClick={() => {
-                            if (window.confirm(`Delete ${item.name} ?`)) {
-                              deleteTeamMember(item._id);
-                            }
+                          onClick={() => { deleteTeamMember(item._id);
+                            
                           }}
                           style={{
                             position: "absolute",
