@@ -33,7 +33,7 @@ function OTPsigupPage() {
     //  "https://admin-panel-fawn-iota.vercel.app/user/signupVerifyOTP",
     try {
       const promise = axios.post(
-        "/user/signupVerifyOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/signupVerifyOTP",
 
         userData,
       );

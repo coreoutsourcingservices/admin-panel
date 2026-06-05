@@ -23,7 +23,7 @@ function ForgotVerifyOTP() {
       setLoading(true);
 
       const response = await axios.post(
-        "/user/forgotPasswordVerifyOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/forgotPasswordVerifyOTP",
         {
           email,
           otp,

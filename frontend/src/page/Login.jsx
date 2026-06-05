@@ -34,7 +34,7 @@ function Login() {
               // "https://admin-panel-fawn-iota.vercel.app/user/loginGetOTP",
 
       const prome = axios.post(
-        "/user/loginGetOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/loginGetOTP",
         userData,
       );
       handlePromise(prome);

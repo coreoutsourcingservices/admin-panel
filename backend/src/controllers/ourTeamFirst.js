@@ -40,7 +40,7 @@ export const createOurTeam = async (req, res) => {
         (item) => item.property === "home"
       ).length;
 
-      if (homeCount >= 4) {
+      if (homeCount >= 50) {
         return res.status(400).json({
           success: false,
           message:

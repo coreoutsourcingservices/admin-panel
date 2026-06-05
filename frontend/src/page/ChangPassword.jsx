@@ -72,7 +72,7 @@ function ChangPassword() {
 
       const response =
         await axios.post(
-          "/user/chengPassword",
+          "https://admin-panel-fawn-iota.vercel.app/user/chengPassword",
           {
             email,
             oldPassword:

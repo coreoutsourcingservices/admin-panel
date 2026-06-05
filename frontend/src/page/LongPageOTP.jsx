@@ -34,7 +34,7 @@ function LongPageOTP() {
     }
     try {
       const promise = axios.post(
-        "/user/loginVerifyOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/loginVerifyOTP",
 
         userData,
       );

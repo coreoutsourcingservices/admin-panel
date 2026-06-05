@@ -69,7 +69,7 @@ function Signup() {
     //  "https://admin-panel-fawn-iota.vercel.app/user/signupGetOTP",
     try {
       const promise = axios.post(
-        "/user/signupGetOTP",
+        "https://admin-panel-fawn-iota.vercel.app/user/signupGetOTP",
 
         userData,
       );
@@ -82,7 +82,7 @@ function Signup() {
 
 
       setTimeout(() => {
-        nevigete("/verify-signup-OTP", {
+        nevigete("https://admin-panel-fawn-iota.vercel.app/verify-signup-OTP", {
           state: sendEmail,
         });
       }, 2000);

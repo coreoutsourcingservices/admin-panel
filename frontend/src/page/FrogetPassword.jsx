@@ -101,7 +101,7 @@ function FrogetPassword() {
 
         const response =
           await axios.post(
-            "/user/forgotPassword",
+            "https://admin-panel-fawn-iota.vercel.app/user/forgotPassword",
             {
               email,
               newPassword:
