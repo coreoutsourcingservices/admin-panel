@@ -31,14 +31,15 @@ function Login() {
       return handleError("All fields required");
     }
     try {
-     
+              // "https://admin-panel-fawn-iota.vercel.app/user/loginGetOTP",
+
       const prome = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/loginGetOTP",
+        "/user/loginGetOTP",
         userData,
       );
       handlePromise(prome);
       const res = await prome;
-      
+
       if (res.data.success) {
         // token save
         localStorage.setItem("token", res.data.jwtTokem);

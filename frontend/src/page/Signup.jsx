@@ -66,13 +66,15 @@ function Signup() {
     if (!name || !email || !password || !gender) {
       return handleError("All fields required");
     }
+    //  "https://admin-panel-fawn-iota.vercel.app/user/signupGetOTP",
     try {
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/signupGetOTP",
+        "/user/signupGetOTP",
+
         userData,
       );
       handlePromise(promise);
-      
+
 
       const res = await promise;
        if (res.data.success) {
@@ -84,9 +86,9 @@ function Signup() {
           state: sendEmail,
         });
       }, 2000);
-             
+
             }
-      
+
     } catch (e) {
       const err =
         e.response?.data?.message || e.message || "Something went wrong";

@@ -45,7 +45,7 @@ export const createPartner = async (req, res) => {
       ).length;
 
       // max 5 home images
-      if (homeCount >= 5) {
+      if (homeCount >= 50) {
 
         return res.status(400).json({
           success: false,

@@ -30,9 +30,11 @@ function OTPsigupPage() {
     if (!otp) {
       return handleError("OTP fields required");
     }
+    //  "https://admin-panel-fawn-iota.vercel.app/user/signupVerifyOTP",
     try {
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/signupVerifyOTP",
+        "/user/signupVerifyOTP",
+
         userData,
       );
       handlePromise(promise);
@@ -41,7 +43,7 @@ function OTPsigupPage() {
       const { jwtTokem, user } = res.data;
       if (res.data.success) {
         localStorage.setItem("token", jwtTokem);
-       
+
         localStorage.setItem("loggedInName", user.name);
         localStorage.setItem("loggedInEmail", res.data.email);
         handleSuccess(res.data.message);
@@ -52,7 +54,7 @@ function OTPsigupPage() {
       }
 
 
-     
+
     } catch (e) {
       const err =
         e.response?.data?.message || e.message || "Something went wrong";

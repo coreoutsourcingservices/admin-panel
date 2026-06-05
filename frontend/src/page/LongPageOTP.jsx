@@ -24,6 +24,8 @@ function LongPageOTP() {
     }));
   };
 
+  // "https://admin-panel-fawn-iota.vercel.app/user/loginVerifyOTP",
+
   const handlerSubmit = async (e) => {
     e.preventDefault();
     const { otp } = userData;
@@ -32,7 +34,8 @@ function LongPageOTP() {
     }
     try {
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/loginVerifyOTP",
+        "/user/loginVerifyOTP",
+
         userData,
       );
       handlePromise(promise);

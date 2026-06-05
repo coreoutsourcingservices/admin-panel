@@ -210,7 +210,7 @@
 
 .c_btm:hover{
     background-color: rgb(151, 49, 49);
-    
+
 }
 
 
@@ -228,7 +228,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
+
 
     z-index: 99;
 }
@@ -236,7 +236,7 @@
 /* popup */
 .home-popup{
     width: 70%;
-    
+
 
     background: white;
 
@@ -331,8 +331,8 @@
     grid-template-columns: repeat(2,1fr);
 
     gap: 20px;
-    
-    
+
+
 }
 
 /* cards */
@@ -1375,4 +1375,63 @@ button:disabled:hover{
   to {
     transform: rotate(360deg);
   }
+}
+
+
+/*  wishlen*/
+
+.wishlan-blog-container {
+  width: 95%;
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.wishlan-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 15px;
+  margin-bottom: 15px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+}
+
+.wishlan-file {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.wishlan-save-btn {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.jodit-wysiwyg ul {
+  list-style: disc !important;
+  padding-left: 40px !important;
+}
+
+.jodit-wysiwyg ol {
+  list-style: decimal !important;
+  padding-left: 40px !important;
+}
+
+.jodit-wysiwyg ol[type="i"] {
+  list-style-type: lower-roman !important;
+}
+
+.jodit-wysiwyg ol[type="I"] {
+  list-style-type: upper-roman !important;
+}
+
+.jodit-wysiwyg ol[type="a"] {
+  list-style-type: lower-alpha !important;
+}
+
+.jodit-wysiwyg ol[type="A"] {
+  list-style-type: upper-alpha !important;
 }

@@ -5,41 +5,39 @@ import "../../style/page/core-web-page/coreHome.css";
 import axios from "axios";
 import { Download } from "lucide-react";
 
+import JoditEditor from "jodit-react";
 import { Trash2 } from "lucide-react";
+import { useMemo } from "react";
 import * as XLSX from "xlsx";
 import { handleError, handleSuccess } from "../../utils/Toast";
+
+
 function HomeWishlan() {
+
+  const [wishlanBlogHeading, setWishlanBlogHeading] = useState("");
+  const [wishlanBlogWriter, setWishlanBlogWriter] = useState("");
+  const [wishlanBlogImage, setWishlanBlogImage] = useState(null);
+  const [wishlanBlogContent, setWishlanBlogContent] = useState("");
+  const [wishlanSavingBlog, setWishlanSavingBlog] = useState(false);
+
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [careers, setCareers] = useState([]);
   const [selectedCareer, setSelectedCareer] = useState(null);
   const [showBlogPopup, setShowBlogPopup] = useState(false);
   const [savingBlge, setSavingBloge] = useState(false);
+  const [wishlenBlge, setWishlenBlge] = useState(false);
   const [blogData, setBlogData] = useState([]);
   const [jobPop, setJobPop] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
-  const [blogHeading, setBlogHeading] = useState("");
-  const [writerName, setWriterName] = useState("");
-  const [blogImages, setBlogImages] = useState([]);
-  const [descriptionImage, setDescriptionImage] = useState("");
-  const [descriptions, setDescriptions] = useState([
-    {
-      description_heading: "",
-      description_text: "",
-    },
-  ]);
-  const [faqs, setFaqs] = useState([
-    {
-      Question: "",
-      answering: "",
-    },
-  ]);
+
+
   const [addBlogPopup, setAddBlogPopup] = useState(false);
   const [showJobsPopup, setShowJobsPopup] = useState(false);
   const [jobsData, setJobsData] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [blogPopup, setBlgePopup] = useState(false);
-  const [loading1, setLoading1] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [jobPopup, setJobPopup] = useState(false);
   const [jobName, setJobName] = useState("");
   const [jobSummary, setJobSummary] = useState("");
@@ -76,26 +74,28 @@ function HomeWishlan() {
     XLSX.writeFile(workbook, "contact_messages.xlsx");
   };
 
+
+
   const downloadExcel = () => {
     const excelData = careers.map((item) => ({
       Name: item.name,
-
       Email: item.email,
-
       Phone: item.number,
-
-      Job_Title: item.job_title,
-
-      Resume: item.resume,
-
+      Position: item.position,
+      Resume_Link: item.rusume,
       Applied_Date: new Date(item.createdAt).toLocaleString(),
     }));
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
 
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Careers Data");
-    XLSX.writeFile(workbook, "careers_messages.xlsx");
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Career Applications"
+    );
+
+    XLSX.writeFile(workbook, "career_applications.xlsx");
   };
 
   const day = date.toLocaleDateString("en-US", {
@@ -115,7 +115,7 @@ function HomeWishlan() {
   const getMessages = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/wishlan/content",
+        "/wishlan/content",
       );
 
       setMessages(response.data.data);
@@ -128,7 +128,7 @@ function HomeWishlan() {
   const getCareers = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/careers/fromdata",
+        "/wishlan/get-career",
       );
 
       // console.log(response.data);
@@ -143,7 +143,7 @@ function HomeWishlan() {
   const deleteMessage = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/wishlan/content/${id}`,
+        `/wishlan/content/${id}`,
       );
 
       // console.log(response.data);
@@ -162,7 +162,7 @@ function HomeWishlan() {
   const deleteCareer = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/careers/fromdata/${id}`,
+        `/wishlan/detate-career/${id}`,
       );
 
       // console.log(response.data);
@@ -179,78 +179,7 @@ function HomeWishlan() {
   };
 
 
-  const addDescription = () => {
-    setDescriptions([
-      ...descriptions,
-      {
-        description_heading: "",
-        description_text: "",
-      },
-    ]);
-  };
-  const addFaq = () => {
-    setFaqs([
-      ...faqs,
-      {
-        Question: "",
-        answering: "",
-      },
-    ]);
-  };
 
-  const handleBlogSubmit = async () => {
-    try {
-      setSavingBloge(true);
-      const formData = new FormData();
-
-      formData.append("heading", blogHeading);
-
-      formData.append(
-        "blag",
-        JSON.stringify({
-          writer_name: writerName,
-
-          description_imga: descriptionImage,
-
-          description: descriptions,
-
-          FAQ: faqs,
-        }),
-      );
-
-      blogImages.forEach((img) => {
-        formData.append("image", img);
-      });
-
-      const response = await axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/bloge/add-blog",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
-
-      handleSuccess("Blog Added Successfully 😎");
-
-      console.log(response.data);
-
-      setBlgePopup(false);
-
-      setBlogHeading("");
-      setWriterName("");
-      setBlogImages([]);
-      setDescriptionImage("");
-      setSavingBloge(false);
-    } catch (error) {
-      console.log(error);
-
-      handleError(error?.response?.data?.message || "Blog Upload Failed");
-    } finally {
-      setSavingBloge(false);
-    }
-  };
 
   const renderContent = (text) => {
     if (!text) return null;
@@ -288,7 +217,7 @@ function HomeWishlan() {
   const getBlogs = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/bloge/get-blogs",
+        "/wishlan/get-blogs",
       );
 
       setBlogData(response.data.data);
@@ -297,10 +226,32 @@ function HomeWishlan() {
     }
   };
 
+
+
+  const getBlogsOne = async (BlogHeadingURL) => {
+    try {
+
+      const response = await axios.get(
+        `/wishlan/get-blogs/${BlogHeadingURL}`,
+      );
+
+
+
+
+      setSelectedBlog(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // console.log(selectedBlog)
+
+
+
+
   const deleteBlog = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/blog/delete-blog/${id}`,
+        `/wishlan/delete-blog/${id}`,
       );
 
       handleSuccess(response.data.message || "Blog Deleted Successfully");
@@ -313,9 +264,9 @@ function HomeWishlan() {
 
   const handleJobSubmit = async () => {
     try {
-      setLoading1(true);
+      setLoading(true);
 
-      const { data } = await axios.post("https://admin-panel-fawn-iota.vercel.app/job/add-job", {
+      const { data } = await axios.post("/job/add-job", {
         jobName,
         jobSummary,
         salary,
@@ -348,13 +299,13 @@ function HomeWishlan() {
       console.log(error);
       alert(error.response?.data?.message || "Something went wrong");
     } finally {
-      setLoading1(false);
+      setLoading(false);
     }
   };
 
   const getJobs = async () => {
     try {
-      const response = await axios.get("https://admin-panel-fawn-iota.vercel.app/job/get-jobs");
+      const response = await axios.get("/job/get-jobs");
 
       setJobsData(response.data.data);
     } catch (error) {
@@ -364,7 +315,7 @@ function HomeWishlan() {
   const deleteJob = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/job/delete-job/${id}`,
+        `/job/delete-job/${id}`,
       );
 
       setJobsData((prev) => prev.filter((item) => item._id !== id));
@@ -398,6 +349,115 @@ function HomeWishlan() {
     getCareers();
   }, []);
 
+  const config = useMemo(
+    () => ({
+      readonly: false,
+      height: 500,
+      placeholder: "Write your blog here...",
+
+      buttons: [
+        "source",
+        "|",
+        "bold",
+        "italic",
+        "underline",
+        "strikethrough",
+        "|",
+        "ul",
+        "ol",
+        "|",
+        "font",
+        "fontsize",
+        "brush",
+        "|",
+        "paragraph",
+        "|",
+        "image",
+        "link",
+        "table",
+        "|",
+        "align",
+        "|",
+        "undo",
+        "redo",
+        "|",
+        "hr",
+        "eraser",
+        "copyformat",
+        "|",
+        "fullsize"
+      ],
+
+      uploader: {
+        insertImageAsBase64URI: true
+      }
+    }),
+    []
+  );
+
+  const handleWishlanBlogSubmit = async () => {
+    try {
+      setWishlanSavingBlog(true);
+
+      const formData = new FormData();
+          const wishlanBlogHeadingURL =
+      wishlanBlogHeading
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
+
+
+
+      formData.append(
+        "BlogHeading",
+        wishlanBlogHeading
+      );
+      formData.append(
+        "BlogHeadingURL",
+        wishlanBlogHeadingURL
+      );
+
+      formData.append(
+        "BlogWriter",
+        wishlanBlogWriter
+      );
+
+      formData.append(
+        "BlogContent",
+        wishlanBlogContent
+      );
+
+      if (wishlanBlogImage) {
+        formData.append(
+          "BlogImage",
+          wishlanBlogImage
+        );
+      }
+
+      const response = await axios.post(
+        "/wishlan/create-blog",
+        formData
+      );
+
+      // console.log(response.data);
+
+      handleSuccess(response.data.message);
+
+      // const data = await response.json();
+
+      // console.log(data);
+      setAddBlogPopup(false)
+
+      // handleSuccess("Blog Saved Successfully");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setWishlanSavingBlog(false);
+    }
+  };
+
+
 
   let name = "Wishlan.in";
   return (
@@ -411,11 +471,11 @@ function HomeWishlan() {
 
 
 
-            <button onClick={() => setBlgePopup(true)}>Blogs</button>
-            {/* <button>Contacts</button>  */}
+                        {/* <button>Contacts</button>  */}
 
 
             <button onClick={() => setJobPop(true)}>Careers</button>
+            <button onClick={() => setWishlenBlge(true)}>bloge </button>
           </div>
         </div>
 
@@ -437,13 +497,13 @@ function HomeWishlan() {
 
           <div className="message-wrapper">
 
-            {blogPopup && (
+            {wishlenBlge && (
               <div className="home-popup-overlay">
                 <div className="home-popup">
                   {/* close */}
                   <button
                     className="popup-close-btn"
-                    onClick={() => setBlgePopup(false)}
+                    onClick={() => setWishlenBlge(false)}
                   >
                     X
                   </button>
@@ -466,168 +526,76 @@ function HomeWishlan() {
                     {addBlogPopup && (
                       <div className="inner-popup-overlay">
                         <div className="inner-popup">
-                          <h2>Add Blog</h2>
+                          <div className="wishlan-blog-container">
 
-                          <div className="input-group">
-                            <label>Blog Heading</label>
+                            <h2>Wishlan Blog Editor</h2>
 
                             <input
+                              className="wishlan-input"
                               type="text"
-                              value={blogHeading}
-                              onChange={(e) => setBlogHeading(e.target.value)}
-                              placeholder="Enter Blog Heading"
+                              placeholder="Blog Heading"
+                              value={wishlanBlogHeading}
+                              onChange={(e) =>
+                                setWishlanBlogHeading(e.target.value)
+                              }
                             />
-                          </div>
-
-                          <div className="input-group">
-                            <label>Writer Name</label>
 
                             <input
+                              className="wishlan-input"
                               type="text"
-                              value={writerName}
-                              onChange={(e) => setWriterName(e.target.value)}
-                              placeholder="Enter Writer Name"
+                              placeholder="Writer Name"
+                              value={wishlanBlogWriter}
+                              onChange={(e) =>
+                                setWishlanBlogWriter(e.target.value)
+                              }
                             />
-                          </div>
-
-                          <div className="input-group">
-                            <label>Blog Images</label>
 
                             <input
+                              className="wishlan-file"
                               type="file"
-                              multiple
                               accept="image/*"
                               onChange={(e) =>
-                                setBlogImages([...e.target.files])
+                                setWishlanBlogImage(
+                                  e.target.files[0]
+                                )
                               }
                             />
-                          </div>
 
-                          <div className="input-group">
-                            <label>Description Image Text</label>
-
-                            <input
-                              type="text"
-                              value={descriptionImage}
-                              onChange={(e) =>
-                                setDescriptionImage(e.target.value)
+                            <JoditEditor
+                              value={wishlanBlogContent}
+                              config={config}
+                              onBlur={(newContent) =>
+                                setWishlanBlogContent(newContent)
                               }
                             />
-                          </div>
-
-                          {descriptions.map((item, index) => (
-                            <div key={index}>
-                              <div className="input-group">
-                                <label>Description Heading {index + 1}</label>
-
-                                <input
-                                  type="text"
-                                  value={item.description_heading}
-                                  onChange={(e) => {
-                                    const updated = [...descriptions];
-
-                                    updated[index].description_heading =
-                                      e.target.value;
-
-                                    setDescriptions(updated);
-                                  }}
-                                />
-                              </div>
-
-                              <div className="input-group">
-                                <label>Description Text {index + 1}</label>
-
-                                <textarea
-                                  rows="5"
-                                  value={item.description_text}
-                                  onChange={(e) => {
-                                    const updated = [...descriptions];
-
-                                    updated[index].description_text =
-                                      e.target.value;
-
-                                    setDescriptions(updated);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          ))}
-
-                          <button
-                            type="button"
-                            className="save-btn"
-                            onClick={addDescription}
-                            style={{ marginBottom: "20px" }}
-                          >
-                            + Add Description
-                          </button>
-
-                          {faqs.map((item, index) => (
-                            <div key={index}>
-                              <div className="input-group">
-                                <label>FAQ Question {index + 1}</label>
-
-                                <input
-                                  type="text"
-                                  value={item.Question}
-                                  onChange={(e) => {
-                                    const updated = [...faqs];
-
-                                    updated[index].Question = e.target.value;
-
-                                    setFaqs(updated);
-                                  }}
-                                />
-                              </div>
-
-                              <div className="input-group">
-                                <label>FAQ Answer {index + 1}</label>
-
-                                <textarea
-                                  rows="4"
-                                  value={item.answering}
-                                  onChange={(e) => {
-                                    const updated = [...faqs];
-
-                                    updated[index].answering = e.target.value;
-
-                                    setFaqs(updated);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          ))}
-
-                          <button
-                            type="button"
-                            className="save-btn"
-                            onClick={addFaq}
-                            style={{ marginBottom: "20px" }}
-                          >
-                            + Add FAQ
-                          </button>
-
-                          <div className="popup-btn-group">
-                            <button
-                              className="cancel-btn"
-                              onClick={() => setAddBlogPopup(false)}
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "30px"
+                              }}
                             >
-                              Cancel
-                            </button>
 
-                            <button
-                              className="save-btn"
-                              onClick={handleBlogSubmit}
-                            >
-                              {savingBlge ? (
-                                <>
-                                  <span className="spinner"></span>
-                                  Saving...
-                                </>
-                              ) : (
-                                "Save Blog"
-                              )}
-                            </button>
+
+
+                              <button
+                                className="wishlan-save-btn"
+                                onClick={() => setAddBlogPopup(false)}
+                                style={{ backgroundColor: "#c8c8c8", color: "black" }}>
+                                Cancel
+                              </button>
+
+                              <button
+                                className="wishlan-save-btn"
+                                onClick={handleWishlanBlogSubmit}
+                              >
+                                {wishlanSavingBlog
+                                  ? "Saving..."
+                                  : "Save Blog"}
+                              </button>
+                            </div>
+
+
+
                           </div>
                         </div>
                       </div>
@@ -690,7 +658,7 @@ function HomeWishlan() {
                               <div
                                 key={item._id}
                                 onClick={() => {
-                                  setSelectedBlog(item);
+                                  getBlogsOne(item.BlogHeadingURL);
                                 }}
                                 style={{
                                   background: "#f5f5f5",
@@ -706,7 +674,7 @@ function HomeWishlan() {
 
                                     if (
                                       window.confirm(
-                                        `Delete "${item.heading}" ?`,
+                                        `Delete "${item.BlogHeading}" ?`,
                                       )
                                     ) {
                                       deleteBlog(item._id);
@@ -733,7 +701,7 @@ function HomeWishlan() {
                                 </button>
 
                                 <img
-                                  src={item?.blag?.[0]?.image?.[0]?.photo}
+                                  src={item.BlogImage}
                                   alt=""
                                   style={{
                                     width: "100%",
@@ -748,7 +716,7 @@ function HomeWishlan() {
                                     marginTop: "10px",
                                   }}
                                 >
-                                  {item.heading}
+                                  {item.BlogHeading}
                                 </h3>
                               </div>
                             ))}
@@ -768,13 +736,32 @@ function HomeWishlan() {
                               ✕
                             </button>
 
+
                             <h1 className="blog-main-heading">
-                              {selectedBlog.heading}
+                              {selectedBlog.BlogHeading}
                             </h1>
+
+
+
+                              <img
+                                src={
+                                  selectedBlog.BlogImage
+                                }
+                                alt={selectedBlog.BlogHeading}
+                                style={{
+                                  marginLeft:"0px",marginRight:"0px"
+                                }}
+                                style={{
+                                    width:"85%",
+                                    marginLeft:"70px"
+                                }}
+                              />
+
+
 
                             <h3 className="blog-writer">
                               Written By :{" "}
-                              {selectedBlog?.blag?.[0]?.writer_name}
+                              {selectedBlog.BlogWriter}
                               <p className="blog-date">
                                 Published On :{" "}
                                 {new Date(
@@ -787,436 +774,605 @@ function HomeWishlan() {
                               </p>
                             </h3>
 
-                            <div className="blog-image-grid">
-                              {selectedBlog?.blag?.[0]?.image?.length > 0 && (
-                                <img
-                                  src={
-                                    selectedBlog?.blag?.[0]?.image?.[0]?.photo
-                                  }
-                                  alt={selectedBlog.heading}
-                                />
-                              )}
-                            </div>
 
-                            <p className="blog-intro">
-                              {selectedBlog?.blag?.[0]?.description_imga}
-                            </p>
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: selectedBlog  .BlogContent,
+                              }}
+                              style={
+                                {marginLeft:"80px",
+                                  marginRight:"80px"
+                                }
+                              }
+                            />
 
-                            {selectedBlog?.blag?.[0]?.description?.map(
-                              (item) => (
-                                <div key={item._id} className="blog-section">
-                                  <h2>{item.description_heading}</h2>
 
-                                  <div className="blog-content-text">
-                                    {item.description_text}
-                                  </div>
-                                </div>
-                              ),
-                            )}
 
-                            <h2 className="blog-faq-title">
-                              Frequently Asked Questions
-                            </h2>
 
-                            {selectedBlog?.blag?.[0]?.FAQ?.map((faq) => (
-                              <div key={faq._id} className="blog-faq-card">
-                                <h4>{faq.Question}</h4>
-
-                                <p>{faq.answering}</p>
-                              </div>
-                            ))}
-                          </div>
                         </div>
                       </div>
+                      </div>
                     )}
-                  </div>
                 </div>
+              </div>
               </div>
             )}
 
-            {jobPop && (
-              <div className="home-popup-overlay">
-                <div className="home-popup">
-                  {/* close */}
-                  <button
-                    className="popup-close-btn"
-                    onClick={() => setJobPop(false)}
-                  >
-                    X
+
+
+
+
+
+
+          {jobPop && (
+            <div className="home-popup-overlay">
+              <div className="home-popup">
+                {/* close */}
+                <button
+                  className="popup-close-btn"
+                  onClick={() => setJobPop(false)}
+                >
+                  X
+                </button>
+
+                {/* left menu */}
+                <div className="popup-sidebar">
+                  <h3>Manage job both website
+                    <p style={{ fontSize: "10px", fontWeight: "100", color: "#B0B0B0" }}>1-coreoutsourcingservices</p>
+                    <p style={{ fontSize: "10px", fontWeight: "100", color: "#B0B0B0" }}>2-wishlen</p>
+                  </h3>
+
+                  <button onClick={() => setJobPopup(true)}>Add job</button>
+
+                  <button onClick={() => setShowJobsPopup(true)}>
+                    Show Jobs
                   </button>
+                </div>
 
-                  {/* left menu */}
-                  <div className="popup-sidebar">
-                    <h3>Manage job</h3>
+                {/* right content */}
+                <div className="popup-content">
+                  {jobPopup && (
+                    <div className="inner-popup-overlay">
+                      <div className="inner-popup">
+                        <h2>Add Job</h2>
 
-                    <button onClick={() => setJobPopup(true)}>Add job</button>
+                        <div className="input-group">
+                          <label>Job Name</label>
+                          <input
+                            type="text"
+                            placeholder="Enter Job Name"
+                            value={jobName}
+                            onChange={(e) => setJobName(e.target.value)}
+                          />
+                        </div>
 
-                    <button onClick={() => setShowJobsPopup(true)}>
-                      Show Jobs
-                    </button>
-                  </div>
+                        <div className="input-group">
+                          <label>Job Summary</label>
+                          <textarea
+                            rows="4"
+                            placeholder="Enter Job Summary"
+                            value={jobSummary}
+                            onChange={(e) => setJobSummary(e.target.value)}
+                          />
+                        </div>
 
-                  {/* right content */}
-                  <div className="popup-content">
-                    {jobPopup && (
-                      <div className="inner-popup-overlay">
-                        <div className="inner-popup">
-                          <h2>Add Job</h2>
+                        <div className="input-group">
+                          <label>Salary</label>
+                          <input
+                            type="text"
+                            placeholder="Enter Salary"
+                            value={salary}
+                            onChange={(e) => setSalary(e.target.value)}
+                          />
+                        </div>
 
-                          <div className="input-group">
-                            <label>Job Name</label>
-                            <input
-                              type="text"
-                              placeholder="Enter Job Name"
-                              value={jobName}
-                              onChange={(e) => setJobName(e.target.value)}
-                            />
-                          </div>
+                        <div className="input-group">
+                          <label>Job Type</label>
+                          <select
+                            value={jobTime}
+                            onChange={(e) => setJobTime(e.target.value)}
+                          >
+                            <option value="Full Time">Full Time</option>
+                            <option value="Part Time">Part Time</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Internship">Internship</option>
+                          </select>
+                        </div>
 
-                          <div className="input-group">
-                            <label>Job Summary</label>
-                            <textarea
-                              rows="4"
-                              placeholder="Enter Job Summary"
-                              value={jobSummary}
-                              onChange={(e) => setJobSummary(e.target.value)}
-                            />
-                          </div>
+                        <div className="input-group">
+                          <label>Experience</label>
+                          <input
+                            type="text"
+                            placeholder="1-2 Years"
+                            value={experience}
+                            onChange={(e) => setExperience(e.target.value)}
+                          />
+                        </div>
 
-                          <div className="input-group">
-                            <label>Salary</label>
-                            <input
-                              type="text"
-                              placeholder="Enter Salary"
-                              value={salary}
-                              onChange={(e) => setSalary(e.target.value)}
-                            />
-                          </div>
+                        <div className="input-group">
+                          <label>Location</label>
+                          <input
+                            type="text"
+                            placeholder="Enter Location"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                          />
+                        </div>
 
-                          <div className="input-group">
-                            <label>Job Type</label>
-                            <select
-                              value={jobTime}
-                              onChange={(e) => setJobTime(e.target.value)}
-                            >
-                              <option value="Full Time">Full Time</option>
-                              <option value="Part Time">Part Time</option>
-                              <option value="Remote">Remote</option>
-                              <option value="Internship">Internship</option>
-                            </select>
-                          </div>
+                        <div className="input-group">
+                          <label>Qualification</label>
+                          <input
+                            type="text"
+                            placeholder="B.Tech / MCA / BCA"
+                            value={qualification}
+                            onChange={(e) => setQualification(e.target.value)}
+                          />
+                        </div>
 
-                          <div className="input-group">
-                            <label>Experience</label>
-                            <input
-                              type="text"
-                              placeholder="1-2 Years"
-                              value={experience}
-                              onChange={(e) => setExperience(e.target.value)}
-                            />
-                          </div>
+                        <div className="input-group">
+                          <label>Skills (Comma Separated)</label>
+                          <textarea
+                            rows="3"
+                            placeholder="React, Node.js, Express, MongoDB"
+                            value={skills}
+                            onChange={(e) => setSkills(e.target.value)}
+                          />
+                        </div>
 
-                          <div className="input-group">
-                            <label>Location</label>
-                            <input
-                              type="text"
-                              placeholder="Enter Location"
-                              value={location}
-                              onChange={(e) => setLocation(e.target.value)}
-                            />
-                          </div>
+                        <div className="input-group">
+                          <label>
+                            Key Responsibilities (Comma Separated)
+                          </label>
+                          <textarea
+                            rows="4"
+                            placeholder="Build APIs, Create UI, Database Management"
+                            value={keyResponsibilities}
+                            onChange={(e) =>
+                              setKeyResponsibilities(e.target.value)
+                            }
+                          />
+                        </div>
 
-                          <div className="input-group">
-                            <label>Qualification</label>
-                            <input
-                              type="text"
-                              placeholder="B.Tech / MCA / BCA"
-                              value={qualification}
-                              onChange={(e) => setQualification(e.target.value)}
-                            />
-                          </div>
+                        <div className="popup-btn-group">
+                          <button
+                            className="cancel-btn"
+                            onClick={() => setJobPopup(false)}
+                          >
+                            Cancel
+                          </button>
 
-                          <div className="input-group">
-                            <label>Skills (Comma Separated)</label>
-                            <textarea
-                              rows="3"
-                              placeholder="React, Node.js, Express, MongoDB"
-                              value={skills}
-                              onChange={(e) => setSkills(e.target.value)}
-                            />
-                          </div>
-
-                          <div className="input-group">
-                            <label>
-                              Key Responsibilities (Comma Separated)
-                            </label>
-                            <textarea
-                              rows="4"
-                              placeholder="Build APIs, Create UI, Database Management"
-                              value={keyResponsibilities}
-                              onChange={(e) =>
-                                setKeyResponsibilities(e.target.value)
-                              }
-                            />
-                          </div>
-
-                          <div className="popup-btn-group">
-                            <button
-                              className="cancel-btn"
-                              onClick={() => setJobPopup(false)}
-                            >
-                              Cancel
-                            </button>
-
-                            <button
-                              className="save-btn"
-                              onClick={handleJobSubmit}
-                              disabled={loading}
-                            >
-                              {loading ? "Saving..." : "Save Job"}
-                            </button>
-                          </div>
+                          <button
+                            className="save-btn"
+                            onClick={handleJobSubmit}
+                            disabled={loading}
+                          >
+                            {loading ? "Saving..." : "Save Job"}
+                          </button>
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
 
-                    {showJobsPopup && (
+                  {showJobsPopup && (
+                    <div
+                      style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100vh",
+                        background: "rgba(0,0,0,0.7)",
+                        zIndex: 9999,
+                        overflowY: "auto",
+                      }}
+                    >
                       <div
                         style={{
-                          position: "fixed",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          height: "100vh",
-                          background: "rgba(0,0,0,0.7)",
-                          zIndex: 9999,
+                          width: "90%",
+                          height: "90vh",
+                          background: "#fff",
+                          margin: "50px auto",
+                          borderRadius: "20px",
+                          padding: "20px",
+                          position: "relative",
                           overflowY: "auto",
                         }}
                       >
-                        <div
+                        <button
+                          onClick={() => setShowJobsPopup(false)}
                           style={{
-                            width: "90%",
-                            height: "90vh",
-                            background: "#fff",
-                            margin: "50px auto",
-                            borderRadius: "20px",
-                            padding: "20px",
-                            position: "relative",
-                            overflowY: "auto",
+                            position: "absolute",
+                            top: "15px",
+                            right: "15px",
+                            background: "red",
+                            color: "#fff",
+                            border: "none",
+                            padding: "10px 15px",
+                            borderRadius: "10px",
+                            cursor: "pointer",
                           }}
                         >
-                          <button
-                            onClick={() => setShowJobsPopup(false)}
-                            style={{
-                              position: "absolute",
-                              top: "15px",
-                              right: "15px",
-                              background: "red",
-                              color: "#fff",
-                              border: "none",
-                              padding: "10px 15px",
-                              borderRadius: "10px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            X
-                          </button>
+                          X
+                        </button>
 
-                          <h2>All Jobs</h2>
+                        <h2>All Jobs</h2>
 
-                          <div
-                            style={{
-                              display: "grid",
+                        <div
+                          style={{
+                            display: "grid",
 
-                              gap: "20px",
-                              marginTop: "30px",
-                            }}
-                          >
-                            {jobsData.map((item) => (
-                              <div
-                                key={item._id}
-                                onClick={() => setSelectedJob(item)}
+                            gap: "20px",
+                            marginTop: "30px",
+                          }}
+                        >
+                          {jobsData.map((item) => (
+                            <div
+                              key={item._id}
+                              onClick={() => setSelectedJob(item)}
+                              style={{
+                                background: "#f5f5f5",
+                                padding: "20px",
+                                borderRadius: "15px",
+                                cursor: "pointer",
+                                position: "relative",
+                              }}
+                            >
+                              <button
+                                onClick={() => {
+                                  deleteJob(item._id);
+                                }}
                                 style={{
-                                  background: "#f5f5f5",
-                                  padding: "20px",
-                                  borderRadius: "15px",
+                                  position: "absolute",
+                                  top: "10px",
+                                  right: "10px",
+                                  width: "40px",
+                                  height: "40px",
+                                  borderRadius: "50%",
+                                  border: "none",
+                                  background: "#ef4444",
+                                  color: "#fff",
                                   cursor: "pointer",
-                                  position: "relative",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  zIndex: 10,
                                 }}
                               >
-                                <button
-                                  onClick={() => {
-                                    deleteJob(item._id);
-                                  }}
-                                  style={{
-                                    position: "absolute",
-                                    top: "10px",
-                                    right: "10px",
-                                    width: "40px",
-                                    height: "40px",
-                                    borderRadius: "50%",
-                                    border: "none",
-                                    background: "#ef4444",
-                                    color: "#fff",
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    zIndex: 10,
-                                  }}
-                                >
-                                  <Trash2 size={18} />
-                                </button>
-                                <h3>{item.jobName}</h3>
+                                <Trash2 size={18} />
+                              </button>
+                              <h3>{item.jobName}</h3>
 
-                                <p>
-                                  <strong>Salary:</strong> ₹{item.salary}
-                                </p>
+                              <p>
+                                <strong>Salary:</strong> ₹{item.salary}
+                              </p>
 
-                                <p>
-                                  <strong>Date:</strong>{" "}
-                                  {new Date(
-                                    item.createdAt,
-                                  ).toLocaleDateString()}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
+                              <p>
+                                <strong>Date:</strong>{" "}
+                                {new Date(
+                                  item.createdAt,
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
 
-                    {selectedJob && (
+                  {selectedJob && (
+                    <div
+                      style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100vh",
+                        background: "rgba(0,0,0,0.7)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 10000,
+                      }}
+                    >
                       <div
                         style={{
-                          position: "fixed",
-                          top: 0,
-                          left: 0,
-                          width: "100%",
-                          height: "100vh",
-                          background: "rgba(0,0,0,0.7)",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          zIndex: 10000,
+                          width: "70%",
+                          maxHeight: "85vh",
+                          overflowY: "auto",
+                          background: "#fff",
+                          padding: "30px",
+                          borderRadius: "20px",
+                          position: "relative",
                         }}
                       >
-                        <div
+                        <button
+                          onClick={() => setSelectedJob(null)}
                           style={{
-                            width: "70%",
-                            maxHeight: "85vh",
-                            overflowY: "auto",
-                            background: "#fff",
-                            padding: "30px",
-                            borderRadius: "20px",
-                            position: "relative",
+                            position: "absolute",
+                            right: "20px",
+                            top: "20px",
+                            background: "red",
+                            color: "#fff",
+                            border: "none",
+                            padding: "10px",
+                            borderRadius: "8px",
                           }}
                         >
-                          <button
-                            onClick={() => setSelectedJob(null)}
-                            style={{
-                              position: "absolute",
-                              right: "20px",
-                              top: "20px",
-                              background: "red",
-                              color: "#fff",
-                              border: "none",
-                              padding: "10px",
-                              borderRadius: "8px",
-                            }}
-                          >
-                            X
-                          </button>
+                          X
+                        </button>
 
-                          <h1>{selectedJob.jobName}</h1>
+                        <h1>{selectedJob.jobName}</h1>
 
-                          <hr />
+                        <hr />
 
-                          <p>
-                            <strong>Summary:</strong> {selectedJob.jobSummary}
-                          </p>
+                        <p>
+                          <strong>Summary:</strong> {selectedJob.jobSummary}
+                        </p>
 
-                          <p>
-                            <strong>Salary:</strong> ₹{selectedJob.salary}
-                          </p>
+                        <p>
+                          <strong>Salary:</strong> ₹{selectedJob.salary}
+                        </p>
 
-                          <p>
-                            <strong>Job Type:</strong> {selectedJob.jobTime}
-                          </p>
+                        <p>
+                          <strong>Job Type:</strong> {selectedJob.jobTime}
+                        </p>
 
-                          <p>
-                            <strong>Experience:</strong>{" "}
-                            {selectedJob.experience} Years
-                          </p>
+                        <p>
+                          <strong>Experience:</strong>{" "}
+                          {selectedJob.experience} Years
+                        </p>
 
-                          <p>
-                            <strong>Location:</strong> {selectedJob.location}
-                          </p>
+                        <p>
+                          <strong>Location:</strong> {selectedJob.location}
+                        </p>
 
-                          <p>
-                            <strong>Qualification:</strong>{" "}
-                            {selectedJob.qualification}
-                          </p>
+                        <p>
+                          <strong>Qualification:</strong>{" "}
+                          {selectedJob.qualification}
+                        </p>
 
-                          <p>
-                            <strong>Posted On:</strong>{" "}
-                            {new Date(selectedJob.createdAt).toLocaleString()}
-                          </p>
+                        <p>
+                          <strong>Posted On:</strong>{" "}
+                          {new Date(selectedJob.createdAt).toLocaleString()}
+                        </p>
 
-                          <h3>Skills</h3>
+                        <h3>Skills</h3>
 
-                          <ul>
-                            {selectedJob.skills?.map((skill, index) => (
-                              <li key={index}>{skill}</li>
-                            ))}
-                          </ul>
+                        <ul>
+                          {selectedJob.skills?.map((skill, index) => (
+                            <li key={index}>{skill}</li>
+                          ))}
+                        </ul>
 
-                          <h3>Key Responsibilities</h3>
+                        <h3>Key Responsibilities</h3>
 
-                          <ul>
-                            {selectedJob.keyResponsibilities?.map(
-                              (item, index) => (
-                                <li key={index}>{item}</li>
-                              ),
-                            )}
-                          </ul>
-                        </div>
+                        <ul>
+                          {selectedJob.keyResponsibilities?.map(
+                            (item, index) => (
+                              <li key={index}>{item}</li>
+                            ),
+                          )}
+                        </ul>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* popup modal */}
-            {selectedCareer && (
+          {/* popup modal */}
+          {selectedCareer && (
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100vh",
+                background: "rgba(0,0,0,0.7)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9999,
+              }}
+            >
               <div
                 style={{
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100vh",
-                  background: "rgba(0,0,0,0.7)",
+                  background: "#fff",
+                  width: "650px",
+                  maxWidth: "90%",
+                  padding: "25px",
+                  borderRadius: "12px",
+                  position: "relative",
+                }}
+              >
+                {/* close */}
+                <button
+                  onClick={() => setSelectedCareer(null)}
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    border: "none",
+                    background: "red",
+                    color: "#fff",
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                    borderRadius: "5px",
+                  }}
+                >
+                  X
+                </button>
+
+                <h2>{selectedCareer.name}</h2>
+
+                <hr />
+
+                <p>
+                  <strong>Email:</strong> {selectedCareer.email}
+                </p>
+
+                <p>
+                  <strong>Phone:</strong> {selectedCareer.number}
+                </p>
+
+                <p>
+                  <strong>Job Title:</strong> {selectedCareer.position}
+                </p>
+
+                <p>
+                  <strong>Applied Date:</strong>{" "}
+                  {new Date(selectedCareer.createdAt).toLocaleString()}
+                </p>
+
+                {/* resume download */}
+                <a
+                  href={selectedCareer.rusume}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: "inline-block",
+                    marginTop: "20px",
+                    background: "#111",
+                    color: "#fff",
+                    padding: "12px 18px",
+                    borderRadius: "8px",
+                    textDecoration: "none",
+                  }}
+                >
+                  Download Resume
+                </a>
+              </div>
+            </div>
+          )}
+          {selectedMessage && (
+            <div
+              style={{
+                position: "fixed",
+                inset: 0,
+                background: "rgba(0,0,0,0.7)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 9999,
+              }}
+            >
+              <div
+                style={{
+                  background: "#fff",
+                  width: "600px",
+                  maxWidth: "90%",
+                  padding: "25px",
+                  borderRadius: "12px",
+                  position: "relative",
+                }}
+              >
+                <button
+                  onClick={() => setSelectedMessage(null)}
+                  style={{
+                    position: "absolute",
+                    top: "15px",
+                    right: "15px",
+                    border: "none",
+                    background: "red",
+                    color: "#fff",
+                    width: "35px",
+                    height: "35px",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                  }}
+                >
+                  X
+                </button>
+
+                <h2>{selectedMessage.name}</h2>
+
+                <hr />
+
+                <p>
+                  <strong>Email:</strong> {selectedMessage.email}
+                </p>
+
+                <p>
+                  <strong>Message:</strong>
+                </p>
+
+                <div
+                  style={{
+                    background: "#f5f5f5",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    marginTop: "8px",
+                  }}
+                >
+                  {selectedMessage.message}
+                </div>
+
+                <p style={{ marginTop: "15px" }}>
+                  <strong>Date:</strong>{" "}
+                  {new Date(
+                    selectedMessage.createdAt
+                  ).toLocaleString()}
+                </p>
+              </div>
+            </div>
+          )}
+          {/* Contact Box */}
+          <div className="message-card">
+            {/* header */}
+            <div
+              className="card-header"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h4>Contact Messages</h4>
+
+              {/* excel icon */}
+              <button
+                onClick={downloadMessagesExcel}
+                style={{
+                  border: "none",
+                  background: "#111",
+                  color: "#fff",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  cursor: "pointer",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  zIndex: 9999,
                 }}
               >
+                <Download size={20} />
+              </button>
+            </div>
+
+            <div className="message-list">
+              {messages.map((item) => (
                 <div
+                  key={item._id}
+                  className="message-item"
+                  onClick={() => setSelectedMessage(item)}
                   style={{
-                    background: "#fff",
-                    width: "650px",
-                    maxWidth: "90%",
-                    padding: "25px",
-                    borderRadius: "12px",
                     position: "relative",
+                    marginBottom: "12px",
+                    padding: "15px",
+                    border: "1px solid #2b2929",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    background: "#0ea5e9",
                   }}
                 >
-                  {/* close */}
+                  {/* Delete Button */}
                   <button
-                    onClick={() => setSelectedCareer(null)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteMessage(item._id);
+                    }}
                     style={{
                       position: "absolute",
                       top: "10px",
@@ -1224,297 +1380,138 @@ function HomeWishlan() {
                       border: "none",
                       background: "red",
                       color: "#fff",
-                      padding: "6px 12px",
-                      cursor: "pointer",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    X
-                  </button>
-
-                  <h2>{selectedCareer.name}</h2>
-
-                  <hr />
-
-                  <p>
-                    <strong>Email:</strong> {selectedCareer.email}
-                  </p>
-
-                  <p>
-                    <strong>Phone:</strong> {selectedCareer.number}
-                  </p>
-
-                  <p>
-                    <strong>Job Title:</strong> {selectedCareer.job_title}
-                  </p>
-
-                  <p>
-                    <strong>Applied Date:</strong>{" "}
-                    {new Date(selectedCareer.createdAt).toLocaleString()}
-                  </p>
-
-                  {/* resume download */}
-                  <a
-                    href={selectedCareer.resume}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      display: "inline-block",
-                      marginTop: "20px",
-                      background: "#111",
-                      color: "#fff",
-                      padding: "12px 18px",
-                      borderRadius: "8px",
-                      textDecoration: "none",
-                    }}
-                  >
-                    Download Resume
-                  </a>
-                </div>
-              </div>
-            )}
-            {selectedMessage && (
-              <div
-                style={{
-                  position: "fixed",
-                  inset: 0,
-                  background: "rgba(0,0,0,0.7)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 9999,
-                }}
-              >
-                <div
-                  style={{
-                    background: "#fff",
-                    width: "600px",
-                    maxWidth: "90%",
-                    padding: "25px",
-                    borderRadius: "12px",
-                    position: "relative",
-                  }}
-                >
-                  <button
-                    onClick={() => setSelectedMessage(null)}
-                    style={{
-                      position: "absolute",
-                      top: "15px",
-                      right: "15px",
-                      border: "none",
-                      background: "red",
-                      color: "#fff",
                       width: "35px",
                       height: "35px",
                       borderRadius: "50%",
                       cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    X
+                    <Trash2 size={18} />
                   </button>
 
-                  <h2>{selectedMessage.name}</h2>
+                  <h4 style={{ marginBottom: "8px", color: "#f5eeee" }}>
+                    {item.name}
+                  </h4>
 
-                  <hr />
-
-                  <p>
-                    <strong>Email:</strong> {selectedMessage.email}
+                  <p style={{ margin: "4px 0", color: "#dedcdc" }}>
+                    {item.email}
                   </p>
 
-                  <p>
-                    <strong>Message:</strong>
-                  </p>
-
-                  <div
-                    style={{
-                      background: "#f5f5f5",
-                      padding: "12px",
-                      borderRadius: "8px",
-                      marginTop: "8px",
-                    }}
-                  >
-                    {selectedMessage.message}
-                  </div>
-
-                  <p style={{ marginTop: "15px" }}>
-                    <strong>Date:</strong>{" "}
-                    {new Date(
-                      selectedMessage.createdAt
-                    ).toLocaleString()}
-                  </p>
+                  <small style={{ color: "#979494" }}>
+                    {new Date(item.createdAt).toLocaleString()}
+                  </small>
                 </div>
-              </div>
-            )}
-            {/* Contact Box */}
-            <div className="message-card">
-              {/* header */}
-              <div
-                className="card-header"
+              ))}
+            </div>
+          </div>
+
+          {/* Career Box */}
+          <div className="message-card">
+            {/* header */}
+            <div
+              className="card-header"
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h4>Careers Messages</h4>
+
+              {/* excel download icon */}
+              <button
+                onClick={downloadExcel}
                 style={{
+                  border: "none",
+                  background: "#111",
+                  color: "#fff",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  cursor: "pointer",
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                <h4>Contact Messages</h4>
-
-                {/* excel icon */}
-                <button
-                  onClick={downloadMessagesExcel}
-                  style={{
-                    border: "none",
-                    background: "#111",
-                    color: "#fff",
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Download size={20} />
-                </button>
-              </div>
-
-              <div className="message-list">
-                {messages.map((item) => (
-                  <div
-                    key={item._id}
-                    className="message-item"
-                    onClick={() => setSelectedMessage(item)}
-                    style={{
-                      position: "relative",
-                      marginBottom: "12px",
-                      padding: "15px",
-                      border: "1px solid #2b2929",
-                      borderRadius: "10px",
-                      cursor: "pointer",
-                      background: "#0ea5e9",
-                    }}
-                  >
-                    {/* Delete Button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteMessage(item._id);
-                      }}
-                      style={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                        border: "none",
-                        background: "red",
-                        color: "#fff",
-                        width: "35px",
-                        height: "35px",
-                        borderRadius: "50%",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Trash2 size={18} />
-                    </button>
-
-                    <h4 style={{ marginBottom: "8px", color: "#f5eeee" }}>
-                      {item.name}
-                    </h4>
-
-                    <p style={{ margin: "4px 0", color: "#dedcdc" }}>
-                      {item.email}
-                    </p>
-
-                    <small style={{ color: "#979494" }}>
-                      {new Date(item.createdAt).toLocaleString()}
-                    </small>
-                  </div>
-                ))}
-              </div>
+                <Download size={20} />
+              </button>
             </div>
 
-            {/* Career Box */}
-            <div className="message-card">
-              {/* header */}
-              <div
-                className="card-header"
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <h4>Careers Messages</h4>
-
-                {/* excel download icon */}
+            {/* careers list */}
+            <div className="button-group">
+              {careers.map((item) => (
                 <button
-                  onClick={downloadExcel}
+                  key={item._id}
+                  className="main-btn"
+                  onClick={() => setSelectedCareer(item)}
                   style={{
-                    border: "none",
-                    background: "#111",
-                    color: "#fff",
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    cursor: "pointer",
+                    width: "100%",
+                    marginBottom: "10px",
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    justifyContent: "space-between",
+                    alignItems: "end",
+
+                    padding: "12px",
+                    cursor: "pointer",
+                    flexDirection: "row",
+                    gap: "5px",
                   }}
                 >
-                  <Download size={20} />
-                </button>
-              </div>
-
-              {/* careers list */}
-              <div className="button-group">
-                {careers.map((item) => (
-                  <button
-                    key={item._id}
-                    className="main-btn"
-                    onClick={() => setSelectedCareer(item)}
+                  <div
                     style={{
                       width: "100%",
-                      marginBottom: "10px",
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "12px",
-                      cursor: "pointer",
                       flexDirection: "column",
-                      gap: "5px",
+                      alignItems: "start",
+
                     }}
                   >
-                    <div
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <span>{item.name}</span>
+                    <span style={{ color: "white", paddingBottom: "3px", fontWeight: "700" }}>
+                      {item.name?.charAt(0).toUpperCase() + item.name?.slice(1)}
+                    </span>
 
-                      <span>{item.job_title}</span>
-
+                    <span style={{ color: "#F2EDED", paddingBottom: "3px", fontWeight: "400" }}>
+                      {item.position?.charAt(0).toUpperCase() + item.position?.slice(1)}
+                    </span>
+                    <span style={{ color: "#B0B0B0", fontWeight: "100" }}>
                       {new Date(item.createdAt).toLocaleString()}
 
-                      <Trash2
-                        size={18}
-                        className="c_btm"
-                        onClick={() => deleteCareer(item._id)}
-                      />
-                    </div>
-                  </button>
-                ))}
-              </div>
+                    </span>
+
+
+
+                  </div>
+                  <div style={{
+                    alignSelf: "flex-start", // 👈 icon top par
+                    padding: "10px",
+                    backgroundColor: "red",
+                    borderRadius: "50px",
+                  }}>
+
+
+                    <Trash2
+                      size={18}
+                      className="c_btm"
+                      style={{
+                        display: "flex",
+                        alignItems: "top",
+                      }}
+                      onClick={() => deleteCareer(item._id)}
+                    />
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
         </div>
       </div>
     </div>
+    </div >
   );
 }
 

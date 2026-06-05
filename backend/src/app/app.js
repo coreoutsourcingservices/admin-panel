@@ -46,14 +46,7 @@ app.use("/bloge",blogRouter)
 app.use("/job",jobRouter)
 app.use("/wishlan",wishlanRouter)
 
-app.use(
-  express.static(
-    path.join(
-      __dirname,
-      "../../public"
-    )
-  )
-);
+
 
 
 
