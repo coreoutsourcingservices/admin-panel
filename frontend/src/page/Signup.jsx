@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { handleError, handleSuccess, handlePromise } from "../utils/Toast";
 import axios from "axios";
+import { backendUrl } from "../utils/api.js";
 
 function Signup() {
   const nevigete = useNavigate();
@@ -69,7 +70,7 @@ function Signup() {
     //  "https://admin-panel-fawn-iota.vercel.app/user/signupGetOTP",
     try {
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/signupGetOTP",
+        `${backendUrl}/user/signupGetOTP`,
 
         userData,
       );
@@ -82,7 +83,7 @@ function Signup() {
 
 
       setTimeout(() => {
-        nevigete("https://admin-panel-fawn-iota.vercel.app/verify-signup-OTP", {
+        nevigete(`${backendUrl}/verify-signup-OTP`, {
           state: sendEmail,
         });
       }, 2000);

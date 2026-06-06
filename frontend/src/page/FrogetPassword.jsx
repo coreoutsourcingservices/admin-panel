@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { handleError, handleSuccess, handlePromise } from "../utils/Toast";
+import { backendUrl } from "../utils/api.js";
 function FrogetPassword() {
      const location = useLocation();
   const navigate = useNavigate();
@@ -101,7 +102,7 @@ function FrogetPassword() {
 
         const response =
           await axios.post(
-            "https://admin-panel-fawn-iota.vercel.app/user/forgotPassword",
+            `${backendUrl}/user/forgotPassword`,
             {
               email,
               newPassword:

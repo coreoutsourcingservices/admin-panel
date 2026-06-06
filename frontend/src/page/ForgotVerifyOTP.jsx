@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { backendUrl } from "../utils/api.js";
 
 import { handleError, handleSuccess, handlePromise } from "../utils/Toast";
 
@@ -23,7 +24,7 @@ function ForgotVerifyOTP() {
       setLoading(true);
 
       const response = await axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/forgotPasswordVerifyOTP",
+        `${backendUrl}/user/forgotPasswordVerifyOTP`,
         {
           email,
           otp,

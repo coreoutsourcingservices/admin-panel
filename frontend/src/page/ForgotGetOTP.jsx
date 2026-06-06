@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../style/page/forgotgetotp.css";
+import { backendUrl } from "../utils/api.js";
 import { handleError, handleSuccess, handlePromise } from "../utils/Toast";
 
 function ForgotGetOTP() {
@@ -16,7 +17,7 @@ function ForgotGetOTP() {
       setLoading(true);
 
       const response = await axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/forgotPasswordGetOTP",
+        `${backendUrl}/user/forgotPasswordGetOTP`,
         {
           email,
         },

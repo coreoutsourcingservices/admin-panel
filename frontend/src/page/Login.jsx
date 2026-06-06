@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { handleError, handleSuccess, handlePromise } from "../utils/Toast";
 import axios from "axios";
+import { backendUrl } from "../utils/api.js";
 
 function Login() {
   const nevigete = useNavigate();
@@ -34,7 +35,7 @@ function Login() {
               // "https://admin-panel-fawn-iota.vercel.app/user/loginGetOTP",
 
       const prome = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/loginGetOTP",
+        `${backendUrl}/user/loginGetOTP`,
         userData,
       );
       handlePromise(prome);

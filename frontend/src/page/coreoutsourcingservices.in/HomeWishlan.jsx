@@ -8,6 +8,7 @@ import { Download } from "lucide-react";
 import JoditEditor from "jodit-react";
 import { Trash2 } from "lucide-react";
 import { useMemo } from "react";
+import { backendUrl } from "../../utils/api.js";
 import * as XLSX from "xlsx";
 import { handleError, handleSuccess } from "../../utils/Toast";
 
@@ -115,7 +116,7 @@ function HomeWishlan() {
   const getMessages = async () => {
     try {
       const response = await axios.get(
-        "/wishlan/content",
+        `${backendUrl}/wishlan/content`,
       );
 
       setMessages(response.data.data);
@@ -128,7 +129,7 @@ function HomeWishlan() {
   const getCareers = async () => {
     try {
       const response = await axios.get(
-        "/wishlan/get-career",
+        `${backendUrl}/wishlan/get-career`,
       );
 
       // console.log(response.data);
@@ -143,7 +144,7 @@ function HomeWishlan() {
   const deleteMessage = async (id) => {
     try {
       const response = await axios.delete(
-        `/wishlan/content/${id}`,
+        `${backendUrl}/wishlan/content/${id}`,
       );
 
       // console.log(response.data);
@@ -162,7 +163,7 @@ function HomeWishlan() {
   const deleteCareer = async (id) => {
     try {
       const response = await axios.delete(
-        `/wishlan/detate-career/${id}`,
+        `${backendUrl}/wishlan/detate-career/${id}`,
       );
 
       // console.log(response.data);
@@ -217,7 +218,7 @@ function HomeWishlan() {
   const getBlogs = async () => {
     try {
       const response = await axios.get(
-        "/wishlan/get-blogs",
+        `${backendUrl}/wishlan/get-blogs`,
       );
 
       setBlogData(response.data.data);
@@ -232,7 +233,7 @@ function HomeWishlan() {
     try {
 
       const response = await axios.get(
-        `/wishlan/get-blogs/${BlogHeadingURL}`,
+        `${backendUrl}/wishlan/get-blogs/${BlogHeadingURL}`,
       );
 
 
@@ -251,7 +252,7 @@ function HomeWishlan() {
   const deleteBlog = async (id) => {
     try {
       const response = await axios.delete(
-        `/wishlan/delete-blog/${id}`,
+        `${backendUrl}/wishlan/delete-blog/${id}`,
       );
 
       handleSuccess(response.data.message || "Blog Deleted Successfully");
@@ -305,7 +306,7 @@ function HomeWishlan() {
 
   const getJobs = async () => {
     try {
-      const response = await axios.get("/job/get-jobs");
+      const response = await axios.get(`${backendUrl}/job/get-jobs`);
 
       setJobsData(response.data.data);
     } catch (error) {
@@ -315,7 +316,7 @@ function HomeWishlan() {
   const deleteJob = async (id) => {
     try {
       const response = await axios.delete(
-        `/job/delete-job/${id}`,
+        `${backendUrl}/job/delete-job/${id}`,
       );
 
       setJobsData((prev) => prev.filter((item) => item._id !== id));
@@ -436,7 +437,7 @@ function HomeWishlan() {
       }
 
       const response = await axios.post(
-        "/wishlan/create-blog",
+        `${backendUrl}/wishlan/create-blog`,
         formData
       );
 

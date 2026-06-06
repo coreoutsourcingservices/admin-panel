@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { handleError, handleSuccess, handlePromise } from "../utils/Toast";
 import axios from "axios";
+import { backendUrl } from "../utils/api";
 
 function LongPageOTP() {
   const location = useLocation();
@@ -34,7 +35,7 @@ function LongPageOTP() {
     }
     try {
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/user/loginVerifyOTP",
+        `${backendUrl}/user/loginVerifyOTP`,
 
         userData,
       );

@@ -1,0 +1,1 @@
+export const backendUrl="https://admin-panel-fawn-iota.vercel.app" // backend deploy vercel

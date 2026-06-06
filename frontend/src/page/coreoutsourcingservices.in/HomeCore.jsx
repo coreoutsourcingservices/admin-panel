@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { Download } from "lucide-react";
+import { backendUrl } from "../../utils/api.js";
 
 import * as XLSX from "xlsx";
 import { Trash2 } from "lucide-react";
@@ -162,7 +163,7 @@ function HomeCore() {
   const getMessages = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/contact/form",
+        `${backendUrl}/contact/form`,
       );
 
       setMessages(response.data.data);
@@ -175,7 +176,7 @@ function HomeCore() {
   const getCareers = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/careers/fromdata",
+        `${backendUrl}/careers/fromdata`,
       );
 
       // console.log(response.data);
@@ -190,7 +191,7 @@ function HomeCore() {
   const deleteMessage = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/contact/form/${id}`,
+        `${backendUrl}/contact/form/${id}`,
       );
 
       // console.log(response.data);
@@ -209,7 +210,7 @@ function HomeCore() {
   const deleteCareer = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/careers/fromdata/${id}`,
+        `${backendUrl}/careers/fromdata/${id}`,
       );
 
       // console.log(response.data);
@@ -241,7 +242,7 @@ function HomeCore() {
       formData.append("property", partnerProperty);
 
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/partners/create-partner",
+      `${backendUrl}/partners/create-partner`,
         formData,
         {
           headers: {
@@ -292,7 +293,7 @@ function HomeCore() {
       formData.append("property", teamProperty);
 
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/ourteam/create-team",
+       `${backendUrl}/ourteam/create-team`,
         formData,
         {
           headers: {
@@ -326,7 +327,7 @@ function HomeCore() {
   const getTeamData = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/ourteam/get-team",
+        `${backendUrl}/ourteam/get-team`,
       );
 
       setTeamData(response.data.data.team);
@@ -339,7 +340,7 @@ function HomeCore() {
   const deleteTeamMember = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/ourteam/delete-our-team/${id}`,
+        `${backendUrl}/ourteam/delete-our-team/${id}`,
       );
 
       handleSuccess(
@@ -354,7 +355,7 @@ function HomeCore() {
   const getPartners = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/partners/get-partners",
+        `${backendUrl}/partners/get-partners`,
       );
 
       // console.log(response.data);
@@ -369,7 +370,7 @@ function HomeCore() {
   const deletePartner = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/partners/delete-partner/${id}`,
+        `${backendUrl}/partners/delete-partner/${id}`,
       );
 
       handleSuccess(response.data.message || "Partner Deleted Successfully");
@@ -395,7 +396,7 @@ function HomeCore() {
       formData.append("image", teamSecondImage);
 
       const promise = axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/teamsecond/create-team-second",
+       `${backendUrl}/teamsecond/create-team-second`,
         formData,
         {
           headers: {
@@ -432,7 +433,7 @@ function HomeCore() {
   const getTeamSecondData = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/teamsecond/get-team-second",
+        `${backendUrl}/teamsecond/get-team-second`,
       );
 
       setTeamSecondData(response.data.data);
@@ -446,7 +447,7 @@ function HomeCore() {
   const deleteTeamSecondMember = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/teamsecond/delete-team-second/${id}`,
+        `${backendUrl}/teamsecond/delete-team-second/${id}`,
       );
 
       handleSuccess(
@@ -500,7 +501,7 @@ function HomeCore() {
 
       // api
       const response = await axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/gallery/add-gallery",
+        `${backendUrl}/gallery/add-gallery`,
         formData,
         {
           headers: {
@@ -533,7 +534,7 @@ function HomeCore() {
   const getAllGallery = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/gallery/get-gallery",
+        `${backendUrl}/gallery/get-gallery`,
       );
 
       // console.log(response.data);
@@ -548,7 +549,7 @@ function HomeCore() {
   const deleteGallery = async (galleryId) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/gallery/delete-gallery/${galleryId}`,
+        `${backendUrl}/gallery/delete-gallery/${galleryId}`,
       );
 
       handleSuccess(response.data.message || "Gallery Deleted Successfully");
@@ -564,7 +565,7 @@ function HomeCore() {
   const deleteGalleryMedia = async (galleryId, mediaId) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/gallery/delete-gallery-media/${galleryId}/${mediaId}`,
+        `${backendUrl}/gallery/delete-gallery-media/${galleryId}/${mediaId}`,
       );
 
       handleSuccess(response.data.message || "Media Deleted Successfully");
@@ -622,7 +623,7 @@ function HomeCore() {
       });
 
       const response = await axios.post(
-        "https://admin-panel-fawn-iota.vercel.app/bloge/add-blog",
+       `${backendUrl}/bloge/add-blo`,
         formData,
         {
           headers: {
@@ -687,7 +688,7 @@ function HomeCore() {
   const getBlogs = async () => {
     try {
       const response = await axios.get(
-        "https://admin-panel-fawn-iota.vercel.app/bloge/get-blogs",
+       `${backendUrl}/bloge/get-blogs`,
       );
 
       setBlogData(response.data.data);
@@ -699,7 +700,7 @@ function HomeCore() {
   const deleteBlog = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/blog/delete-blog/${id}`,
+        `${backendUrl}/blog/delete-blog/${id}`,
       );
 
       handleSuccess(response.data.message || "Blog Deleted Successfully");
@@ -714,7 +715,7 @@ function HomeCore() {
     try {
       setLoading1(true);
 
-      const { data } = await axios.post("https://admin-panel-fawn-iota.vercel.app/job/add-job", {
+      const { data } = await axios.post(`${backendUrl}/job/add-job`, {
         jobName,
         jobSummary,
         salary,
@@ -753,7 +754,7 @@ function HomeCore() {
 
   const getJobs = async () => {
     try {
-      const response = await axios.get("https://admin-panel-fawn-iota.vercel.app/job/get-jobs");
+      const response = await axios.get(`${backendUrl}/job/get-jobs`);
 
       setJobsData(response.data.data);
     } catch (error) {
@@ -763,7 +764,7 @@ function HomeCore() {
   const deleteJob = async (id) => {
     try {
       const response = await axios.delete(
-        `https://admin-panel-fawn-iota.vercel.app/job/delete-job/${id}`,
+        `${backendUrl}/job/delete-job/${id}`,
       );
 
       setJobsData((prev) => prev.filter((item) => item._id !== id));
