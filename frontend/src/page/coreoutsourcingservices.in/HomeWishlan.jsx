@@ -654,7 +654,7 @@ function HomeWishlan() {
                               marginTop: "50px",
                             }}
                           >
-                            {blogData.map((item) => (
+                            {blogData?.map((item) => (
                               <div
                                 key={item._id}
                                 onClick={() => {
@@ -1005,7 +1005,7 @@ function HomeWishlan() {
                             marginTop: "30px",
                           }}
                         >
-                          {jobsData.map((item) => (
+                          {jobsData?.map((item) => (
                             <div
                               key={item._id}
                               onClick={() => setSelectedJob(item)}
@@ -1352,7 +1352,7 @@ function HomeWishlan() {
             </div>
 
             <div className="message-list">
-              {messages.map((item) => (
+              {messages?.map((item) => (
                 <div
                   key={item._id}
                   className="message-item"
@@ -1443,7 +1443,7 @@ function HomeWishlan() {
 
             {/* careers list */}
             <div className="button-group">
-              {careers.map((item) => (
+              {careers?.map((item) => (
                 <button
                   key={item._id}
                   className="main-btn"
