@@ -511,10 +511,10 @@ function HomeWishlan() {
 
                   {/* left menu */}
                   <div className="popup-sidebar">
-                    <h3>Manage Bloge</h3>
+                    <h3>Manage Blog</h3>
 
                     <button onClick={() => setAddBlogPopup(true)}>
-                      Add Blog
+                      Add Blogs
                     </button>
 
                     <button onClick={() => setShowBlogPopup(true)}>
