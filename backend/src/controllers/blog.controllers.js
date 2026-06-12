@@ -4,7 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 // Add Blog
 export const addBlog = async (req, res) => {
   try {
-    const { heading, blag } = req.body;
+    const { heading, blag , headingUrl } = req.body;
 
     const images =
       req.files?.map((file) => ({
@@ -13,6 +13,7 @@ export const addBlog = async (req, res) => {
 
     const blog = await Bloge.create({
       heading,
+      headingUrl,
       blag: [
         {
           ...JSON.parse(blag),

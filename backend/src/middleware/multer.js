@@ -36,7 +36,7 @@ const storagePartnerImage = new CloudinaryStorage({
 
     return {
       folder: "partners",
-      resource_type:  "auto",
+      resource_type:  "auto"sss,
       allowed_formats: ["jpg", "jpeg", "png" , "svg"],
       public_id: imageName,
     };

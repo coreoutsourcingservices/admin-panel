@@ -602,9 +602,16 @@ function HomeCore() {
     try {
       setSavingBloge(true);
       const formData = new FormData();
+      const headingUrl =
+      blogHeading
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
 
-      formData.append("heading", blogHeading);
 
+        formData.append("heading", blogHeading);
+        formData.append("headingUrl", headingUrl);
       formData.append(
         "blag",
         JSON.stringify({
@@ -634,7 +641,7 @@ function HomeCore() {
 
       handleSuccess("Blog Added Successfully 😎");
 
-      console.log(response.data);
+      // console.log(response.data);
 
       setBlgePopup(false);
 
