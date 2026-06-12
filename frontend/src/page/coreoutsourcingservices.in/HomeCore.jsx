@@ -630,7 +630,7 @@ function HomeCore() {
       });
 
       const response = await axios.post(
-       `${backendUrl}/bloge/add-blog`,
+       `${backendUrl}/bloge/add-blog`, 
         formData,
         {
           headers: {
