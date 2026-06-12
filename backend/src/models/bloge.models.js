@@ -6,6 +6,12 @@ const blogeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    headingUrl:{
+      type: String,
+      required: true,
+       unique: true,
+
+    },
 
     blag: [
       {
