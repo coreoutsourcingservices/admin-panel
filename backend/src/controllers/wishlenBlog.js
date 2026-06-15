@@ -68,7 +68,7 @@ export const getBlogs = async (req, res) => {
 
 export const getSingleBlog = async (req, res) => {
   try {
-    const { BlogHeadingURL } = req.params;
+    const { id } = req.params;
 
     const blog =  await WishlanBlog.findByIdAndDelete(
         req.params.id
@@ -95,6 +95,8 @@ export const getSingleBlog = async (req, res) => {
 
 export const deleteBlog = async (req, res) => {
   try {
+    
+
     const blog =
       await WishlanBlog.findByIdAndDelete(
         req.params.id

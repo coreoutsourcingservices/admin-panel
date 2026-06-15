@@ -659,7 +659,7 @@ function HomeWishlan() {
                               <div
                                 key={item._id}
                                 onClick={() => {
-                                  getBlogsOne(item.BlogHeadingURL);
+                                  getBlogsOne(item._id);
                                 }}
                                 style={{
                                   background: "#f5f5f5",
