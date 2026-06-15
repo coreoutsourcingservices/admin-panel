@@ -70,9 +70,7 @@ export const getSingleBlog = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const blog =  await WishlanBlog.findByIdAndDelete(
-        req.params.id
-      );
+    const blog = await WishlanBlog.findById(id);
 
     if (!blog) {
       return res.status(404).json({
@@ -95,13 +93,11 @@ export const getSingleBlog = async (req, res) => {
 
 export const deleteBlog = async (req, res) => {
   try {
-    
 
-    const blog =
-      await WishlanBlog.findByIdAndDelete(
-        req.params.id
-      );
 
+    const blog =await WishlanBlog.findByIdAndDelete(
+  req.params.id
+);
     if (!blog) {
       return res.status(404).json({
         success: false,

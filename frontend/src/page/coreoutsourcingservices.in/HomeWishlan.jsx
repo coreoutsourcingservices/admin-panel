@@ -229,11 +229,11 @@ function HomeWishlan() {
 
 
 
-  const getBlogsOne = async (BlogHeadingURL) => {
+  const getBlogsOne = async (id) => {
     try {
 
       const response = await axios.get(
-        `${backendUrl}/wishlan/get-blogs/${BlogHeadingURL}`,
+        `${backendUrl}/wishlan/get-blogs/${id}`,
       );
 
 
