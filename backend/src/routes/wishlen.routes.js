@@ -39,7 +39,7 @@ router.post("/create-blog", uploadBlogeWishlanPhoto.single("BlogImage"),createBl
 
 router.get("/get-blogs", getBlogs);
 
-router.get("/get-blogs/:BlogHeadingURL", getSingleBlog);
+router.get("/get-blogs/:id", getSingleBlog);
 
 router.delete("/delete-blog/:id", deleteBlog);
 
