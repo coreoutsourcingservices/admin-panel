@@ -70,9 +70,9 @@ export const getSingleBlog = async (req, res) => {
   try {
     const { BlogHeadingURL } = req.params;
 
-    const blog = await WishlanBlog.findOne({
-      BlogHeadingURL,
-    });
+    const blog =  await WishlanBlog.findByIdAndDelete(
+        req.params.id
+      );
 
     if (!blog) {
       return res.status(404).json({

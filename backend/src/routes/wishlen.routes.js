@@ -25,14 +25,8 @@ router.post("/content", createContact);
 router.get("/content", getAllContacts);
 router.delete("/content/:id", deleteContact);
 
-router.get("/blog/:slug", (req, res) => {
-  res.sendFile(
-    path.join(
-      __dirname,
-      "../../public/blog/bloge_detail.html"
-    )
-  );
-});
+
+
 
 
 
