@@ -83,7 +83,7 @@ function Signup() {
 
 
       setTimeout(() => {
-        nevigete(`${backendUrl}/verify-signup-OTP`, {
+        nevigete(`/verify-signup-OTP`, {
           state: sendEmail,
         });
       }, 2000);

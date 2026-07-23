@@ -57,8 +57,9 @@ function App() {
           path="/verify-signup-OTP"
           element={
             <OTPprotected>
-              <OTPsigupPage />
-            </OTPprotected>
+            <OTPsigupPage />
+              </OTPprotected>
+
           }
         />
 

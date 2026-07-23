@@ -630,7 +630,7 @@ function HomeCore() {
       });
 
       const response = await axios.post(
-       `${backendUrl}/bloge/add-blog`, 
+       `${backendUrl}/bloge/add-blog`,
         formData,
         {
           headers: {
@@ -2969,7 +2969,7 @@ function HomeCore() {
                     >
                       <span>{item.name}</span>
 
-                      <span>{item.job_title}</span>
+                      {/* <span>{item.job_title}</span> */}
 
                       {new Date(item.createdAt).toLocaleString()}
 
