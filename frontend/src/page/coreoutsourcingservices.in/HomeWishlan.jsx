@@ -25,6 +25,8 @@ function HomeWishlan() {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [careers, setCareers] = useState([]);
   const [selectedCareer, setSelectedCareer] = useState(null);
+  const [resumeDownloadUrl, setResumeDownloadUrl] = useState(null);
+  const [resumeViewUrl, setResumeViewUrl] = useState(null);
   const [showBlogPopup, setShowBlogPopup] = useState(false);
   const [savingBlge, setSavingBloge] = useState(false);
   const [wishlenBlge, setWishlenBlge] = useState(false);
@@ -401,12 +403,12 @@ function HomeWishlan() {
       setWishlanSavingBlog(true);
 
       const formData = new FormData();
-          const wishlanBlogHeadingURL =
-      wishlanBlogHeading
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .replace(/\s+/g, "-");
+      const wishlanBlogHeadingURL =
+        wishlanBlogHeading
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-");
 
 
 
@@ -459,6 +461,20 @@ function HomeWishlan() {
   };
 
 
+  const getResumeDownloadUrl = (url) => {
+    if (!url) return "";
+
+    // Cloudinary image URL
+    if (url.includes("res.cloudinary.com")) {
+      return url.replace(
+        "/image/upload/",
+        "/image/upload/fl_attachment/"
+      );
+    }
+
+    return url;
+  };
+
 
   let name = "Wishlan.in";
   return (
@@ -472,7 +488,7 @@ function HomeWishlan() {
 
 
 
-                        {/* <button>Contacts</button>  */}
+            {/* <button>Contacts</button>  */}
 
 
             <button onClick={() => setJobPop(true)}>Careers</button>
@@ -744,19 +760,19 @@ function HomeWishlan() {
 
 
 
-                              <img
-                                src={
-                                  selectedBlog.BlogImage
-                                }
-                                alt={selectedBlog.BlogHeading}
-                                style={{
-                                  marginLeft:"0px",marginRight:"0px"
-                                }}
-                                style={{
-                                    width:"85%",
-                                    marginLeft:"70px"
-                                }}
-                              />
+                            <img
+                              src={
+                                selectedBlog.BlogImage
+                              }
+                              alt={selectedBlog.BlogHeading}
+                              style={{
+                                marginLeft: "0px", marginRight: "0px"
+                              }}
+                              style={{
+                                width: "85%",
+                                marginLeft: "70px"
+                              }}
+                            />
 
 
 
@@ -778,11 +794,12 @@ function HomeWishlan() {
 
                             <div
                               dangerouslySetInnerHTML={{
-                                __html: selectedBlog  .BlogContent,
+                                __html: selectedBlog.BlogContent,
                               }}
                               style={
-                                {marginLeft:"80px",
-                                  marginRight:"80px"
+                                {
+                                  marginLeft: "80px",
+                                  marginRight: "80px"
                                 }
                               }
                             />
@@ -790,12 +807,12 @@ function HomeWishlan() {
 
 
 
+                          </div>
                         </div>
                       </div>
-                      </div>
                     )}
+                  </div>
                 </div>
-              </div>
               </div>
             )}
 
@@ -805,575 +822,392 @@ function HomeWishlan() {
 
 
 
-          {jobPop && (
-            <div className="home-popup-overlay">
-              <div className="home-popup">
-                {/* close */}
-                <button
-                  className="popup-close-btn"
-                  onClick={() => setJobPop(false)}
-                >
-                  X
-                </button>
-
-                {/* left menu */}
-                <div className="popup-sidebar">
-                  <h3>Manage job both website
-                    <p style={{ fontSize: "10px", fontWeight: "100", color: "#B0B0B0" }}>1-coreoutsourcingservices</p>
-                    <p style={{ fontSize: "10px", fontWeight: "100", color: "#B0B0B0" }}>2-wishlen</p>
-                  </h3>
-
-                  <button onClick={() => setJobPopup(true)}>Add job</button>
-
-                  <button onClick={() => setShowJobsPopup(true)}>
-                    Show Jobs
+            {jobPop && (
+              <div className="home-popup-overlay">
+                <div className="home-popup">
+                  {/* close */}
+                  <button
+                    className="popup-close-btn"
+                    onClick={() => setJobPop(false)}
+                  >
+                    X
                   </button>
-                </div>
 
-                {/* right content */}
-                <div className="popup-content">
-                  {jobPopup && (
-                    <div className="inner-popup-overlay">
-                      <div className="inner-popup">
-                        <h2>Add Job</h2>
+                  {/* left menu */}
+                  <div className="popup-sidebar">
+                    <h3>Manage job both website
+                      <p style={{ fontSize: "10px", fontWeight: "100", color: "#B0B0B0" }}>1-coreoutsourcingservices</p>
+                      <p style={{ fontSize: "10px", fontWeight: "100", color: "#B0B0B0" }}>2-wishlen</p>
+                    </h3>
 
-                        <div className="input-group">
-                          <label>Job Name</label>
-                          <input
-                            type="text"
-                            placeholder="Enter Job Name"
-                            value={jobName}
-                            onChange={(e) => setJobName(e.target.value)}
-                          />
-                        </div>
+                    <button onClick={() => setJobPopup(true)}>Add job</button>
 
-                        <div className="input-group">
-                          <label>Job Summary</label>
-                          <textarea
-                            rows="4"
-                            placeholder="Enter Job Summary"
-                            value={jobSummary}
-                            onChange={(e) => setJobSummary(e.target.value)}
-                          />
-                        </div>
+                    <button onClick={() => setShowJobsPopup(true)}>
+                      Show Jobs
+                    </button>
+                  </div>
 
-                        <div className="input-group">
-                          <label>Salary</label>
-                          <input
-                            type="text"
-                            placeholder="Enter Salary"
-                            value={salary}
-                            onChange={(e) => setSalary(e.target.value)}
-                          />
-                        </div>
+                  {/* right content */}
+                  <div className="popup-content">
+                    {jobPopup && (
+                      <div className="inner-popup-overlay">
+                        <div className="inner-popup">
+                          <h2>Add Job</h2>
 
-                        <div className="input-group">
-                          <label>Job Type</label>
-                          <select
-                            value={jobTime}
-                            onChange={(e) => setJobTime(e.target.value)}
-                          >
-                            <option value="Full Time">Full Time</option>
-                            <option value="Part Time">Part Time</option>
-                            <option value="Remote">Remote</option>
-                            <option value="Internship">Internship</option>
-                          </select>
-                        </div>
+                          <div className="input-group">
+                            <label>Job Name</label>
+                            <input
+                              type="text"
+                              placeholder="Enter Job Name"
+                              value={jobName}
+                              onChange={(e) => setJobName(e.target.value)}
+                            />
+                          </div>
 
-                        <div className="input-group">
-                          <label>Experience</label>
-                          <input
-                            type="text"
-                            placeholder="1-2 Years"
-                            value={experience}
-                            onChange={(e) => setExperience(e.target.value)}
-                          />
-                        </div>
+                          <div className="input-group">
+                            <label>Job Summary</label>
+                            <textarea
+                              rows="4"
+                              placeholder="Enter Job Summary"
+                              value={jobSummary}
+                              onChange={(e) => setJobSummary(e.target.value)}
+                            />
+                          </div>
 
-                        <div className="input-group">
-                          <label>Location</label>
-                          <input
-                            type="text"
-                            placeholder="Enter Location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                          />
-                        </div>
+                          <div className="input-group">
+                            <label>Salary</label>
+                            <input
+                              type="text"
+                              placeholder="Enter Salary"
+                              value={salary}
+                              onChange={(e) => setSalary(e.target.value)}
+                            />
+                          </div>
 
-                        <div className="input-group">
-                          <label>Qualification</label>
-                          <input
-                            type="text"
-                            placeholder="B.Tech / MCA / BCA"
-                            value={qualification}
-                            onChange={(e) => setQualification(e.target.value)}
-                          />
-                        </div>
+                          <div className="input-group">
+                            <label>Job Type</label>
+                            <select
+                              value={jobTime}
+                              onChange={(e) => setJobTime(e.target.value)}
+                            >
+                              <option value="Full Time">Full Time</option>
+                              <option value="Part Time">Part Time</option>
+                              <option value="Remote">Remote</option>
+                              <option value="Internship">Internship</option>
+                            </select>
+                          </div>
 
-                        <div className="input-group">
-                          <label>Skills (Comma Separated)</label>
-                          <textarea
-                            rows="3"
-                            placeholder="React, Node.js, Express, MongoDB"
-                            value={skills}
-                            onChange={(e) => setSkills(e.target.value)}
-                          />
-                        </div>
+                          <div className="input-group">
+                            <label>Experience</label>
+                            <input
+                              type="text"
+                              placeholder="1-2 Years"
+                              value={experience}
+                              onChange={(e) => setExperience(e.target.value)}
+                            />
+                          </div>
 
-                        <div className="input-group">
-                          <label>
-                            Key Responsibilities (Comma Separated)
-                          </label>
-                          <textarea
-                            rows="4"
-                            placeholder="Build APIs, Create UI, Database Management"
-                            value={keyResponsibilities}
-                            onChange={(e) =>
-                              setKeyResponsibilities(e.target.value)
-                            }
-                          />
-                        </div>
+                          <div className="input-group">
+                            <label>Location</label>
+                            <input
+                              type="text"
+                              placeholder="Enter Location"
+                              value={location}
+                              onChange={(e) => setLocation(e.target.value)}
+                            />
+                          </div>
 
-                        <div className="popup-btn-group">
-                          <button
-                            className="cancel-btn"
-                            onClick={() => setJobPopup(false)}
-                          >
-                            Cancel
-                          </button>
+                          <div className="input-group">
+                            <label>Qualification</label>
+                            <input
+                              type="text"
+                              placeholder="B.Tech / MCA / BCA"
+                              value={qualification}
+                              onChange={(e) => setQualification(e.target.value)}
+                            />
+                          </div>
 
-                          <button
-                            className="save-btn"
-                            onClick={handleJobSubmit}
-                            disabled={loading}
-                          >
-                            {loading ? "Saving..." : "Save Job"}
-                          </button>
+                          <div className="input-group">
+                            <label>Skills (Comma Separated)</label>
+                            <textarea
+                              rows="3"
+                              placeholder="React, Node.js, Express, MongoDB"
+                              value={skills}
+                              onChange={(e) => setSkills(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="input-group">
+                            <label>
+                              Key Responsibilities (Comma Separated)
+                            </label>
+                            <textarea
+                              rows="4"
+                              placeholder="Build APIs, Create UI, Database Management"
+                              value={keyResponsibilities}
+                              onChange={(e) =>
+                                setKeyResponsibilities(e.target.value)
+                              }
+                            />
+                          </div>
+
+                          <div className="popup-btn-group">
+                            <button
+                              className="cancel-btn"
+                              onClick={() => setJobPopup(false)}
+                            >
+                              Cancel
+                            </button>
+
+                            <button
+                              className="save-btn"
+                              onClick={handleJobSubmit}
+                              disabled={loading}
+                            >
+                              {loading ? "Saving..." : "Save Job"}
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {showJobsPopup && (
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100vh",
-                        background: "rgba(0,0,0,0.7)",
-                        zIndex: 9999,
-                        overflowY: "auto",
-                      }}
-                    >
+                    {showJobsPopup && (
                       <div
                         style={{
-                          width: "90%",
-                          height: "90vh",
-                          background: "#fff",
-                          margin: "50px auto",
-                          borderRadius: "20px",
-                          padding: "20px",
-                          position: "relative",
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100vh",
+                          background: "rgba(0,0,0,0.7)",
+                          zIndex: 9999,
                           overflowY: "auto",
                         }}
                       >
-                        <button
-                          onClick={() => setShowJobsPopup(false)}
-                          style={{
-                            position: "absolute",
-                            top: "15px",
-                            right: "15px",
-                            background: "red",
-                            color: "#fff",
-                            border: "none",
-                            padding: "10px 15px",
-                            borderRadius: "10px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          X
-                        </button>
-
-                        <h2>All Jobs</h2>
-
                         <div
                           style={{
-                            display: "grid",
-
-                            gap: "20px",
-                            marginTop: "30px",
+                            width: "90%",
+                            height: "90vh",
+                            background: "#fff",
+                            margin: "50px auto",
+                            borderRadius: "20px",
+                            padding: "20px",
+                            position: "relative",
+                            overflowY: "auto",
                           }}
                         >
-                          {jobsData?.map((item) => (
-                            <div
-                              key={item._id}
-                              onClick={() => setSelectedJob(item)}
-                              style={{
-                                background: "#f5f5f5",
-                                padding: "20px",
-                                borderRadius: "15px",
-                                cursor: "pointer",
-                                position: "relative",
-                              }}
-                            >
-                              <button
-                                onClick={() => {
-                                  deleteJob(item._id);
-                                }}
+                          <button
+                            onClick={() => setShowJobsPopup(false)}
+                            style={{
+                              position: "absolute",
+                              top: "15px",
+                              right: "15px",
+                              background: "red",
+                              color: "#fff",
+                              border: "none",
+                              padding: "10px 15px",
+                              borderRadius: "10px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            X
+                          </button>
+
+                          <h2>All Jobs</h2>
+
+                          <div
+                            style={{
+                              display: "grid",
+
+                              gap: "20px",
+                              marginTop: "30px",
+                            }}
+                          >
+                            {jobsData?.map((item) => (
+                              <div
+                                key={item._id}
+                                onClick={() => setSelectedJob(item)}
                                 style={{
-                                  position: "absolute",
-                                  top: "10px",
-                                  right: "10px",
-                                  width: "40px",
-                                  height: "40px",
-                                  borderRadius: "50%",
-                                  border: "none",
-                                  background: "#ef4444",
-                                  color: "#fff",
+                                  background: "#f5f5f5",
+                                  padding: "20px",
+                                  borderRadius: "15px",
                                   cursor: "pointer",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  zIndex: 10,
+                                  position: "relative",
                                 }}
                               >
-                                <Trash2 size={18} />
-                              </button>
-                              <h3>{item.jobName}</h3>
+                                <button
+                                  onClick={() => {
+                                    deleteJob(item._id);
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: "10px",
+                                    right: "10px",
+                                    width: "40px",
+                                    height: "40px",
+                                    borderRadius: "50%",
+                                    border: "none",
+                                    background: "#ef4444",
+                                    color: "#fff",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    zIndex: 10,
+                                  }}
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                                <h3>{item.jobName}</h3>
 
-                              <p>
-                                <strong>Salary:</strong> ₹{item.salary}
-                              </p>
+                                <p>
+                                  <strong>Salary:</strong> ₹{item.salary}
+                                </p>
 
-                              <p>
-                                <strong>Date:</strong>{" "}
-                                {new Date(
-                                  item.createdAt,
-                                ).toLocaleDateString()}
-                              </p>
-                            </div>
-                          ))}
+                                <p>
+                                  <strong>Date:</strong>{" "}
+                                  {new Date(
+                                    item.createdAt,
+                                  ).toLocaleDateString()}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {selectedJob && (
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100vh",
-                        background: "rgba(0,0,0,0.7)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 10000,
-                      }}
-                    >
+                    {selectedJob && (
                       <div
                         style={{
-                          width: "70%",
-                          maxHeight: "85vh",
-                          overflowY: "auto",
-                          background: "#fff",
-                          padding: "30px",
-                          borderRadius: "20px",
-                          position: "relative",
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100vh",
+                          background: "rgba(0,0,0,0.7)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          zIndex: 10000,
                         }}
                       >
-                        <button
-                          onClick={() => setSelectedJob(null)}
+                        <div
                           style={{
-                            position: "absolute",
-                            right: "20px",
-                            top: "20px",
-                            background: "red",
-                            color: "#fff",
-                            border: "none",
-                            padding: "10px",
-                            borderRadius: "8px",
+                            width: "70%",
+                            maxHeight: "85vh",
+                            overflowY: "auto",
+                            background: "#fff",
+                            padding: "30px",
+                            borderRadius: "20px",
+                            position: "relative",
                           }}
                         >
-                          X
-                        </button>
+                          <button
+                            onClick={() => setSelectedJob(null)}
+                            style={{
+                              position: "absolute",
+                              right: "20px",
+                              top: "20px",
+                              background: "red",
+                              color: "#fff",
+                              border: "none",
+                              padding: "10px",
+                              borderRadius: "8px",
+                            }}
+                          >
+                            X
+                          </button>
 
-                        <h1>{selectedJob.jobName}</h1>
+                          <h1>{selectedJob.jobName}</h1>
 
-                        <hr />
+                          <hr />
 
-                        <p>
-                          <strong>Summary:</strong> {selectedJob.jobSummary}
-                        </p>
+                          <p>
+                            <strong>Summary:</strong> {selectedJob.jobSummary}
+                          </p>
 
-                        <p>
-                          <strong>Salary:</strong> ₹{selectedJob.salary}
-                        </p>
+                          <p>
+                            <strong>Salary:</strong> ₹{selectedJob.salary}
+                          </p>
 
-                        <p>
-                          <strong>Job Type:</strong> {selectedJob.jobTime}
-                        </p>
+                          <p>
+                            <strong>Job Type:</strong> {selectedJob.jobTime}
+                          </p>
 
-                        <p>
-                          <strong>Experience:</strong>{" "}
-                          {selectedJob.experience} Years
-                        </p>
+                          <p>
+                            <strong>Experience:</strong>{" "}
+                            {selectedJob.experience} Years
+                          </p>
 
-                        <p>
-                          <strong>Location:</strong> {selectedJob.location}
-                        </p>
+                          <p>
+                            <strong>Location:</strong> {selectedJob.location}
+                          </p>
 
-                        <p>
-                          <strong>Qualification:</strong>{" "}
-                          {selectedJob.qualification}
-                        </p>
+                          <p>
+                            <strong>Qualification:</strong>{" "}
+                            {selectedJob.qualification}
+                          </p>
 
-                        <p>
-                          <strong>Posted On:</strong>{" "}
-                          {new Date(selectedJob.createdAt).toLocaleString()}
-                        </p>
+                          <p>
+                            <strong>Posted On:</strong>{" "}
+                            {new Date(selectedJob.createdAt).toLocaleString()}
+                          </p>
 
-                        <h3>Skills</h3>
+                          <h3>Skills</h3>
 
-                        <ul>
-                          {selectedJob.skills?.map((skill, index) => (
-                            <li key={index}>{skill}</li>
-                          ))}
-                        </ul>
+                          <ul>
+                            {selectedJob.skills?.map((skill, index) => (
+                              <li key={index}>{skill}</li>
+                            ))}
+                          </ul>
 
-                        <h3>Key Responsibilities</h3>
+                          <h3>Key Responsibilities</h3>
 
-                        <ul>
-                          {selectedJob.keyResponsibilities?.map(
-                            (item, index) => (
-                              <li key={index}>{item}</li>
-                            ),
-                          )}
-                        </ul>
+                          <ul>
+                            {selectedJob.keyResponsibilities?.map(
+                              (item, index) => (
+                                <li key={index}>{item}</li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* popup modal */}
-          {selectedCareer && (
-            <div
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100vh",
-                background: "rgba(0,0,0,0.7)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9999,
-              }}
-            >
+            {/* popup modal */}
+            {selectedCareer && (
               <div
                 style={{
-                  background: "#fff",
-                  width: "650px",
-                  maxWidth: "90%",
-                  padding: "25px",
-                  borderRadius: "12px",
-                  position: "relative",
-                }}
-              >
-                {/* close */}
-                <button
-                  onClick={() => setSelectedCareer(null)}
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    border: "none",
-                    background: "red",
-                    color: "#fff",
-                    padding: "6px 12px",
-                    cursor: "pointer",
-                    borderRadius: "5px",
-                  }}
-                >
-                  X
-                </button>
-
-                <h2>{selectedCareer.name}</h2>
-
-                <hr />
-
-                <p>
-                  <strong>Email:</strong> {selectedCareer.email}
-                </p>
-
-                <p>
-                  <strong>Phone:</strong> {selectedCareer.number}
-                </p>
-
-                <p>
-                  <strong>Job Title:</strong> {selectedCareer.position}
-                </p>
-
-                <p>
-                  <strong>Applied Date:</strong>{" "}
-                  {new Date(selectedCareer.createdAt).toLocaleString()}
-                </p>
-
-                {/* resume download */}
-                <a
-                  href={selectedCareer.rusume}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: "inline-block",
-                    marginTop: "20px",
-                    background: "#111",
-                    color: "#fff",
-                    padding: "12px 18px",
-                    borderRadius: "8px",
-                    textDecoration: "none",
-                  }}
-                >
-                  Download Resume
-                </a>
-              </div>
-            </div>
-          )}
-          {selectedMessage && (
-            <div
-              style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(0,0,0,0.7)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9999,
-              }}
-            >
-              <div
-                style={{
-                  background: "#fff",
-                  width: "600px",
-                  maxWidth: "90%",
-                  padding: "25px",
-                  borderRadius: "12px",
-                  position: "relative",
-                }}
-              >
-                <button
-                  onClick={() => setSelectedMessage(null)}
-                  style={{
-                    position: "absolute",
-                    top: "15px",
-                    right: "15px",
-                    border: "none",
-                    background: "red",
-                    color: "#fff",
-                    width: "35px",
-                    height: "35px",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                  }}
-                >
-                  X
-                </button>
-
-                <h2>{selectedMessage.name}</h2>
-
-                <hr />
-
-                <p>
-                  <strong>Email:</strong> {selectedMessage.email}
-                </p>
-
-                <p>
-                  <strong>Message:</strong>
-                </p>
-
-                <div
-                  style={{
-                    background: "#f5f5f5",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    marginTop: "8px",
-                  }}
-                >
-                  {selectedMessage.message}
-                </div>
-
-                <p style={{ marginTop: "15px" }}>
-                  <strong>Date:</strong>{" "}
-                  {new Date(
-                    selectedMessage.createdAt
-                  ).toLocaleString()}
-                </p>
-              </div>
-            </div>
-          )}
-          {/* Contact Box */}
-          <div className="message-card">
-            {/* header */}
-            <div
-              className="card-header"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h4>Contact Messages</h4>
-
-              {/* excel icon */}
-              <button
-                onClick={downloadMessagesExcel}
-                style={{
-                  border: "none",
-                  background: "#111",
-                  color: "#fff",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  cursor: "pointer",
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100vh",
+                  background: "rgba(0,0,0,0.7)",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  zIndex: 9999,
                 }}
               >
-                <Download size={20} />
-              </button>
-            </div>
-
-            <div className="message-list">
-              {messages?.map((item) => (
                 <div
-                  key={item._id}
-                  className="message-item"
-                  onClick={() => setSelectedMessage(item)}
                   style={{
+                    background: "#fff",
+                    width: "650px",
+                    maxWidth: "90%",
+                    padding: "25px",
+                    borderRadius: "12px",
                     position: "relative",
-                    marginBottom: "12px",
-                    padding: "15px",
-                    border: "1px solid #2b2929",
-                    borderRadius: "10px",
-                    cursor: "pointer",
-                    background: "#0ea5e9",
                   }}
                 >
-                  {/* Delete Button */}
+                  {/* close */}
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteMessage(item._id);
-                    }}
+                    onClick={() => setSelectedCareer(null)}
                     style={{
                       position: "absolute",
                       top: "10px",
@@ -1381,137 +1215,485 @@ function HomeWishlan() {
                       border: "none",
                       background: "red",
                       color: "#fff",
+                      padding: "6px 12px",
+                      cursor: "pointer",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    X
+                  </button>
+
+                  <h2>{selectedCareer.name}</h2>
+
+                  <hr />
+
+                  <p>
+                    <strong>Email:</strong> {selectedCareer.email}
+                  </p>
+
+                  <p>
+                    <strong>Phone:</strong> {selectedCareer.number}
+                  </p>
+
+                  <p>
+                    <strong>Job Title:</strong> {selectedCareer.position}
+                  </p>
+
+                  <p>
+                    <strong>Applied Date:</strong>{" "}
+                    {new Date(selectedCareer.createdAt).toLocaleString()}
+                  </p>
+
+                  {/* Resume Download Button */}
+                  {/* Resume Preview Button */}
+                  <button
+                    onClick={() => {
+                      setResumeViewUrl(selectedCareer.rusume);
+                    }}
+                    style={{
+                      display: "inline-block",
+                      marginTop: "20px",
+                      background: "#111",
+                      color: "#fff",
+                      padding: "12px 18px",
+                      borderRadius: "8px",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "15px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Download Resume
+                  </button>
+                </div>
+              </div>
+            )}
+            {/* Resume Download Confirmation Popup */}
+            {/* Resume Preview Popup */}
+            {resumeViewUrl && (
+              <div
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.75)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 20000,
+                  padding: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "90%",
+                    maxWidth: "1200px",
+                    height: "90vh",
+                    background: "#fff",
+                    borderRadius: "18px",
+                    overflow: "hidden",
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+
+                  {/* Header */}
+                  <div
+                    style={{
+                      height: "88px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "0 25px",
+                      borderBottom: "1px solid #ddd",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <h2
+                      style={{
+                        margin: 0,
+                        color: "#16213e",
+                        fontSize: "28px",
+                      }}
+                    >
+                      Resume - {selectedCareer?.name}
+                    </h2>
+
+                    <button
+                      onClick={() => setResumeViewUrl(null)}
+                      style={{
+                        width: "48px",
+                        height: "48px",
+                        borderRadius: "50%",
+                        border: "none",
+                        background: "red",
+                        color: "#fff",
+                        fontSize: "24px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                      }}
+                    >
+                      X
+                    </button>
+                  </div>
+
+                  {/* Resume Preview */}
+                  <div
+                    style={{
+                      flex: 1,
+                      overflow: "auto",
+                      background: "#f3f3f3",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    {/\.(jpg|jpeg|png|webp|gif)(\?.*)?$/i.test(resumeViewUrl) ? (
+                      <img
+                        src={resumeViewUrl}
+                        alt={`Resume - ${selectedCareer?.name}`}
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                          maxWidth: "1000px",
+                          display: "block",
+                          objectFit: "contain",
+                        }}
+                      />
+                    ) : (
+                      <iframe
+                        src={resumeViewUrl}
+                        title={`Resume - ${selectedCareer?.name}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          border: "none",
+                          background: "#fff",
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Footer Buttons */}
+                  <div
+                    style={{
+                      minHeight: "98px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "15px",
+                      borderTop: "1px solid #ddd",
+                      background: "#fff",
+                      flexShrink: 0,
+                    }}
+                  >
+
+                    {/* Download Resume */}
+                    <a
+                      href={getResumeDownloadUrl(resumeViewUrl)}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "#111",
+                        color: "#fff",
+                        padding: "15px 30px",
+                        borderRadius: "10px",
+                        textDecoration: "none",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Download Resume
+                    </a>
+
+                    {/* Close */}
+                    <button
+                      onClick={() => setResumeViewUrl(null)}
+                      style={{
+                        padding: "15px 30px",
+                        borderRadius: "10px",
+                        border: "none",
+                        background: "#ddd",
+                        color: "#111",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Close
+                    </button>
+
+                  </div>
+
+                </div>
+              </div>
+            )}
+            {selectedMessage && (
+              <div
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.7)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 9999,
+                }}
+              >
+                <div
+                  style={{
+                    background: "#fff",
+                    width: "600px",
+                    maxWidth: "90%",
+                    padding: "25px",
+                    borderRadius: "12px",
+                    position: "relative",
+                  }}
+                >
+                  <button
+                    onClick={() => setSelectedMessage(null)}
+                    style={{
+                      position: "absolute",
+                      top: "15px",
+                      right: "15px",
+                      border: "none",
+                      background: "red",
+                      color: "#fff",
                       width: "35px",
                       height: "35px",
                       borderRadius: "50%",
                       cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
                     }}
                   >
-                    <Trash2 size={18} />
+                    X
                   </button>
 
-                  <h4 style={{ marginBottom: "8px", color: "#f5eeee" }}>
-                    {item.name}
-                  </h4>
+                  <h2>{selectedMessage.name}</h2>
 
-                  <p style={{ margin: "4px 0", color: "#dedcdc" }}>
-                    {item.email}
+                  <hr />
+
+                  <p>
+                    <strong>Email:</strong> {selectedMessage.email}
                   </p>
 
-                  <small style={{ color: "#979494" }}>
-                    {new Date(item.createdAt).toLocaleString()}
-                  </small>
+                  <p>
+                    <strong>Message:</strong>
+                  </p>
+
+                  <div
+                    style={{
+                      background: "#f5f5f5",
+                      padding: "12px",
+                      borderRadius: "8px",
+                      marginTop: "8px",
+                    }}
+                  >
+                    {selectedMessage.message}
+                  </div>
+
+                  <p style={{ marginTop: "15px" }}>
+                    <strong>Date:</strong>{" "}
+                    {new Date(
+                      selectedMessage.createdAt
+                    ).toLocaleString()}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Career Box */}
-          <div className="message-card">
-            {/* header */}
-            <div
-              className="card-header"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h4>Careers Messages</h4>
-
-              {/* excel download icon */}
-              <button
-                onClick={downloadExcel}
+              </div>
+            )}
+            {/* Contact Box */}
+            <div className="message-card">
+              {/* header */}
+              <div
+                className="card-header"
                 style={{
-                  border: "none",
-                  background: "#111",
-                  color: "#fff",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  cursor: "pointer",
                   display: "flex",
-                  justifyContent: "center",
+                  justifyContent: "space-between",
                   alignItems: "center",
                 }}
               >
-                <Download size={20} />
-              </button>
-            </div>
+                <h4>Contact Messages</h4>
 
-            {/* careers list */}
-            <div className="button-group">
-              {careers?.map((item) => (
+                {/* excel icon */}
                 <button
-                  key={item._id}
-                  className="main-btn"
-                  onClick={() => setSelectedCareer(item)}
+                  onClick={downloadMessagesExcel}
                   style={{
-                    width: "100%",
-                    marginBottom: "10px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "end",
-
-                    padding: "12px",
+                    border: "none",
+                    background: "#111",
+                    color: "#fff",
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
                     cursor: "pointer",
-                    flexDirection: "row",
-                    gap: "5px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      flexDirection: "column",
-                      alignItems: "start",
+                  <Download size={20} />
+                </button>
+              </div>
 
+              <div className="message-list">
+                {messages?.map((item) => (
+                  <div
+                    key={item._id}
+                    className="message-item"
+                    onClick={() => setSelectedMessage(item)}
+                    style={{
+                      position: "relative",
+                      marginBottom: "12px",
+                      padding: "15px",
+                      border: "1px solid #2b2929",
+                      borderRadius: "10px",
+                      cursor: "pointer",
+                      background: "#0ea5e9",
                     }}
                   >
-                    <span style={{ color: "white", paddingBottom: "3px", fontWeight: "700" }}>
-                      {item.name?.charAt(0).toUpperCase() + item.name?.slice(1)}
-                    </span>
-
-                    <span style={{ color: "#F2EDED", paddingBottom: "3px", fontWeight: "400" }}>
-                      {item.position?.charAt(0).toUpperCase() + item.position?.slice(1)}
-                    </span>
-                    <span style={{ color: "#B0B0B0", fontWeight: "100" }}>
-                      {new Date(item.createdAt).toLocaleString()}
-
-                    </span>
-
-
-
-                  </div>
-                  <div style={{
-                    alignSelf: "flex-start", // 👈 icon top par
-                    padding: "10px",
-                    backgroundColor: "red",
-                    borderRadius: "50px",
-                  }}>
-
-
-                    <Trash2
-                      size={18}
-                      className="c_btm"
-                      style={{
-                        display: "flex",
-                        alignItems: "top",
+                    {/* Delete Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteMessage(item._id);
                       }}
-                      onClick={() => deleteCareer(item._id)}
-                    />
+                      style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        border: "none",
+                        background: "red",
+                        color: "#fff",
+                        width: "35px",
+                        height: "35px",
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+
+                    <h4 style={{ marginBottom: "8px", color: "#f5eeee" }}>
+                      {item.name}
+                    </h4>
+
+                    <p style={{ margin: "4px 0", color: "#dedcdc" }}>
+                      {item.email}
+                    </p>
+
+                    <small style={{ color: "#979494" }}>
+                      {new Date(item.createdAt).toLocaleString()}
+                    </small>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Career Box */}
+            <div className="message-card">
+              {/* header */}
+              <div
+                className="card-header"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <h4>Careers Messages</h4>
+
+                {/* excel download icon */}
+                <button
+                  onClick={downloadExcel}
+                  style={{
+                    border: "none",
+                    background: "#111",
+                    color: "#fff",
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Download size={20} />
                 </button>
-              ))}
+              </div>
+
+              {/* careers list */}
+              <div className="button-group">
+                {careers?.map((item) => (
+                  <button
+                    key={item._id}
+                    className="main-btn"
+                    onClick={() => setSelectedCareer(item)}
+                    style={{
+                      width: "100%",
+                      marginBottom: "10px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "end",
+
+                      padding: "12px",
+                      cursor: "pointer",
+                      flexDirection: "row",
+                      gap: "5px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        flexDirection: "column",
+                        alignItems: "start",
+
+                      }}
+                    >
+                      <span style={{ color: "white", paddingBottom: "3px", fontWeight: "700" }}>
+                        {item.name?.charAt(0).toUpperCase() + item.name?.slice(1)}
+                      </span>
+
+                      <span style={{ color: "#F2EDED", paddingBottom: "3px", fontWeight: "400" }}>
+                        {item.position?.charAt(0).toUpperCase() + item.position?.slice(1)}
+                      </span>
+                      <span style={{ color: "#B0B0B0", fontWeight: "100" }}>
+                        {new Date(item.createdAt).toLocaleString()}
+
+                      </span>
+
+
+
+                    </div>
+                    <div style={{
+                      alignSelf: "flex-start", // 👈 icon top par
+                      padding: "10px",
+                      backgroundColor: "red",
+                      borderRadius: "50px",
+                    }}>
+
+
+                      <Trash2
+                        size={18}
+                        className="c_btm"
+                        style={{
+                          display: "flex",
+                          alignItems: "top",
+                        }}
+                        onClick={() => deleteCareer(item._id)}
+                      />
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div >
   );
 }

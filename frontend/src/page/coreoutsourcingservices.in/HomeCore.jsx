@@ -22,6 +22,7 @@ function HomeCore() {
   const [partnerProperty, setPartnerProperty] = useState("about_us");
   const [teamDescr, setTeamDescr] = useState("");
   const [selectedCareer, setSelectedCareer] = useState(null);
+  const [selectedResume, setSelectedResume] = useState(null);
   const [partnerData, setPartnerData] = useState([]);
   const [partnerImagePop, setPartnerImagePop] = useState(false);
   const [partnerName, setPartnerName] = useState("");
@@ -242,7 +243,7 @@ function HomeCore() {
       formData.append("property", partnerProperty);
 
       const promise = axios.post(
-      `${backendUrl}/partners/create-partner`,
+        `${backendUrl}/partners/create-partner`,
         formData,
         {
           headers: {
@@ -293,7 +294,7 @@ function HomeCore() {
       formData.append("property", teamProperty);
 
       const promise = axios.post(
-       `${backendUrl}/ourteam/create-team`,
+        `${backendUrl}/ourteam/create-team`,
         formData,
         {
           headers: {
@@ -396,7 +397,7 @@ function HomeCore() {
       formData.append("image", teamSecondImage);
 
       const promise = axios.post(
-       `${backendUrl}/teamsecond/create-team-second`,
+        `${backendUrl}/teamsecond/create-team-second`,
         formData,
         {
           headers: {
@@ -603,15 +604,15 @@ function HomeCore() {
       setSavingBloge(true);
       const formData = new FormData();
       const headingUrl =
-      blogHeading
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .replace(/\s+/g, "-");
+        blogHeading
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-");
 
 
-        formData.append("heading", blogHeading);
-        formData.append("headingUrl", headingUrl);
+      formData.append("heading", blogHeading);
+      formData.append("headingUrl", headingUrl);
       formData.append(
         "blag",
         JSON.stringify({
@@ -630,7 +631,7 @@ function HomeCore() {
       });
 
       const response = await axios.post(
-       `${backendUrl}/bloge/add-blog`,
+        `${backendUrl}/bloge/add-blog`,
         formData,
         {
           headers: {
@@ -695,7 +696,7 @@ function HomeCore() {
   const getBlogs = async () => {
     try {
       const response = await axios.get(
-       `${backendUrl}/bloge/get-blogs`,
+        `${backendUrl}/bloge/get-blogs`,
       );
 
       setBlogData(response.data.data);
@@ -808,7 +809,18 @@ function HomeCore() {
     getTeamData();
     getPartners();
   }, [partnerPopup, AddOurTeamPopup]);
+  const getDownloadUrl = (url) => {
+    if (!url) return "";
 
+    if (url.includes("res.cloudinary.com")) {
+      return url.replace(
+        "/image/upload/",
+        "/image/upload/fl_attachment/"
+      );
+    }
+
+    return url;
+  };
   let name = "Coreoutsourcingservices.in";
   return (
     <div>
@@ -1145,7 +1157,8 @@ function HomeCore() {
                         }}
                       >
                         <button
-                          onClick={() => { deleteTeamMember(item._id);
+                          onClick={() => {
+                            deleteTeamMember(item._id);
 
                           }}
                           style={{
@@ -2794,10 +2807,8 @@ function HomeCore() {
                   </p>
 
                   {/* resume download */}
-                  <a
-                    href={selectedCareer.resume}
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    onClick={() => setSelectedResume(selectedCareer.resume)}
                     style={{
                       display: "inline-block",
                       marginTop: "20px",
@@ -2806,10 +2817,141 @@ function HomeCore() {
                       padding: "12px 18px",
                       borderRadius: "8px",
                       textDecoration: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "15px",
                     }}
                   >
-                    Download Resume
-                  </a>
+                    View Resume
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* RESUME VIEWER POPUP */}
+            {selectedResume && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100vh",
+                  background: "rgba(0,0,0,0.8)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 10000,
+                  padding: "20px",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#fff",
+                    width: "900px",
+                    maxWidth: "95%",
+                    height: "90vh",
+                    borderRadius: "12px",
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* HEADER */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "15px 20px",
+                      borderBottom: "1px solid #ddd",
+                      background: "#fff",
+                    }}
+                  >
+                    <h2 style={{ margin: 0 }}>
+                      Resume - {selectedCareer?.name}
+                    </h2>
+
+                    <button
+                      onClick={() => setSelectedResume(null)}
+                      style={{
+                        background: "red",
+                        color: "#fff",
+                        border: "none",
+                        width: "35px",
+                        height: "35px",
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      X
+                    </button>
+                  </div>
+
+                  {/* RESUME PREVIEW */}
+                  <div
+                    style={{
+                      flex: 1,
+                      background: "#eee",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <iframe
+                      src={selectedResume}
+                      title="Resume Preview"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        border: "none",
+                      }}
+                    />
+                  </div>
+
+                  {/* FOOTER */}
+                  <div
+                    style={{
+                      padding: "15px 20px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "10px",
+                      borderTop: "1px solid #ddd",
+                      background: "#fff",
+                    }}
+                  >
+                    <a
+                      href={getDownloadUrl(selectedResume)}
+                      download
+                      style={{
+                        background: "#111",
+                        color: "#fff",
+                        padding: "12px 22px",
+                        borderRadius: "8px",
+                        textDecoration: "none",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Download Resume
+                    </a>
+
+                    <button
+                      onClick={() => setSelectedResume(null)}
+                      style={{
+                        background: "#ddd",
+                        color: "#111",
+                        padding: "12px 22px",
+                        borderRadius: "8px",
+                        border: "none",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -2969,7 +3111,7 @@ function HomeCore() {
                     >
                       <span>{item.name}</span>
 
-                      {/* <span>{item.job_title}</span> */}
+                      <span>{item.job_title}</span>
 
                       {new Date(item.createdAt).toLocaleString()}
 
