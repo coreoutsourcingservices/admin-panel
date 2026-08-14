@@ -61,6 +61,7 @@ function HomeCore() {
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [addGalleryPopup, setAddGalleryPopup] = useState(false);
   const [addBlogPopup, setAddBlogPopup] = useState(false);
+  const [editingBlogId, setEditingBlogId] = useState(null);
   const [allGalleryPhotos, setAllGalleryPhotos] = useState([]);
   const [homePopup, setHomePopup] = useState(false);
   const [showJobsPopup, setShowJobsPopup] = useState(false);
@@ -602,64 +603,115 @@ function HomeCore() {
   const handleBlogSubmit = async () => {
     try {
       setSavingBloge(true);
-      const formData = new FormData();
-      const headingUrl =
-        blogHeading
-          .toLowerCase()
-          .trim()
-          .replace(/[^a-z0-9\s-]/g, "")
-          .replace(/\s+/g, "-");
 
+      const formData = new FormData();
+
+      const headingUrl = blogHeading
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
 
       formData.append("heading", blogHeading);
       formData.append("headingUrl", headingUrl);
+
       formData.append(
         "blag",
         JSON.stringify({
           writer_name: writerName,
-
           description_imga: descriptionImage,
-
           description: descriptions,
-
           FAQ: faqs,
-        }),
+        })
       );
 
+      // New images selected hain to send karo
       blogImages.forEach((img) => {
         formData.append("image", img);
       });
 
-      const response = await axios.post(
-        `${backendUrl}/bloge/add-blog`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
+      let response;
 
-      handleSuccess("Blog Added Successfully 😎");
+      if (editingBlogId) {
+        // =========================
+        // EDIT BLOG
+        // =========================
+        response = await axios.put(
+          `${backendUrl}/bloge/update-blog/${editingBlogId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-      // console.log(response.data);
+        handleSuccess(
+          response.data.message || "Blog Updated Successfully 😎"
+        );
+      } else {
+        // =========================
+        // ADD BLOG
+        // =========================
+        response = await axios.post(
+          `${backendUrl}/bloge/add-blog`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-      setBlgePopup(false);
+        handleSuccess(
+          response.data.message || "Blog Added Successfully 😎"
+        );
+      }
+
+      // =========================
+      // RESET
+      // =========================
 
       setBlogHeading("");
       setWriterName("");
       setBlogImages([]);
       setDescriptionImage("");
-      setSavingBloge(false);
+
+      setDescriptions([
+        {
+          description_heading: "",
+          description_text: "",
+        },
+      ]);
+
+      setFaqs([
+        {
+          Question: "",
+          answering: "",
+        },
+      ]);
+
+      setEditingBlogId(null);
+
+      // Close Add/Edit popup
+      setAddBlogPopup(false);
+
+      // Refresh blogs
+      await getBlogs();
+
     } catch (error) {
       console.log(error);
 
-      handleError(error?.response?.data?.message || "Blog Upload Failed");
+      handleError(
+        error?.response?.data?.message ||
+        (editingBlogId
+          ? "Blog Update Failed"
+          : "Blog Upload Failed")
+      );
     } finally {
       setSavingBloge(false);
     }
   };
-
   const renderContent = (text) => {
     if (!text) return null;
 
@@ -717,6 +769,58 @@ function HomeCore() {
     } catch (error) {
       handleError(error.response?.data?.message || "Delete Failed");
     }
+  };
+  const handleEditBlog = (blog) => {
+    setEditingBlogId(blog._id);
+
+    // Heading
+    setBlogHeading(blog.heading || "");
+
+    // Writer
+    setWriterName(blog?.blag?.[0]?.writer_name || "");
+
+    // Description image text
+    setDescriptionImage(blog?.blag?.[0]?.description_imga || "");
+
+    // Descriptions
+    setDescriptions(
+      blog?.blag?.[0]?.description?.length
+        ? blog.blag[0].description.map((item) => ({
+          description_heading: item.description_heading || "",
+          description_text: item.description_text || "",
+        }))
+        : [
+          {
+            description_heading: "",
+            description_text: "",
+          },
+        ]
+    );
+
+    // FAQs
+    setFaqs(
+      blog?.blag?.[0]?.FAQ?.length
+        ? blog.blag[0].FAQ.map((item) => ({
+          Question: item.Question || "",
+          answering: item.answering || "",
+        }))
+        : [
+          {
+            Question: "",
+            answering: "",
+          },
+        ]
+    );
+
+    // Existing image ko file input me set nahi kar sakte.
+    // New image select nahi karoge to old image backend me preserve honi chahiye.
+    setBlogImages([]);
+
+    // Show Blogs popup close
+    setShowBlogPopup(false);
+
+    // Add Blog popup open
+    setAddBlogPopup(true);
   };
 
   const handleJobSubmit = async () => {
@@ -2005,7 +2109,32 @@ function HomeCore() {
                   <div className="popup-sidebar">
                     <h3>Manage Bloge</h3>
 
-                    <button onClick={() => setAddBlogPopup(true)}>
+                    <button
+                      onClick={() => {
+                        setEditingBlogId(null);
+
+                        setBlogHeading("");
+                        setWriterName("");
+                        setBlogImages([]);
+                        setDescriptionImage("");
+
+                        setDescriptions([
+                          {
+                            description_heading: "",
+                            description_text: "",
+                          },
+                        ]);
+
+                        setFaqs([
+                          {
+                            Question: "",
+                            answering: "",
+                          },
+                        ]);
+
+                        setAddBlogPopup(true);
+                      }}
+                    >
                       Add Blog
                     </button>
 
@@ -2019,7 +2148,9 @@ function HomeCore() {
                     {addBlogPopup && (
                       <div className="inner-popup-overlay">
                         <div className="inner-popup">
-                          <h2>Add Blog</h2>
+                          <h2>
+                            {editingBlogId ? "Edit Blog" : "Add Blog"}
+                          </h2>
 
                           <div className="input-group">
                             <label>Blog Heading</label>
@@ -2253,37 +2384,71 @@ function HomeCore() {
                                   position: "relative",
                                 }}
                               >
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-
-                                    if (
-                                      window.confirm(
-                                        `Delete "${item.heading}" ?`,
-                                      )
-                                    ) {
-                                      deleteBlog(item._id);
-                                    }
-                                  }}
+                                {/* EDIT + DELETE BUTTONS */}
+                                <div
                                   style={{
                                     position: "absolute",
                                     top: "10px",
                                     right: "10px",
-                                    width: "40px",
-                                    height: "40px",
-                                    borderRadius: "50%",
-                                    border: "none",
-                                    background: "#ef4444",
-                                    color: "#fff",
-                                    cursor: "pointer",
                                     display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
+                                    gap: "8px",
                                     zIndex: 10,
                                   }}
                                 >
-                                  <Trash2 size={18} />
-                                </button>
+                                  {/* EDIT */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleEditBlog(item);
+                                    }}
+                                    title="Edit Blog"
+                                    style={{
+                                      width: "40px",
+                                      height: "40px",
+                                      borderRadius: "50%",
+                                      border: "none",
+                                      background: "#2563eb",
+                                      color: "#fff",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontSize: "18px",
+                                    }}
+                                  >
+                                    ✏
+                                  </button>
+
+                                  {/* DELETE */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+
+                                      if (
+                                        window.confirm(
+                                          `Delete "${item.heading}" ?`
+                                        )
+                                      ) {
+                                        deleteBlog(item._id);
+                                      }
+                                    }}
+                                    title="Delete Blog"
+                                    style={{
+                                      width: "40px",
+                                      height: "40px",
+                                      borderRadius: "50%",
+                                      border: "none",
+                                      background: "#ef4444",
+                                      color: "#fff",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Trash2 size={18} />
+                                  </button>
+                                </div>
 
                                 <img
                                   src={item?.blag?.[0]?.image?.[0]?.photo}

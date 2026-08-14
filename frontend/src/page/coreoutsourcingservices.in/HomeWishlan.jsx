@@ -36,6 +36,7 @@ function HomeWishlan() {
 
 
   const [addBlogPopup, setAddBlogPopup] = useState(false);
+  const [editingBlogId, setEditingBlogId] = useState(null);
   const [showJobsPopup, setShowJobsPopup] = useState(false);
   const [jobsData, setJobsData] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -264,6 +265,25 @@ function HomeWishlan() {
       handleError(error.response?.data?.message || "Delete Failed");
     }
   };
+  const handleEditBlog = (blog) => {
+    setEditingBlogId(blog._id);
+
+    setWishlanBlogHeading(blog.BlogHeading || "");
+    setWishlanBlogWriter(blog.BlogWriter || "");
+    setWishlanBlogContent(blog.BlogContent || "");
+
+    // Important:
+    // Existing image ko file input mein set nahi kar sakte.
+    // Isliye null rakhenge.
+    // Agar new image select nahi ki to backend old image preserve karega.
+    setWishlanBlogImage(null);
+
+    // Show Blogs close
+    setShowBlogPopup(false);
+
+    // Add/Edit Blog popup open
+    setAddBlogPopup(true);
+  };
 
   const handleJobSubmit = async () => {
     try {
@@ -403,58 +423,70 @@ function HomeWishlan() {
       setWishlanSavingBlog(true);
 
       const formData = new FormData();
-      const wishlanBlogHeadingURL =
-        wishlanBlogHeading
-          .toLowerCase()
-          .trim()
-          .replace(/[^a-z0-9\s-]/g, "")
-          .replace(/\s+/g, "-");
 
+      const wishlanBlogHeadingURL = wishlanBlogHeading
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
 
+      formData.append("BlogHeading", wishlanBlogHeading);
+      formData.append("BlogHeadingURL", wishlanBlogHeadingURL);
+      formData.append("BlogWriter", wishlanBlogWriter);
+      formData.append("BlogContent", wishlanBlogContent);
 
-      formData.append(
-        "BlogHeading",
-        wishlanBlogHeading
-      );
-      formData.append(
-        "BlogHeadingURL",
-        wishlanBlogHeadingURL
-      );
-
-      formData.append(
-        "BlogWriter",
-        wishlanBlogWriter
-      );
-
-      formData.append(
-        "BlogContent",
-        wishlanBlogContent
-      );
-
+      // New image selected hai tabhi image bhejo
       if (wishlanBlogImage) {
-        formData.append(
-          "BlogImage",
-          wishlanBlogImage
+        formData.append("BlogImage", wishlanBlogImage);
+      }
+
+      let response;
+
+      if (editingBlogId) {
+        // EDIT BLOG
+        response = await axios.put(
+          `${backendUrl}/wishlan/update-blog/${editingBlogId}`,
+          formData
+        );
+      } else {
+        // ADD BLOG
+        response = await axios.post(
+          `${backendUrl}/wishlan/create-blog`,
+          formData
         );
       }
 
-      const response = await axios.post(
-        `${backendUrl}/wishlan/create-blog`,
-        formData
+      handleSuccess(
+        response.data.message ||
+        (editingBlogId
+          ? "Blog Updated Successfully"
+          : "Blog Created Successfully")
       );
 
-      // console.log(response.data);
+      // Form reset
+      setWishlanBlogHeading("");
+      setWishlanBlogWriter("");
+      setWishlanBlogImage(null);
+      setWishlanBlogContent("");
 
-      handleSuccess(response.data.message);
+      // Edit mode reset
+      setEditingBlogId(null);
 
-      // const data = await response.json();
+      // Popup close
+      setAddBlogPopup(false);
 
-      // console.log(data);
-      setAddBlogPopup(false)
+      // Updated blogs reload
+      await getBlogs();
 
-      // handleSuccess("Blog Saved Successfully");
     } catch (error) {
       console.log(error);
+
+      handleError(
+        error.response?.data?.message ||
+        (editingBlogId
+          ? "Blog Update Failed"
+          : "Blog Creation Failed")
+      );
     } finally {
       setWishlanSavingBlog(false);
     }
@@ -529,7 +561,16 @@ function HomeWishlan() {
                   <div className="popup-sidebar">
                     <h3>Manage Blog</h3>
 
-                    <button onClick={() => setAddBlogPopup(true)}>
+                    <button
+                      onClick={() => {
+                        setEditingBlogId(null);
+                        setWishlanBlogHeading("");
+                        setWishlanBlogWriter("");
+                        setWishlanBlogImage(null);
+                        setWishlanBlogContent("");
+                        setAddBlogPopup(true);
+                      }}
+                    >
                       Add Blogs
                     </button>
 
@@ -545,7 +586,9 @@ function HomeWishlan() {
                         <div className="inner-popup">
                           <div className="wishlan-blog-container">
 
-                            <h2>Wishlan Blog Editor</h2>
+                            <h2>
+                              {editingBlogId ? "Edit Wishlan Blog" : "Wishlan Blog Editor"}
+                            </h2>
 
                             <input
                               className="wishlan-input"
@@ -596,8 +639,19 @@ function HomeWishlan() {
 
                               <button
                                 className="wishlan-save-btn"
-                                onClick={() => setAddBlogPopup(false)}
-                                style={{ backgroundColor: "#c8c8c8", color: "black" }}>
+                                onClick={() => {
+                                  setAddBlogPopup(false);
+                                  setEditingBlogId(null);
+                                  setWishlanBlogHeading("");
+                                  setWishlanBlogWriter("");
+                                  setWishlanBlogImage(null);
+                                  setWishlanBlogContent("");
+                                }}
+                                style={{
+                                  backgroundColor: "#c8c8c8",
+                                  color: "black",
+                                }}
+                              >
                                 Cancel
                               </button>
 
@@ -606,8 +660,12 @@ function HomeWishlan() {
                                 onClick={handleWishlanBlogSubmit}
                               >
                                 {wishlanSavingBlog
-                                  ? "Saving..."
-                                  : "Save Blog"}
+                                  ? editingBlogId
+                                    ? "Updating..."
+                                    : "Saving..."
+                                  : editingBlogId
+                                    ? "Update Blog"
+                                    : "Save Blog"}
                               </button>
                             </div>
 
@@ -685,37 +743,71 @@ function HomeWishlan() {
                                   position: "relative",
                                 }}
                               >
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-
-                                    if (
-                                      window.confirm(
-                                        `Delete "${item.BlogHeading}" ?`,
-                                      )
-                                    ) {
-                                      deleteBlog(item._id);
-                                    }
-                                  }}
+                                {/* Blog Actions */}
+                                <div
                                   style={{
                                     position: "absolute",
                                     top: "10px",
                                     right: "10px",
-                                    width: "40px",
-                                    height: "40px",
-                                    borderRadius: "50%",
-                                    border: "none",
-                                    background: "#ef4444",
-                                    color: "#fff",
-                                    cursor: "pointer",
                                     display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
+                                    gap: "8px",
                                     zIndex: 10,
                                   }}
                                 >
-                                  <Trash2 size={18} />
-                                </button>
+                                  {/* Edit Button */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleEditBlog(item);
+                                    }}
+                                    style={{
+                                      width: "40px",
+                                      height: "40px",
+                                      borderRadius: "50%",
+                                      border: "none",
+                                      background: "#2563eb",
+                                      color: "#fff",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      fontSize: "18px",
+                                    }}
+                                    title="Edit Blog"
+                                  >
+                                    ✏
+                                  </button>
+
+                                  {/* Delete Button */}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+
+                                      if (
+                                        window.confirm(
+                                          `Delete "${item.BlogHeading}" ?`
+                                        )
+                                      ) {
+                                        deleteBlog(item._id);
+                                      }
+                                    }}
+                                    style={{
+                                      width: "40px",
+                                      height: "40px",
+                                      borderRadius: "50%",
+                                      border: "none",
+                                      background: "#ef4444",
+                                      color: "#fff",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                    title="Delete Blog"
+                                  >
+                                    <Trash2 size={18} />
+                                  </button>
+                                </div>
 
                                 <img
                                   src={item.BlogImage}
