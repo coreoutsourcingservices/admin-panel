@@ -18,7 +18,7 @@ export const sendEmailOTP = async (to, otp) => {
 
         });
         await transporter.sendMail({
-            from: `"HivraSoft" <${process.env.EMAIL}>`,
+            from: `"Wishlan" <${process.env.EMAIL}>`,
             to,
             subject: "Your OTP Verification Code",
             html: `
@@ -28,7 +28,7 @@ export const sendEmailOTP = async (to, otp) => {
 
                 <div style="background: #0f172a; padding: 20px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0;">
-                        HivraSoft
+                        Wishlan
                     </h1>
                 </div>
 
@@ -79,10 +79,10 @@ export const sendEmailOTP = async (to, otp) => {
 
                     <p style="margin-top: 8px;">
                         <a
-                            href="https://hivrasoft.com/"
+                            href="https://www.wishlan.com/"
                             style="color: #2563eb; text-decoration: none;"
                         >
-                            https://hivrasoft.com/
+                            https://www.wishlan.com/
                         </a>
                     </p>
 
@@ -99,7 +99,6 @@ export const sendEmailOTP = async (to, otp) => {
 
         });
         console.log("✅ Email sent successfully");
-        console.log("Message ID:", info.messageId);
 
         return true;
 

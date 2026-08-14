@@ -10,17 +10,17 @@ export const sendEmail = async (email, otp) => {
        subject: "Your OTP Verification Code",
       html: `
         <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 30px;">
-            
+
             <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-                
+
                 <div style="background: #0f172a; padding: 20px; text-align: center;">
                     <h1 style="color: #ffffff; margin: 0;">
-                        HivraSoft
+                        Wishlan
                     </h1>
                 </div>
 
                 <div style="padding: 40px 30px;">
-                    
+
                     <h2 style="color: #111827; margin-bottom: 20px;">
                         OTP Verification
                     </h2>
@@ -59,17 +59,17 @@ export const sendEmail = async (email, otp) => {
                 </div>
 
                 <div style="background: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
-                    
+
                     <p style="margin: 0; color: #6b7280; font-size: 14px;">
                         © 2026 HivraSoft. All rights reserved.
                     </p>
 
                     <p style="margin-top: 8px;">
-                        <a 
-                            href="https://hivrasoft.com/" 
+                        <a
+                            href=" https://www.wishlan.com/"
                             style="color: #2563eb; text-decoration: none;"
                         >
-                            https://hivrasoft.com/
+                            https://www.wishlan.com/
                         </a>
                     </p>
 
