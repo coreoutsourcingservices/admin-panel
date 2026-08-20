@@ -7,6 +7,7 @@ export const createEnquiry = async (req, res) => {
       email,
       company,
       phone,
+      websiteName,
       address,
       service,
       message,
@@ -24,6 +25,7 @@ export const createEnquiry = async (req, res) => {
       email,
       company,
       phone,
+        websiteName,
       address,
       service,
       message,
@@ -44,7 +46,9 @@ export const createEnquiry = async (req, res) => {
 
 export const getAllEnquiries = async (req, res) => {
   try {
-    const enquiries = await Enquiry.find().sort({ createdAt: -1 });
+    const enquiries = await Enquiry.find()
+      .select("-status -__v")
+      .sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,

@@ -33,8 +33,10 @@ function HomeWishlan() {
   const [blogData, setBlogData] = useState([]);
   const [jobPop, setJobPop] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
-
-
+  const [WLPgetdata, setWLPgetdata] = useState(false);
+  const [wlpData, setWlpData] = useState([]);
+  const [wlpLoading, setWlpLoading] = useState(false);
+  const [wlpError, setWlpError] = useState("");
   const [addBlogPopup, setAddBlogPopup] = useState(false);
   const [editingBlogId, setEditingBlogId] = useState(null);
   const [showJobsPopup, setShowJobsPopup] = useState(false);
@@ -141,6 +143,29 @@ function HomeWishlan() {
     } catch (error) {
       // handleError(error);
       console.log(error);
+    }
+  };
+  const getWhiteLabelPartnerData = async () => {
+    try {
+      setWlpLoading(true);
+      setWlpError("");
+
+      const response = await axios.get(
+        "https://pk.coreoutsourcingservices.in/wishlan/enquiry"
+      );
+
+      if (response.data.success) {
+        setWlpData(response.data.data || []);
+      }
+    } catch (error) {
+      console.log(error);
+
+      setWlpError(
+        error.response?.data?.message ||
+        "White Label Partner data load nahi ho paya"
+      );
+    } finally {
+      setWlpLoading(false);
     }
   };
 
@@ -520,11 +545,18 @@ function HomeWishlan() {
 
 
 
-            {/* <button>Contacts</button>  */}
 
 
             <button onClick={() => setJobPop(true)}>Careers</button>
             <button onClick={() => setWishlenBlge(true)}>bloge </button>
+            <button
+              onClick={() => {
+                setWLPgetdata(true);
+                getWhiteLabelPartnerData();
+              }}
+            >
+              White Label Partner
+            </button>
           </div>
         </div>
 
@@ -1267,6 +1299,230 @@ function HomeWishlan() {
                       </div>
                     )}
                   </div>
+                </div>
+              </div>
+            )}
+            {WLPgetdata && (
+              <div
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.7)",
+                  zIndex: 20000,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "90%",
+                    maxWidth: "1200px",
+                    maxHeight: "90vh",
+                    overflowY: "auto",
+                    background: "#ffffff",
+                    borderRadius: "18px",
+                    padding: "30px",
+                    position: "relative",
+                  }}
+                >
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setWLPgetdata(false)}
+                    style={{
+                      position: "absolute",
+                      top: "15px",
+                      right: "15px",
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "50%",
+                      border: "none",
+                      background: "red",
+                      color: "#fff",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                  >
+                    ✕
+                  </button>
+
+                  <h2
+                    style={{
+                      marginBottom: "5px",
+                      color: "#111827",
+                    }}
+                  >
+                    White Label Partner
+                  </h2>
+
+                  <p
+                    style={{
+                      color: "#6b7280",
+                      marginBottom: "25px",
+                    }}
+                  >
+                    Total Enquiries: {wlpData.length}
+                  </p>
+
+                  {/* Loading */}
+                  {wlpLoading && (
+                    <div
+                      style={{
+                        textAlign: "center",
+                        padding: "50px",
+                        fontSize: "18px",
+                      }}
+                    >
+                      Loading...
+                    </div>
+                  )}
+
+                  {/* Error */}
+                  {wlpError && !wlpLoading && (
+                    <div
+                      style={{
+                        background: "#fee2e2",
+                        color: "#b91c1c",
+                        padding: "15px",
+                        borderRadius: "10px",
+                      }}
+                    >
+                      {wlpError}
+                    </div>
+                  )}
+
+                  {/* No Data */}
+                  {!wlpLoading && !wlpError && wlpData.length === 0 && (
+                    <div
+                      style={{
+                        textAlign: "center",
+                        padding: "40px",
+                        color: "#777",
+                      }}
+                    >
+                      No White Label Partner enquiries found.
+                    </div>
+                  )}
+
+                  {/* Data */}
+                  {!wlpLoading && (
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                          "repeat(auto-fit, minmax(320px, 1fr))",
+                        gap: "20px",
+                      }}
+                    >
+                      {wlpData.map((item) => (
+                        <div
+                          key={item._id}
+                          style={{
+                            background: "#f8fafc",
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "14px",
+                            padding: "20px",
+                            boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
+                          }}
+                        >
+                          <h3
+                            style={{
+                              margin: "0 0 15px",
+                              color: "#0ea5e9",
+                            }}
+                          >
+                            {item.name}
+                          </h3>
+
+                          <p>
+                            <strong>Email:</strong>{" "}
+                            <a href={`mailto:${item.email}`}>
+                              {item.email}
+                            </a>
+                          </p>
+
+                          <p>
+                            <strong>Company:</strong>{" "}
+                            {item.company || "N/A"}
+                          </p>
+
+                          <p>
+                            <strong>Phone:</strong>{" "}
+                            <a href={`tel:${item.phone}`}>
+                              {item.phone}
+                            </a>
+                          </p>
+
+                          <p>
+                            <strong>Address:</strong>{" "}
+                            {item.address || "N/A"}
+                          </p>
+
+                          <p>
+                            <strong>Service:</strong>{" "}
+                            {item.service}
+                          </p>
+
+                          <p>
+                            <strong>Status:</strong>{" "}
+                            <span
+                              style={{
+                                background:
+                                  item.status === "new"
+                                    ? "#dcfce7"
+                                    : "#e5e7eb",
+                                color:
+                                  item.status === "new"
+                                    ? "#15803d"
+                                    : "#374151",
+                                padding: "4px 10px",
+                                borderRadius: "20px",
+                                fontSize: "12px",
+                                fontWeight: "600",
+                              }}
+                            >
+                              {item.status}
+                            </span>
+                          </p>
+
+                          <div
+                            style={{
+                              marginTop: "15px",
+                              background: "#ffffff",
+                              padding: "12px",
+                              borderRadius: "8px",
+                            }}
+                          >
+                            <strong>Requirement:</strong>
+
+                            <p
+                              style={{
+                                marginTop: "7px",
+                                marginBottom: 0,
+                                color: "#4b5563",
+                                lineHeight: "1.5",
+                              }}
+                            >
+                              {item.message || "No message"}
+                            </p>
+                          </div>
+
+                          <p
+                            style={{
+                              marginTop: "15px",
+                              marginBottom: 0,
+                              color: "#9ca3af",
+                              fontSize: "13px",
+                            }}
+                          >
+                            {new Date(item.createdAt).toLocaleString()}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
