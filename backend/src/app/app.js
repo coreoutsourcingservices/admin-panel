@@ -10,6 +10,7 @@ import galleryRouter from "../routes/gallary.routes.js"
 import blogRouter from "../routes/blog.routers.js"
 import jobRouter from "../routes/job.routes.js"
 import wishlanRouter from "../routes/wishlen.routes.js"
+import WLPFormRouter from "../routes/WLPForm.routes.js"
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -45,6 +46,7 @@ app.use("/gallery",galleryRouter)
 app.use("/bloge",blogRouter)
 app.use("/job",jobRouter)
 app.use("/wishlan",wishlanRouter)
+app.use("/wishlan",WLPFormRouter)
 
 
 
