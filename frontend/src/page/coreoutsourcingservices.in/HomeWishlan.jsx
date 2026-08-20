@@ -1336,7 +1336,7 @@ function HomeWishlan() {
                   position: "fixed",
                   inset: 0,
                   background: "rgba(0,0,0,0.7)",
-                  zIndex: 20000,
+                  zIndex:2,
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
