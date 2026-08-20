@@ -531,6 +531,34 @@ function HomeWishlan() {
 
     return url;
   };
+  const deleteWhiteLabelPartner = async (id) => {
+  try {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this enquiry?"
+    );
+
+    if (!confirmDelete) return;
+
+    const response = await axios.delete(
+      `https://pk.coreoutsourcingservices.in/wishlan/enquiry/${id}`
+    );
+
+    setWlpData((prev) =>
+      prev.filter((item) => item._id !== id)
+    );
+
+    handleSuccess(
+      response.data.message || "Enquiry deleted successfully"
+    );
+  } catch (error) {
+    console.log(error);
+
+    handleError(
+      error.response?.data?.message ||
+      "Enquiry delete failed"
+    );
+  }
+};
 
 
   let name = "Wishlan.in";
@@ -1302,230 +1330,254 @@ function HomeWishlan() {
                 </div>
               </div>
             )}
-            {WLPgetdata && (
+           {WLPgetdata && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.7)",
+      zIndex: 20000,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "20px",
+    }}
+  >
+    <div
+      style={{
+        width: "90%",
+        maxWidth: "1200px",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        background: "#ffffff",
+        borderRadius: "18px",
+        padding: "30px",
+        position: "relative",
+      }}
+    >
+      {/* Close Button */}
+      <button
+        onClick={() => setWLPgetdata(false)}
+        style={{
+          position: "absolute",
+          top: "15px",
+          right: "15px",
+          width: "42px",
+          height: "42px",
+          borderRadius: "50%",
+          border: "none",
+          background: "red",
+          color: "#fff",
+          fontSize: "18px",
+          fontWeight: "bold",
+          cursor: "pointer",
+        }}
+      >
+        ✕
+      </button>
+
+      <h2
+        style={{
+          marginBottom: "5px",
+          color: "#111827",
+        }}
+      >
+        White Label Partner
+      </h2>
+
+      <p
+        style={{
+          color: "#6b7280",
+          marginBottom: "25px",
+        }}
+      >
+        Total Enquiries: {wlpData.length}
+      </p>
+
+      {wlpLoading && (
+        <div
+          style={{
+            textAlign: "center",
+            padding: "50px",
+            fontSize: "18px",
+          }}
+        >
+          Loading...
+        </div>
+      )}
+
+      {wlpError && !wlpLoading && (
+        <div
+          style={{
+            background: "#fee2e2",
+            color: "#b91c1c",
+            padding: "15px",
+            borderRadius: "10px",
+          }}
+        >
+          {wlpError}
+        </div>
+      )}
+
+      {!wlpLoading &&
+        !wlpError &&
+        wlpData.length === 0 && (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "40px",
+              color: "#777",
+            }}
+          >
+            No White Label Partner enquiries found.
+          </div>
+        )}
+
+      {!wlpLoading &&
+        !wlpError &&
+        wlpData.length > 0 && (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(320px, 1fr))",
+              gap: "20px",
+            }}
+          >
+            {wlpData.map((item) => (
               <div
+                key={item._id}
                 style={{
-                  position: "fixed",
-                  inset: 0,
-                  background: "rgba(0,0,0,0.7)",
-                  zIndex: 20000,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  background: "#f8fafc",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "14px",
                   padding: "20px",
+                  boxShadow:
+                    "0 4px 15px rgba(0,0,0,0.05)",
+                  position: "relative",
                 }}
               >
-                <div
+                {/* Delete Button */}
+                <button
+                  onClick={() =>
+                    deleteWhiteLabelPartner(item._id)
+                  }
                   style={{
-                    width: "90%",
-                    maxWidth: "1200px",
-                    maxHeight: "90vh",
-                    overflowY: "auto",
-                    background: "#ffffff",
-                    borderRadius: "18px",
-                    padding: "30px",
-                    position: "relative",
+                    position: "absolute",
+                    top: "12px",
+                    right: "12px",
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "50%",
+                    border: "none",
+                    background: "#ef4444",
+                    color: "#ffffff",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                  title="Delete Enquiry"
+                >
+                  <Trash2 size={18} />
+                </button>
+
+                {/* Name */}
+                <h3
+                  style={{
+                    margin: "0 50px 15px 0",
+                    color: "#0ea5e9",
                   }}
                 >
-                  {/* Close Button */}
-                  <button
-                    onClick={() => setWLPgetdata(false)}
-                    style={{
-                      position: "absolute",
-                      top: "15px",
-                      right: "15px",
-                      width: "42px",
-                      height: "42px",
-                      borderRadius: "50%",
-                      border: "none",
-                      background: "red",
-                      color: "#fff",
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                    }}
-                  >
-                    ✕
-                  </button>
+                  {item.name}
+                </h3>
 
-                  <h2
-                    style={{
-                      marginBottom: "5px",
-                      color: "#111827",
-                    }}
-                  >
-                    White Label Partner
-                  </h2>
+                {/* Email */}
+                <p style={{ margin: "8px 0" }}>
+                  <strong>Email:</strong>{" "}
+                  <a href={`mailto:${item.email}`}>
+                    {item.email}
+                  </a>
+                </p>
+
+                {/* Company */}
+                <p style={{ margin: "8px 0" }}>
+                  <strong>Company:</strong>{" "}
+                  {item.company || "N/A"}
+                </p>
+
+                {/* Website */}
+                <p style={{ margin: "8px 0" }}>
+                  <strong>Website:</strong>{" "}
+                  {item.websiteName || "N/A"}
+                </p>
+
+                {/* Phone */}
+                <p style={{ margin: "8px 0" }}>
+                  <strong>Phone:</strong>{" "}
+                  <a href={`tel:${item.phone}`}>
+                    {item.phone}
+                  </a>
+                </p>
+
+                {/* Address */}
+                <p style={{ margin: "8px 0" }}>
+                  <strong>Address:</strong>{" "}
+                  {item.address || "N/A"}
+                </p>
+
+                {/* Service */}
+                <p style={{ margin: "8px 0" }}>
+                  <strong>Service:</strong>{" "}
+                  {item.service || "N/A"}
+                </p>
+
+                {/* Requirement */}
+                <div
+                  style={{
+                    marginTop: "15px",
+                    background: "#ffffff",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    border: "1px solid #e5e7eb",
+                  }}
+                >
+                  <strong>Requirement:</strong>
 
                   <p
                     style={{
-                      color: "#6b7280",
-                      marginBottom: "25px",
+                      marginTop: "7px",
+                      marginBottom: 0,
+                      color: "#4b5563",
+                      lineHeight: "1.5",
                     }}
                   >
-                    Total Enquiries: {wlpData.length}
+                    {item.message || "No message"}
                   </p>
-
-                  {/* Loading */}
-                  {wlpLoading && (
-                    <div
-                      style={{
-                        textAlign: "center",
-                        padding: "50px",
-                        fontSize: "18px",
-                      }}
-                    >
-                      Loading...
-                    </div>
-                  )}
-
-                  {/* Error */}
-                  {wlpError && !wlpLoading && (
-                    <div
-                      style={{
-                        background: "#fee2e2",
-                        color: "#b91c1c",
-                        padding: "15px",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      {wlpError}
-                    </div>
-                  )}
-
-                  {/* No Data */}
-                  {!wlpLoading && !wlpError && wlpData.length === 0 && (
-                    <div
-                      style={{
-                        textAlign: "center",
-                        padding: "40px",
-                        color: "#777",
-                      }}
-                    >
-                      No White Label Partner enquiries found.
-                    </div>
-                  )}
-
-                  {/* Data */}
-                  {!wlpLoading && (
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                          "repeat(auto-fit, minmax(320px, 1fr))",
-                        gap: "20px",
-                      }}
-                    >
-                      {wlpData.map((item) => (
-                        <div
-                          key={item._id}
-                          style={{
-                            background: "#f8fafc",
-                            border: "1px solid #e5e7eb",
-                            borderRadius: "14px",
-                            padding: "20px",
-                            boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-                          }}
-                        >
-                          <h3
-                            style={{
-                              margin: "0 0 15px",
-                              color: "#0ea5e9",
-                            }}
-                          >
-                            {item.name}
-                          </h3>
-
-                          <p>
-                            <strong>Email:</strong>{" "}
-                            <a href={`mailto:${item.email}`}>
-                              {item.email}
-                            </a>
-                          </p>
-
-                          <p>
-                            <strong>Company:</strong>{" "}
-                            {item.company || "N/A"}
-                          </p>
-
-                          <p>
-                            <strong>Phone:</strong>{" "}
-                            <a href={`tel:${item.phone}`}>
-                              {item.phone}
-                            </a>
-                          </p>
-
-                          <p>
-                            <strong>Address:</strong>{" "}
-                            {item.address || "N/A"}
-                          </p>
-
-                          <p>
-                            <strong>Service:</strong>{" "}
-                            {item.service}
-                          </p>
-
-                          <p>
-                            <strong>Status:</strong>{" "}
-                            <span
-                              style={{
-                                background:
-                                  item.status === "new"
-                                    ? "#dcfce7"
-                                    : "#e5e7eb",
-                                color:
-                                  item.status === "new"
-                                    ? "#15803d"
-                                    : "#374151",
-                                padding: "4px 10px",
-                                borderRadius: "20px",
-                                fontSize: "12px",
-                                fontWeight: "600",
-                              }}
-                            >
-                              {item.status}
-                            </span>
-                          </p>
-
-                          <div
-                            style={{
-                              marginTop: "15px",
-                              background: "#ffffff",
-                              padding: "12px",
-                              borderRadius: "8px",
-                            }}
-                          >
-                            <strong>Requirement:</strong>
-
-                            <p
-                              style={{
-                                marginTop: "7px",
-                                marginBottom: 0,
-                                color: "#4b5563",
-                                lineHeight: "1.5",
-                              }}
-                            >
-                              {item.message || "No message"}
-                            </p>
-                          </div>
-
-                          <p
-                            style={{
-                              marginTop: "15px",
-                              marginBottom: 0,
-                              color: "#9ca3af",
-                              fontSize: "13px",
-                            }}
-                          >
-                            {new Date(item.createdAt).toLocaleString()}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
+
+                {/* Date */}
+                <p
+                  style={{
+                    marginTop: "15px",
+                    marginBottom: 0,
+                    color: "#9ca3af",
+                    fontSize: "13px",
+                  }}
+                >
+                  {item.createdAt
+                    ? new Date(
+                        item.createdAt
+                      ).toLocaleString()
+                    : ""}
+                </p>
               </div>
-            )}
+            ))}
+          </div>
+        )}
+    </div>
+  </div>
+)}
 
             {/* popup modal */}
             {selectedCareer && (
